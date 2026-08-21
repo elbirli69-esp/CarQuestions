@@ -13,7 +13,8 @@ Este repositorio contiene el **MVP**. La interfaz y el motor de valoración est�
 - Chat sobre el coche concreto
 - Capa `SourceProvider` modular (coches.net, AutoScout24, Wallapop, etc. como mocks)
 - Capa `AIProvider` intercambiable: en Vercel usa **AI Gateway + DeepSeek** con OIDC (igual que el resto de proyectos). Fuera de Vercel puede usar la clave DeepSeek en `OPENAI_API_KEY` o el asistente de demostración.
-- Documentos `VehicleDocument` e índice por palabras clave, listos para RAG/embeddings
+- Documentos `VehicleDocument` e índice RAG con **base vectorial TF-IDF** (`data/knowledge/`)
+- Corpus curado de fiabilidad/mantenimiento por marca, modelo, año y combustible
 - Diseño mobile-first con Next.js, TypeScript, Tailwind y shadcn/ui
 
 ## Qué no hace todavía
@@ -54,6 +55,7 @@ npm run dev      # desarrollo
 npm run build    # compilación de producción
 npm run start    # servir el build
 npm run lint     # eslint
+npm run rag:ingest  # regenerar data/knowledge/vector-index.json tras editar chunks
 ```
 
 ## Variables de entorno
@@ -68,6 +70,15 @@ Ver `.env.example`. Las claves de API nunca se exponen al navegador: las rutas v
 4. Tras mergear este cambio a `main`, Vercel redespliega solo. No hace falta base de datos.
 
 Opcional: `AI_GATEWAY_MODEL=deepseek/deepseek-v4-pro` si quieres el modelo más capaz.
+
+## Base de conocimiento RAG
+
+- Corpus editable: `data/knowledge/chunks.json`
+- Índice vectorial (TF-IDF): `data/knowledge/vector-index.json` (generado con `npm run rag:ingest`)
+- Recuperación híbrida: filtros por vehículo + similitud coseno + documentos dinámicos del análisis
+- Integrado en fiabilidad, mantenimiento, preguntas al vendedor y chat
+
+Para añadir un modelo: crea chunks con `brands`, `models`, `yearFrom`/`yearTo`, `fuels`, `type` (`issue`, `maintenance`, `inspection`, `recall`) y vuelve a ejecutar `npm run rag:ingest`.
 
 ## Arquitectura
 

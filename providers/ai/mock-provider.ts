@@ -1,6 +1,6 @@
 import type { AIAnswer, AIProvider, ChatMessage, VehicleContext } from "@/types/ai";
 import { issueToDocument, listingToDocument, vehicleSummaryDocument } from "@/lib/rag/documents";
-import { createDocumentIndex } from "@/lib/rag/index";
+import { retrieveDocuments } from "@/lib/rag/index";
 import { formatEuro, formatKm, formatPercent } from "@/lib/utils/format";
 
 function contextSummary(context: VehicleContext): string {
@@ -28,14 +28,27 @@ export class MockAIProvider implements AIProvider {
     history: ChatMessage[],
   ): Promise<AIAnswer> {
     void history;
+    const v = context.vehicle;
     const documents = [
       vehicleSummaryDocument(context.vehicle),
       ...context.comparableListings.slice(0, 8).map(listingToDocument),
       ...context.reliabilityData.knownIssues.map((issue) => issueToDocument(context.vehicle, issue)),
     ];
-    const retrieved = await createDocumentIndex(documents).query({ text: question, limit: 5 });
+    const retrieved = await retrieveDocuments(
+      {
+        text: question,
+        vehicle: {
+          brand: v.brand,
+          model: v.model,
+          year: v.year,
+          fuel: v.fuel,
+          version: v.version,
+        },
+        limit: 8,
+      },
+      documents,
+    );
     const q = question.toLowerCase();
-    const v = context.vehicle;
     const m = context.marketData;
     let text = "";
 

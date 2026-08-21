@@ -69,7 +69,8 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
     maintenance: knowledge.maintenance,
     limitations: [
       ...valuation.limitations,
-      "Ningún portal real está conectado en este MVP. Los anuncios, percentiles y scores de fiabilidad de demostración no deben usarse para comprar.",
+      "Ningún portal real está conectado en este MVP. Los anuncios y percentiles son simulados.",
+      "La fiabilidad y mantenimiento vienen de una base de conocimiento RAG curada (chunks estáticos + índice vectorial TF-IDF). No sustituye inspección ni informes oficiales.",
     ],
   };
 

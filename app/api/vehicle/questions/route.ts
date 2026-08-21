@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { handleRouteError, jsonError } from "@/lib/api/errors";
 import { issueToDocument, listingToDocument, vehicleSummaryDocument } from "@/lib/rag/documents";
-import { createDocumentIndex } from "@/lib/rag/index";
+import { retrieveDocuments } from "@/lib/rag/index";
 import { getAnalysis } from "@/lib/store/vehicle-store";
 import { analyzeVehicle, toVehicleContext } from "@/lib/vehicles/analyze";
 import { questionRequestSchema } from "@/lib/vehicles/schema";
@@ -26,10 +26,20 @@ export async function POST(request: Request) {
       ...analysis.comparables.slice(0, 10).map(listingToDocument),
       ...analysis.reliability.knownIssues.map((issue) => issueToDocument(analysis.vehicle, issue)),
     ];
-    const retrieved = await createDocumentIndex(documents).query({
-      text: parsed.data.question,
-      limit: 5,
-    });
+    const retrieved = await retrieveDocuments(
+      {
+        text: parsed.data.question,
+        vehicle: {
+          brand: analysis.vehicle.brand,
+          model: analysis.vehicle.model,
+          year: analysis.vehicle.year,
+          fuel: analysis.vehicle.fuel,
+          version: analysis.vehicle.version,
+        },
+        limit: 8,
+      },
+      documents,
+    );
 
     const context = {
       ...toVehicleContext(analysis),

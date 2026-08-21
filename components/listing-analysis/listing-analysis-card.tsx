@@ -37,7 +37,9 @@ export function ListingAnalysisCard({
         <CardHeader>
           <CardTitle>Fiabilidad y mantenimiento</CardTitle>
           <CardDescription>
-            {reliability.isDemo ? "Ficha de demostración, no un informe de este bastidor." : "Datos estáticos del modelo."}
+            {reliability.isDemo
+              ? "Base de conocimiento RAG curada. No es un informe de este bastidor."
+              : "Datos estáticos del modelo."}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 text-sm">

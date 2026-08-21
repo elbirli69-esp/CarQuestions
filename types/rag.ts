@@ -20,7 +20,9 @@ export interface RetrievalQuery {
   vehicle?: {
     brand?: string;
     model?: string;
+    version?: string;
     year?: number;
+    fuel?: string;
   };
   limit?: number;
 }
