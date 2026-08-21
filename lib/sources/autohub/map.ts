@@ -65,6 +65,14 @@ function buildLocation(raw: Record<string, unknown>): string | undefined {
   const dealer = raw.dealer;
   if (dealer && typeof dealer === "object") {
     const dealerRecord = dealer as Record<string, unknown>;
+    const nested = dealerRecord.location;
+    if (nested && typeof nested === "object") {
+      const locationRecord = nested as Record<string, unknown>;
+      const city = readString(locationRecord.city);
+      const state = readString(locationRecord.state);
+      if (city && state) return `${city}, ${state}`;
+      return city ?? state;
+    }
     const city = readString(dealerRecord.city);
     const state = readString(dealerRecord.state);
     if (city && state) return `${city}, ${state}`;
@@ -113,9 +121,17 @@ export function mapAutoHubListing(
 
   const idValue = readString(raw.id ?? raw.listingId ?? raw.vehicleId) ?? createVehicleId([make, model, String(year), String(mileage ?? 0), String(priceUsd)]);
   const location = buildLocation(raw);
-  const url = readString(raw.url ?? raw.listingUrl ?? raw.vdpUrl);
+  const url = readString(raw.source_url ?? raw.url ?? raw.listingUrl ?? raw.vdpUrl ?? raw.dealer_url);
   const images = Array.isArray(raw.images)
-    ? raw.images.filter((item): item is string => typeof item === "string")
+    ? raw.images
+        .map((item) => {
+          if (typeof item === "string") return item;
+          if (item && typeof item === "object" && "url" in item) {
+            return readString((item as Record<string, unknown>).url);
+          }
+          return undefined;
+        })
+        .filter((item): item is string => Boolean(item))
     : readString(raw.image ?? raw.photoUrl)
       ? [readString(raw.image ?? raw.photoUrl) as string]
       : undefined;
