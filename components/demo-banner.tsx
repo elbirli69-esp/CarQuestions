@@ -5,12 +5,12 @@ const COPY: Record<DataMode, { title: string; description: string }> = {
   live: {
     title: "Datos de mercado observados",
     description:
-      "La valoración usa anuncios reales conectados. La fiabilidad y el mantenimiento vienen de la base de conocimiento curada.",
+      "La valoración usa anuncios reales (AutoHub u otros portales conectados). La fiabilidad y el mantenimiento vienen de la base de conocimiento curada.",
   },
   mixed: {
     title: "Mercado observado + conocimiento curado",
     description:
-      "Combinamos anuncios reales con la base de conocimiento sobre fiabilidad y mantenimiento. No sustituye inspección ni tasación oficial.",
+      "Combinamos anuncios reales con la base de conocimiento sobre fiabilidad y mantenimiento. Si los comparables son de AutoHub, provienen del mercado EE. UU.",
   },
   knowledge: {
     title: "Sin portales conectados",

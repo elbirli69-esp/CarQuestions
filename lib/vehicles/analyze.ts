@@ -71,6 +71,11 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
       "Ningún portal de anuncios está conectado. El precio de mercado es una estimación orientativa por segmento, no una mediana de anuncios reales.",
     );
   }
+  if (comparables.some((listing) => listing.source === "autohub")) {
+    limitations.push(
+      "Los comparables de AutoHub provienen del mercado estadounidense (KBB/Carmax). Los precios se convierten de USD a EUR de forma orientativa; no reflejan el mercado español al 100 %.",
+    );
+  }
   if (hasKnowledge) {
     limitations.push(
       "La fiabilidad y el mantenimiento proceden de una base de conocimiento curada (RAG). No sustituyen inspección mecánica ni informes oficiales de este bastidor.",
