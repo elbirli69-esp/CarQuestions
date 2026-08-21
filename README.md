@@ -35,7 +35,13 @@ npm run dev
 
 Abre [http://localhost:3000](http://localhost:3000).
 
-Sin claves de IA, el chat usa el asistente de demostración. Si añades `OPENAI_API_KEY` (o DeepSeek / AI Gateway) en `.env.local`, el proveedor real se usará automáticamente.
+Sin claves de IA, el chat usa el asistente de demostración. Para usar DeepSeek como en el resto de proyectos, copia la misma `OPENAI_API_KEY` y deja:
+
+```
+OPENAI_API_KEY=<la misma clave DeepSeek>
+OPENAI_BASE_URL=https://api.deepseek.com/v1
+OPENAI_MODEL=deepseek-chat
+```
 
 ## Scripts
 
@@ -52,9 +58,16 @@ Ver `.env.example`. Las claves de API nunca se exponen al navegador: las rutas v
 
 ## Despliegue en Vercel
 
-1. Importa el repositorio en Vercel (framework: Next.js).
-2. Añade las variables de `.env.example` que necesites.
-3. Despliega. No hace falta base de datos para el MVP.
+1. Importa el repositorio en Vercel (framework: Next.js, Production Branch: `main`).
+2. En **Settings → Environment Variables**, copia las mismas variables de DeepSeek que en tus otros proyectos:
+   - `OPENAI_API_KEY` — la clave de DeepSeek
+   - `OPENAI_BASE_URL` — `https://api.deepseek.com/v1`
+   - `OPENAI_MODEL` — `deepseek-chat`
+   - Ámbito: Production, Preview y Development
+3. **Redeploy** el último deployment de `main` para que cargue las variables.
+4. No hace falta base de datos para el MVP.
+
+Si otro proyecto ya tiene esas tres variables, en Vercel puedes usar **Share from another project** / copiar valores y pegarlos aquí. No subas la clave al repositorio.
 
 ## Arquitectura
 

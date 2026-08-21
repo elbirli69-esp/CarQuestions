@@ -91,23 +91,18 @@ export function createConfiguredCompatibleProvider(): AIProvider | null {
 
   if (env.aiProvider === "mock") return null;
 
-  if ((env.aiProvider === "openai" || env.aiProvider === "auto") && env.openaiApiKey) {
+  if (
+    (env.aiProvider === "openai" ||
+      env.aiProvider === "deepseek" ||
+      env.aiProvider === "auto") &&
+    env.openaiApiKey
+  ) {
     return new OpenAICompatibleProvider({
-      id: "openai",
-      name: "OpenAI",
+      id: env.usesDeepSeek ? "deepseek" : "openai",
+      name: env.usesDeepSeek ? "DeepSeek" : "OpenAI",
       apiKey: env.openaiApiKey,
       baseUrl: env.openaiBaseUrl,
       model: env.openaiModel,
-    });
-  }
-
-  if ((env.aiProvider === "deepseek" || env.aiProvider === "auto") && env.deepseekApiKey) {
-    return new OpenAICompatibleProvider({
-      id: "deepseek",
-      name: "DeepSeek",
-      apiKey: env.deepseekApiKey,
-      baseUrl: "https://api.deepseek.com/v1",
-      model: "deepseek-chat",
     });
   }
 
