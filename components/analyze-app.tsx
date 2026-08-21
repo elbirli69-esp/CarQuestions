@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { DemoBanner } from "@/components/demo-banner";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { ComparableList } from "@/components/comparable-cars/comparable-list";
 import { ListingAnalysisCard } from "@/components/listing-analysis/listing-analysis-card";
 import { SellerQuestions } from "@/components/seller-questions/seller-questions";
@@ -49,18 +50,17 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-4 py-10 sm:py-16">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-8 sm:py-12">
       <header className="flex flex-col gap-4">
-        <p className="text-sm font-medium tracking-wide text-muted-foreground">CarQuestions</p>
-        <h1 className="font-heading max-w-xl text-3xl leading-tight font-medium tracking-tight sm:text-5xl">
+        <div className="flex items-start justify-between gap-4">
+          <p className="text-sm font-medium tracking-wide text-muted-foreground">CarQuestions</p>
+          <ThemeToggle />
+        </div>
+        <h1 className="font-heading max-w-xl text-3xl leading-tight font-medium tracking-tight sm:text-4xl">
           ¿Cuánto vale realmente este coche?
         </h1>
-        <p className="max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
-          Introduce los datos del vehículo y descubre su precio de mercado, si es una buena compra y todo lo que
-          deberías saber antes de comprarlo.
-        </p>
-        <p className="text-sm text-muted-foreground">
-          También puedes preguntarle cualquier cosa sobre el vehículo.
+        <p className="max-w-xl text-base leading-7 text-muted-foreground">
+          Rellena lo básico y obtén precio de mercado, fiabilidad del modelo y preguntas para el vendedor.
         </p>
       </header>
 
