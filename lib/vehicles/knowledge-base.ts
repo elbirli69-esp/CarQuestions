@@ -7,7 +7,7 @@ export function lookupKnowledge(vehicle: Vehicle) {
 
   return {
     reliability: chunksToReliability(chunks, vehicle),
-    maintenance: chunksToMaintenance(chunks),
+    maintenance: chunksToMaintenance(chunks, vehicle),
     knowledgeChunks: chunks,
   };
 }

@@ -28,6 +28,11 @@ export const knowledgeChunkSchema = z.object({
       max: z.number().optional(),
     })
     .optional(),
+  symptoms: z.array(z.string()).optional(),
+  askSeller: z.array(z.string()).optional(),
+  inspectSteps: z.array(z.string()).optional(),
+  typicalKmFrom: z.number().int().optional(),
+  typicalKmTo: z.number().int().optional(),
   isDemo: z.boolean(),
 });
 

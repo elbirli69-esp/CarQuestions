@@ -1028,6 +1028,102 @@
         "Arranque en frío: escuchar ruidos metálicos 10 segundos"
       ],
       "source": "Checklist precompra mecánica general adaptado mercado VO España"
+    },
+    {
+      "id": "seat-ibiza-arona-tsi",
+      "content": "Ibiza/Arona TSI: aceite bien controlado y bobinas en buen estado son clave por encima de 70.000 km. Conducción corta sin calentar acelera consumo de aceite y ensucia turbo.",
+      "symptoms": ["Nivel de aceite bajo entre revisiones", "Fallo de encendido o tirones en frío", "Humo azulado al acelerar tras ralentí largo"],
+      "askSeller": ["¿Con qué frecuencia revisaba el aceite?", "¿Bobinas o bujías cambiadas? ¿Factura?"],
+      "inspectSteps": ["Medir aceite en frío tras prueba dinámica", "Leer códigos de cilindro fallando", "Comprobar turbo sin holgura excesiva ni silbido anómalo"],
+      "typicalKmFrom": 70000,
+      "typicalKmTo": 130000,
+      "source": "Foros SEAT Ibiza V/VI y Cupra Born community (patrones MQB A0)"
+    },
+    {
+      "id": "vw-polo-tsi-dsg",
+      "content": "Polo TSI reciente: no estirar intervalos de aceite en urbano. Si lleva DSG, el aceite de caja cada ~60.000 km evita tirones caros.",
+      "symptoms": ["Aceite oscuro antes del intervalo", "Tirones DSG en 1-2 marcha", "Pérdidas leves refrigerante en TSI"],
+      "askSeller": ["¿Aceite DSG cambiado? ¿Cuándo?", "¿Historial VW Digital Service?"],
+      "inspectSteps": ["Revisar libro digital VW o facturas", "Probar DSG en atasco simulado 5 min", "Inspeccionar manguitos refrigerante y nivel expansión"],
+      "source": "Manual VW Polo VI/VII y foros Polo Spain"
+    },
+    {
+      "id": "peugeot-208-puretech",
+      "content": "208/2008 PureTech 1.2: correa bañada en aceite exige aceite correcto y revisiones puntuales. Sin factura de distribución, negocia fuerte o descarta.",
+      "symptoms": ["Consumo aceite >1 L/1.000 km", "Ruido correa/distribución en frío", "Testigo aceite o motor intermitente"],
+      "askSeller": ["¿Correa distribución cambiada? ¿Aceite usado (norma PSA)?", "¿Campañas PureTech aplicadas?"],
+      "inspectSteps": ["Confirmar código motor 1.2 PureTech en ficha", "Pedir factura kit distribución si aplica", "Escaneo y revisión niveles aceite tras prueba"],
+      "typicalKmFrom": 60000,
+      "typicalKmTo": 120000,
+      "source": "Alertas Stellantis PureTech y foros Peugeot 208 España"
+    },
+    {
+      "id": "citroen-c3-cactus-airbag",
+      "content": "C3/Cactus: además del motor (PureTech/BlueHDi), revisa suspensión trasera, airbags no disparados y alineación tras golpe leve no declarado.",
+      "symptoms": ["Desgaste irregular neumáticos traseros", "Testigo airbag/ESP encendido", "Puertas o capó mal alineados"],
+      "askSeller": ["¿Accidente aunque sea leve? ¿ITV con deficiencias?", "¿Qué motor exacto lleva?"],
+      "inspectSteps": ["Medir alturas de carrocería y juego suspensión", "Escaneo airbag/ESP y historial ITV", "Revisar pasos de rueda por reparación chapa"],
+      "source": "Guías precompra Stellantis compactos y talleres independientes"
+    },
+    {
+      "id": "renault-captur-dci-hybrid",
+      "content": "Captur II: diésel urbano = FAP; E-Tech = revisar batería HV y actualizaciones. Confirmar versión exacta antes de valorar riesgos.",
+      "symptoms": ["Aviso FAP en dCi urbano", "Autonomía EV reducida en E-Tech", "Tirones transmisión híbrida en frío"],
+      "askSeller": ["¿Versión dCi, TCe o E-Tech?", "¿Informe batería híbrida en E-Tech?"],
+      "inspectSteps": ["Identificar motor en ficha y badge trasero", "Prueba EV en E-Tech y comprobar carga AC", "Escaneo FAP en dCi tras ruta autopista"],
+      "source": "Manual Renault Captur II y foros Captur España"
+    },
+    {
+      "id": "toyota-rav4-hybrid-battery",
+      "content": "RAV4/C-HR híbrido: prioritario historial Toyota oficial. PHEV: pedir SOH y comprobar cargador incluido.",
+      "symptoms": ["Consumo combustible subido vs media modelo", "Ruido e-CVT anómalo en aceleración", "PHEV no mantiene carga EV"],
+      "askSeller": ["¿Historial completo Toyota?", "¿SOH batería en PHEV? ¿Cable de carga?"],
+      "inspectSteps": ["Leer hybrid system status con Techstream o equivalente", "Comprobar frenos/regeneración en descenso", "Revisar neumáticos AWD desgaste uniforme"],
+      "source": "Manual Toyota RAV4 Hybrid y guías VO híbridos Toyota"
+    },
+    {
+      "id": "vw-id3-id4-battery",
+      "content": "ID.3/ID.4: SOH y software al día valen tanto como carrocería. Muchas unidades de flota: revisar km DC y golpes batería.",
+      "symptoms": ["Autonomía real muy inferior a WLTP esperado", "Errores carga DC intermitentes", "Ruidos suspensión delantera (masa batería)"],
+      "askSeller": ["¿SOH batería? ¿Actualizaciones ID. Software?", "¿Uso flota con muchas cargas rápidas?"],
+      "inspectSteps": ["Diagnóstico SOH con OBD VW", "Prueba carga AC y DC si es posible", "Inspeccionar suelo batería y bajos sin golpes"],
+      "source": "Documentación VW MEB y comunidad ID.3 España"
+    },
+    {
+      "id": "renault-zoe-battery",
+      "content": "Zoe: aclarar si batería es alquilada o propiedad. SOH bajo en unidad antigua puede hacer inviable el precio pedido.",
+      "symptoms": ["Autonomía caída vs especificación original", "Cuota batería pendiente si alquiler", "Cargas DC frecuentes en modelos compatibles"],
+      "askSeller": ["¿Batería incluida o alquilada?", "¿SOH medido? ¿Cuántas cargas rápidas?"],
+      "inspectSteps": ["Contrato batería Renault y SOH por diagnóstico", "Comprobar cargador incluido y conector", "Probar carga completa AC y medir km reales"],
+      "typicalKmFrom": 80000,
+      "typicalKmTo": 150000,
+      "source": "Foros Renault Zoe España y guías compraventa EV"
+    },
+    {
+      "id": "mg4-ev-battery-suspension",
+      "content": "MG4 usado: revisar SOH, garantía batería restante y actualizaciones OTA. Modelo joven pero conviene inspección completa por posible uso intenso.",
+      "symptoms": ["SOH por debajo del 90 % en unidad joven", "Ruidos suspensión trasera", "Errores OTA no aplicados"],
+      "askSeller": ["¿SOH y garantía batería restante?", "¿Actualizaciones software al día?"],
+      "inspectSteps": ["Diagnóstico SOH MG", "Revisar neumáticos y amortiguadores traseros", "Comprobar historial cargas DC en app si disponible"],
+      "source": "Foros MG EV Club Europe"
+    },
+    {
+      "id": "mercedes-a-class-dct",
+      "content": "Clase A W177 DCT: probar mucho urbano simulado. Software y aceite de caja mal mantenidos = tirones y reparación cara.",
+      "symptoms": ["Tirones 1-3 marcha en caliente", "Olor a embrague en atasco", "Parpadeos transmisión en pantalla"],
+      "askSeller": ["¿Actualizaciones DCT en historial Mercedes?", "¿Uso principal ciudad?"],
+      "inspectSteps": ["Prueba 15 min atasco con aire acondicionado", "Escaneo Mercedes Star/Xentry transmisión", "Revisar olor a quemado al salir del coche"],
+      "typicalKmFrom": 50000,
+      "typicalKmTo": 110000,
+      "source": "Foros MBWorld W177 y talleres Mercedes independientes"
+    },
+    {
+      "id": "audi-q3-dsg-tfsi",
+      "content": "Q3/Q2: DSG + TFSI + quattro = triple chequeo: aceite caja, consumo aceite motor y ruidos transmisión en maniobras lentas.",
+      "symptoms": ["Consumo aceite TFSI entre revisiones", "Chasquidos quattro en aparcamiento", "Tirones DSG al arrancar en frío"],
+      "askSeller": ["¿Aceite DSG cambiado?", "¿Historial aceite motor top-ups?", "¿Ruidos en curvas cerradas?"],
+      "inspectSteps": ["Maniobras lento aparcamiento escuchando quattro", "Revisar nivel aceite tras prueba dinámica", "Escaneo DSG y lectura adaptaciones embrague"],
+      "source": "AudiSport Q3 threads y manual Audi Q3 FY"
     }
   ]
 }

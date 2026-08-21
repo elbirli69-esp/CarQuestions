@@ -22,6 +22,11 @@ export interface KnowledgeChunk {
   reliabilityScore?: number;
   maintenanceInterval?: string;
   estimatedCostEur?: { min?: number; max?: number };
+  symptoms?: string[];
+  askSeller?: string[];
+  inspectSteps?: string[];
+  typicalKmFrom?: number;
+  typicalKmTo?: number;
   isDemo: boolean;
 }
 

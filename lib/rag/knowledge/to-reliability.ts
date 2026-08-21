@@ -1,13 +1,21 @@
 import type { KnowledgeChunk } from "@/types/knowledge";
 import type { KnownIssue, MaintenanceSummary, ReliabilitySummary } from "@/types/valuation";
 import type { Vehicle } from "@/types/vehicle";
-import { average, clamp } from "@/lib/utils/math";
+import { average, clamp, normalizeKey } from "@/lib/utils/math";
 
 export function chunkToKnownIssue(chunk: KnowledgeChunk): KnownIssue | null {
   if (chunk.type !== "issue" && chunk.type !== "recall") return null;
+  const extra = [
+    chunk.symptoms?.length ? `Síntomas habituales: ${chunk.symptoms.join("; ")}.` : null,
+    chunk.askSeller?.length ? `Preguntar al vendedor: ${chunk.askSeller.join("; ")}.` : null,
+    chunk.inspectSteps?.length ? `Revisar antes de comprar: ${chunk.inspectSteps.join("; ")}.` : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return {
     title: chunk.title,
-    detail: chunk.content,
+    detail: extra ? `${chunk.content} ${extra}` : chunk.content,
     severity: chunk.severity ?? "medium",
     appliesWhen: chunk.appliesWhen ?? chunk.title,
     source: chunk.source,
@@ -15,13 +23,32 @@ export function chunkToKnownIssue(chunk: KnowledgeChunk): KnownIssue | null {
   };
 }
 
+function chunkMatchesVehicle(chunk: KnowledgeChunk, vehicle: Vehicle): boolean {
+  const brand = normalizeKey(vehicle.brand);
+  const model = normalizeKey(vehicle.model);
+  const brandOk = chunk.brands.some((item) => {
+    const key = normalizeKey(item);
+    return brand.includes(key) || key.includes(brand);
+  });
+  if (!brandOk) return false;
+  if (chunk.models && chunk.models.length > 0) {
+    return chunk.models.some((item) => {
+      const key = normalizeKey(item);
+      return model === key || model.includes(key) || key.includes(model);
+    });
+  }
+  return true;
+}
+
 export function chunksToReliability(chunks: KnowledgeChunk[], vehicle: Vehicle): ReliabilitySummary {
-  const issues = chunks
+  const relevant = chunks.filter((chunk) => chunkMatchesVehicle(chunk, vehicle));
+
+  const issues = relevant
     .filter((chunk) => chunk.type === "issue" || chunk.type === "recall")
     .map(chunkToKnownIssue)
     .filter((issue): issue is KnownIssue => issue != null);
 
-  const scoreValues = chunks
+  const scoreValues = relevant
     .map((chunk) => chunk.reliabilityScore)
     .filter((value): value is number => typeof value === "number");
 
@@ -38,7 +65,7 @@ export function chunksToReliability(chunks: KnowledgeChunk[], vehicle: Vehicle):
     };
   }
 
-  const maintenanceNotes = chunks
+  const maintenanceNotes = relevant
     .filter((chunk) => chunk.type === "maintenance")
     .map((chunk) => `${chunk.title}: ${chunk.content}`);
 
@@ -57,14 +84,15 @@ export function chunksToReliability(chunks: KnowledgeChunk[], vehicle: Vehicle):
         ? maintenanceNotes.slice(0, 3)
         : [`Ficha recuperada de la base de conocimiento para ${vehicle.brand} ${vehicle.model}.`],
     knownIssues: issues.slice(0, 8),
-    isDemo: chunks.some((chunk) => chunk.isDemo),
+    isDemo: relevant.some((chunk) => chunk.isDemo),
     source: "Base de conocimiento RAG",
   };
 }
 
-export function chunksToMaintenance(chunks: KnowledgeChunk[]): MaintenanceSummary {
-  const maintenance = chunks.filter((chunk) => chunk.type === "maintenance");
-  const inspections = chunks.filter((chunk) => chunk.type === "inspection");
+export function chunksToMaintenance(chunks: KnowledgeChunk[], vehicle?: Vehicle): MaintenanceSummary {
+  const relevant = vehicle ? chunks.filter((chunk) => chunkMatchesVehicle(chunk, vehicle)) : chunks;
+  const maintenance = relevant.filter((chunk) => chunk.type === "maintenance");
+  const inspections = relevant.filter((chunk) => chunk.type === "inspection");
 
   if (maintenance.length === 0 && inspections.length === 0) {
     return {
@@ -91,7 +119,7 @@ export function chunksToMaintenance(chunks: KnowledgeChunk[]): MaintenanceSummar
     ].slice(0, 6),
     estimatedYearlyCost:
       yearlyCosts.length > 0 ? Math.round(average(yearlyCosts) ?? 0) : undefined,
-    isDemo: chunks.some((chunk) => chunk.isDemo),
+    isDemo: relevant.some((chunk) => chunk.isDemo),
     source: "Base de conocimiento RAG",
   };
 }

@@ -13,6 +13,11 @@ export function chunkSearchText(chunk: KnowledgeChunk): string {
     chunk.brands.join(" "),
     chunk.models?.join(" "),
     chunk.fuels?.join(" "),
+    chunk.symptoms?.join(" "),
+    chunk.askSeller?.join(" "),
+    chunk.inspectSteps?.join(" "),
+    chunk.typicalKmFrom != null ? `desde ${chunk.typicalKmFrom} km` : null,
+    chunk.typicalKmTo != null ? `hasta ${chunk.typicalKmTo} km` : null,
   ]
     .filter(Boolean)
     .join(" ");

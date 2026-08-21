@@ -9,6 +9,22 @@ export function chunkToDocument(chunk: KnowledgeChunk, vehicle?: Vehicle): Vehic
       : "";
 
   const interval = chunk.maintenanceInterval ? ` Intervalo: ${chunk.maintenanceInterval}.` : "";
+  const kmRange =
+    chunk.typicalKmFrom != null || chunk.typicalKmTo != null
+      ? ` Kilometraje típico: ${chunk.typicalKmFrom ?? "?"}-${chunk.typicalKmTo ?? "?"} km.`
+      : "";
+  const symptoms =
+    chunk.symptoms && chunk.symptoms.length > 0
+      ? ` Síntomas: ${chunk.symptoms.join("; ")}.`
+      : "";
+  const askSeller =
+    chunk.askSeller && chunk.askSeller.length > 0
+      ? ` Preguntar al vendedor: ${chunk.askSeller.join("; ")}.`
+      : "";
+  const inspectSteps =
+    chunk.inspectSteps && chunk.inspectSteps.length > 0
+      ? ` Revisar: ${chunk.inspectSteps.join("; ")}.`
+      : "";
 
   return {
     id: `knowledge_${chunk.id}`,
@@ -19,7 +35,7 @@ export function chunkToDocument(chunk: KnowledgeChunk, vehicle?: Vehicle): Vehic
       model: chunk.models?.[0],
       year: vehicle?.year,
     },
-    content: `${chunk.title}. ${chunk.content}${interval}${cost} Fuente: ${chunk.source}.`,
+    content: `${chunk.title}. ${chunk.content}${symptoms}${askSeller}${inspectSteps}${interval}${kmRange}${cost} Fuente: ${chunk.source}.`,
     metadata: {
       chunkId: chunk.id,
       chunkType: chunk.type,

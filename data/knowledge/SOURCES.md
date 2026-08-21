@@ -21,6 +21,8 @@ Este corpus **no scrapea portales de venta** ni consulta DGT/ITV en tiempo real.
 ## Cómo ampliar
 
 1. Identifica motor + generación + años (no solo "Golf").
-2. Busca el patrón en foro técnico + manual + recall si existe.
-3. Redacta un chunk atómico con `source` y `sourceUrl` cuando haya enlace estable.
-4. Ejecuta `npm run rag:ingest`.
+2. Añade o edita un chunk en `data/knowledge/chunks.json`.
+3. Opcional: enriquece con `symptoms`, `askSeller`, `inspectSteps` en `data/knowledge/enrichments.json` (se fusiona al cargar).
+4. Busca el patrón en foro técnico + manual + recall si existe.
+5. Redacta un chunk atómico con `source` y `sourceUrl` cuando haya enlace estable.
+6. Ejecuta `npm run rag:ingest`.

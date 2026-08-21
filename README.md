@@ -74,6 +74,7 @@ Opcional: `AI_GATEWAY_MODEL=deepseek/deepseek-v4-pro` si quieres el modelo más 
 ## Base de conocimiento RAG
 
 - Corpus editable: `data/knowledge/chunks.json`
+- Enriquecimientos (síntomas, preguntas, inspección): `data/knowledge/enrichments.json`
 - Metodología de fuentes: `data/knowledge/SOURCES.md`
 - Índice vectorial (TF-IDF): `data/knowledge/vector-index.json` (generado con `npm run rag:ingest`)
 - Recuperación híbrida: filtros por vehículo + similitud coseno + documentos dinámicos del análisis
