@@ -50,10 +50,39 @@ export async function autohubGet<T>(
   }
 
   try {
-    return JSON.parse(text) as T;
-  } catch {
+    const parsed = JSON.parse(text) as T;
+    assertAutoHubPayload(parsed, response.status, text);
+    return parsed;
+  } catch (error) {
+    if (error instanceof AutoHubApiError) throw error;
     throw new AutoHubApiError("AutoHub devolvió una respuesta no JSON", response.status, text.slice(0, 500));
   }
+}
+
+function assertAutoHubPayload(payload: unknown, status: number, rawText: string): void {
+  if (!payload || typeof payload !== "object") return;
+  const record = payload as Record<string, unknown>;
+  const meta = record.meta;
+  if (meta && typeof meta === "object") {
+    const metaRecord = meta as Record<string, unknown>;
+    const metaStatus = readNumber(metaRecord.status);
+    if (metaStatus != null && metaStatus >= 400) {
+      throw new AutoHubApiError(`AutoHub respondió ${metaStatus}`, metaStatus, rawText.slice(0, 500));
+    }
+  }
+  const message = typeof record.message === "string" ? record.message : undefined;
+  if (message && record.errors) {
+    throw new AutoHubApiError(message, status, rawText.slice(0, 500));
+  }
+}
+
+function readNumber(value: unknown): number | undefined {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string" && value.trim()) {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : undefined;
+  }
+  return undefined;
 }
 
 export function extractAutoHubItems(payload: unknown): Record<string, unknown>[] {

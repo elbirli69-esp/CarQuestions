@@ -34,5 +34,7 @@ export function getServerEnv() {
     autohubApiBaseUrl: process.env.AUTOHUB_API_BASE_URL?.trim() || DEFAULT_AUTOHUB_BASE_URL,
     autohubRapidApiHost: process.env.AUTOHUB_RAPIDAPI_HOST?.trim() || DEFAULT_AUTOHUB_HOST,
     autohubUsdToEur: readNumberEnv("AUTOHUB_USD_TO_EUR", 0.92),
+    autohubZipcode: process.env.AUTOHUB_ZIPCODE?.trim() || "10001",
+    autohubSearchRadius: readNumberEnv("AUTOHUB_SEARCH_RADIUS", 100),
   };
 }

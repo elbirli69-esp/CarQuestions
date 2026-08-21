@@ -17,18 +17,20 @@ function emptyResult(notes: string[], connected = false): SourceSearchResult {
 }
 
 export function createAutoHubProvider(): SourceProvider {
-  const env = getServerEnv();
-  const apiKey = env.autohubRapidApiKey;
-  const enabled = Boolean(apiKey);
-
   return {
     id: "autohub",
     name: "AutoHub",
     kind: "marketplace",
-    enabled,
-    isMock: !enabled,
+    get enabled() {
+      return Boolean(getServerEnv().autohubRapidApiKey);
+    },
+    get isMock() {
+      return !this.enabled;
+    },
 
     async searchComparables(query: ComparableQuery): Promise<SourceSearchResult> {
+      const env = getServerEnv();
+      const apiKey = env.autohubRapidApiKey;
       if (!apiKey) {
         return emptyResult([
           "AutoHub no está configurado. Añade RAPIDAPI_KEY o AUTOHUB_RAPIDAPI_KEY (plan gratuito en RapidAPI).",
@@ -45,12 +47,14 @@ export function createAutoHubProvider(): SourceProvider {
             baseUrl: env.autohubApiBaseUrl,
             host: env.autohubRapidApiHost,
           },
-          "/v1/for-sale",
+          "/v1/vehicles/for-sale",
           {
             year: query.year,
             make: normalizeAutoHubMake(query.brand),
             model: query.model,
             trim: query.version,
+            zipcode: env.autohubZipcode,
+            search_radius: env.autohubSearchRadius,
             limit,
           },
         );
@@ -70,7 +74,7 @@ export function createAutoHubProvider(): SourceProvider {
           notes:
             listings.length > 0
               ? [
-                  `${listings.length} anuncios reales de AutoHub (mercado EE. UU., KBB/Carmax). Precios convertidos de USD a EUR (${env.autohubUsdToEur}).`,
+                  `${listings.length} anuncios reales de AutoHub (mercado EE. UU., KBB). Precios convertidos de USD a EUR (${env.autohubUsdToEur}). Referencia geográfica: ZIP ${env.autohubZipcode}.`,
                 ]
               : ["AutoHub no devolvió anuncios comparables para esta búsqueda."],
         };
