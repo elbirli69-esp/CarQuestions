@@ -1,0 +1,1033 @@
+{
+  "version": 1,
+  "overlays": [
+    {
+      "id": "bmw-n47-timing-chain",
+      "content": "Los diésel BMW con motor N47/B47 (2014-2020) acumularon quejas por estiramiento prematuro de cadena y tensores, sobre todo por encima de 120.000 km o con intervalos de aceite largos. No todos lo desarrollan, pero una cadena en mal estado puede dañar el motor. Antes de pagar, escucha arranques en frío y pide historial de reparación o campañas.",
+      "symptoms": [
+        "Traqueteo metálico 2-5 segundos al arrancar en frío",
+        "Testigo de motor o códigos de sincronización de árboles de levas",
+        "Pérdida de potencia o ralentí irregular cuando el desfase avanza"
+      ],
+      "askSeller": [
+        "¿Se ha sustituido cadena, tensores o guías? ¿Con qué kilometraje y factura?",
+        "¿Hay ruido metálico al arrancar en frío que desaparezca al calentar?"
+      ],
+      "inspectSteps": [
+        "Arrancar en frío y escuchar los primeros segundos con capó abierto",
+        "Leer códigos con escáner BMW/Ista por desfase de distribución",
+        "Revisar facturas de cadena completa o campañas aplicadas al bastidor"
+      ],
+      "typicalKmFrom": 100000,
+      "typicalKmTo": 180000,
+      "source": "Patrones N47/B47 en BMWFAQ, TSBs BMW y talleres independientes alemanes",
+      "sourceUrl": "https://www.bmwfaq.org/"
+    },
+    {
+      "id": "bmw-diesel-egr-dpf",
+      "content": "En diésel BMW de uso urbano (X1, X3, Serie 1/3), la EGR se ensucia y el FAP puede colmatarse si no hay trayectos largos para regenerar. Reparaciones sin factura (borrado de software, FAP vaciado) son señal de alarma en la ITV. Pregunta por historial de regeneraciones forzadas y limpiezas documentadas.",
+      "symptoms": [
+        "Aviso de FAP/DPF o modo degradado con pérdida de potencia",
+        "Consumo de combustible subido y olor a azufre en paradas",
+        "Ralentí irregular o tirones tras trayectos cortos repetidos"
+      ],
+      "askSeller": [
+        "¿Cuántas regeneraciones del FAP ha hecho y dónde?",
+        "¿Ha tenido EGR limpiada o sustituida? ¿Hay factura oficial?"
+      ],
+      "inspectSteps": [
+        "Comprobar testigos antipolución apagados tras 10 min de conducción",
+        "Leer datos en vivo: presión diferencial FAP y estado EGR con escáner",
+        "Revisar historial de uso: ¿ciudad diaria o mezcla con autopista semanal?"
+      ],
+      "typicalKmFrom": 80000,
+      "typicalKmTo": 160000,
+      "source": "Experiencia recurrente diésel Euro 5/6 BMW y foros técnicos BMWFAQ"
+    },
+    {
+      "id": "bmw-diesel-maintenance",
+      "content": "Un diésel BMW usado exige historial impecable: aceite Long Life no estirado, AdBlue al día y atención temprana a cadena (N47/B47), EGR y FAP. El mantenimiento oficial es caro; un historial incompleto en taller independiente bien documentado puede valer, pero omisiones encarecen mucho la compra.",
+      "symptoms": [
+        "Intervalos de aceite superiores a 20.000 km sin justificación",
+        "Avisos recurrentes de servicio o antipolución ignorados",
+        "Facturas dispersas o sin sellos de concesionario/taller reconocido"
+      ],
+      "askSeller": [
+        "¿Libro de mantenimiento digital completo o historial BMW?",
+        "¿Cuándo fue el último cambio de aceite, filtros y AdBlue?"
+      ],
+      "inspectSteps": [
+        "Revisar todas las facturas: aceite, filtros, líquido frenos, refrigerante",
+        "Comprobar nivel y fecha de AdBlue; buscar cristalización en depósito",
+        "Confirmar revisiones de cadena/distribución según motor (N47/B47 especialmente)"
+      ],
+      "source": "Manuales BMW Service Inclusive y guías de talleres especializados BMW"
+    },
+    {
+      "id": "bmw-diesel-upcoming",
+      "content": "Checklist precompra para diésel BMW 2014-2020: prioriza cadena N47/B47, estado FAP/EGR, fugas AdBlue y ruidos en frío. Dedica 15 minutos a escuchar el motor frío y pide un informe de diagnóstico antes de reservar el coche.",
+      "symptoms": [
+        "Ruido metálico al arrancar en frío (cadena)",
+        "Testigo FAP/SCR encendido o parpadeante",
+        "Olor a glicol o AdBlue bajo el capó"
+      ],
+      "askSeller": [
+        "¿Puedo llevarlo a mi taller de confianza antes de pagar?",
+        "¿Hay informe de diagnóstico reciente con códigos borrados?"
+      ],
+      "inspectSteps": [
+        "Arranque en frío: escuchar cadena y turbo durante 30 segundos",
+        "Ruta mixta 15 km: comprobar regeneración FAP y respuesta del motor",
+        "Revisar fugas bajo capó: refrigerante, aceite, AdBlue"
+      ],
+      "source": "Checklist inspección precompra independiente adaptado a diésel BMW"
+    },
+    {
+      "id": "vag-dmf",
+      "content": "El volante bimasa (DMF) en diésel VAG (VW, Seat, Skoda, Audi) suele fatigarse entre 120.000 y 180.000 km, sobre todo con conducción urbana o remolque. Las vibraciones al ralenti con marcha puesta son el síntoma clásico; a veces se confunde con embrague desgastado.",
+      "symptoms": [
+        "Vibración marcada en ralentí con primera o marcha engranada",
+        "Ruido de cascabel metálico al pisar embrague",
+        "Tirones al arrancar en cuesta con olor a embrague quemado"
+      ],
+      "askSeller": [
+        "¿Se ha cambiado volante bimasa o embrague? ¿Kilometraje y factura?",
+        "¿Vibra mucho parado con aire acondicionado y primera puesta?"
+      ],
+      "inspectSteps": [
+        "Probar ralentí 2-3 min con A/C y primera engranada, freno pisado",
+        "Arrancar en cuesta empinada: comprobar patinaje o vibración",
+        "Escuchar ruido metálico al pisar/soltar pedal de embrague"
+      ],
+      "typicalKmFrom": 120000,
+      "typicalKmTo": 180000,
+      "source": "Patrón habitual volante bimasa TDI en foros VAG y talleres independientes españoles"
+    },
+    {
+      "id": "vag-dpf-egr",
+      "content": "Los TDI del grupo VAG post-2012 con trayectos cortos acumulan FAP colmatado y EGR obstruida. En España, muchos propietarios han hecho limpiezas por 300-800 €; un FAP sustituido sin factura o con anulación ilegal puede costarte la ITV. Exige historial de regeneraciones y limpiezas.",
+      "symptoms": [
+        "Testigo motor/FAP y consumo de gasoil disparado",
+        "Humo negro al acelerar fuerte tras conducción urbana",
+        "Modo de emergencia con potencia limitada tras varios trayectos cortos"
+      ],
+      "askSeller": [
+        "¿Ha hecho regeneraciones forzadas? ¿Cuántas veces y en qué taller?",
+        "¿FAP o EGR limpiados o sustituidos? ¿Con factura?"
+      ],
+      "inspectSteps": [
+        "Escaneo VCDS/OBD: presión FAP, ciclos de regeneración y errores EGR",
+        "Conducir 20 min en autopista y verificar que desaparecen avisos",
+        "Comprobar humo en aceleración y olor a azufre en parada"
+      ],
+      "typicalKmFrom": 90000,
+      "typicalKmTo": 170000,
+      "source": "Experiencia TDI Euro 5/6 VAG documentada en foros VW/Audi España"
+    },
+    {
+      "id": "vag-timing-belt",
+      "content": "En VAG con correa de distribución, el intervalo suele ser 90.000-120.000 km o 5-6 años (varía por código motor). Compra sin factura de correa reciente implica reservar 500-900 €. En diésel, aprovecha el cambio para revisar bomba de agua, tensor y volante bimasa.",
+      "symptoms": [
+        "Sin factura de kit de distribución en el historial",
+        "Kilometraje cercano o superior al intervalo del manual",
+        "Fugas de refrigerante o ruido de tensor en motores por correa"
+      ],
+      "askSeller": [
+        "¿Cuándo se cambió la correa de distribución y con qué km?",
+        "¿Incluyó bomba de agua, tensor y rodillos en el mismo trabajo?"
+      ],
+      "inspectSteps": [
+        "Identificar código motor exacto y consultar intervalo en manual VAG",
+        "Pedir factura del kit distribución: fecha, km y piezas incluidas",
+        "Revisar estado de correas auxiliares y fugas en bomba de agua"
+      ],
+      "typicalKmFrom": 90000,
+      "typicalKmTo": 120000,
+      "source": "Manuales de mantenimiento VAG y tablas de intervalos por código motor"
+    },
+    {
+      "id": "golf-7-water-pump",
+      "content": "En Golf VII (2013-2019) con TSI/TDI, la bomba de agua termostática integrada en plástico es punto débil habitual tras 80.000 km. Las fugas son progresivas: manchas de glicol, olor dulce y nivel bajo de refrigerante. Ignorarlo puede recalentar el motor.",
+      "symptoms": [
+        "Manchas rosas/verdes de glicol bajo el motor o en suelo del garaje",
+        "Olor dulce a refrigerante al abrir el capó",
+        "Temperatura que tarda en estabilizarse o sube en atascos"
+      ],
+      "askSeller": [
+        "¿Se ha cambiado bomba de agua o termostato? ¿Con qué kilometraje?",
+        "¿Hay pérdidas de refrigerante? ¿Cuándo fue el último relleno?"
+      ],
+      "inspectSteps": [
+        "Revisar depósito de expansión: nivel y color del líquido",
+        "Inspeccionar bomba/termostato y manguitos con linterna (fugas húmedas)",
+        "Comprobar temperatura en ruta: no debe pasar de 90 °C en conducción normal"
+      ],
+      "typicalKmFrom": 80000,
+      "typicalKmTo": 140000,
+      "source": "TSBs VAG Golf VII y hilos técnicos en foros GolfMK7"
+    },
+    {
+      "id": "leon-tfsi-oil",
+      "content": "Los TSI del León III (MQB) pueden consumir aceite entre revisiones, sobre todo con conducción corta o estilo deportivo. Un consumo de 0,5-1 L/1.000 km sin reposiciones documentadas puede indicar aros o turbo envejecido. Revisa facturas de aceite añadido y humo azulado.",
+      "symptoms": [
+        "Nivel de aceite bajo mínimo entre cambios oficiales",
+        "Humo azulado al acelerar tras ralentí prolongado",
+        "Aviso de presión de aceite o consumo elevado en cuadro (algunas unidades)"
+      ],
+      "askSeller": [
+        "¿Cuánto aceite añade entre revisiones? ¿Hay facturas de reposición?",
+        "¿Ha hecho decarbonización o revisión de turbo?"
+      ],
+      "inspectSteps": [
+        "Medir nivel de aceite en frío antes de la prueba (varilla o sensor)",
+        "Aceleración fuerte en recta: observar humo por retrovisor",
+        "Revisar historial: cambios de aceite cada 10.000-15.000 km máximo"
+      ],
+      "typicalKmFrom": 70000,
+      "typicalKmTo": 150000,
+      "source": "Informes consumo aceite TSI MQB en foros SEAT/Cupra y revisiones Motor.es"
+    },
+    {
+      "id": "toyota-hybrid-brakes",
+      "content": "En híbridos Toyota/Lexus la regeneración reduce desgaste de pastillas, pero los discos se oxidan con poco uso (coche de garaje o ciudad suave). Pinzas pueden agarrarse y generar vibración al frenar. La batería HV suele ir bien, pero conviene diagnóstico con escáner Toyota.",
+      "symptoms": [
+        "Vibración al frenar tras semanas sin uso intenso",
+        "Discos con óxido visible y pastillas casi nuevas pero ruidosas",
+        "Ruido de roce constante al soltar freno tras estacionar húmedo"
+      ],
+      "askSeller": [
+        "¿Con qué frecuencia se usa el coche? ¿Sobre todo trayectos cortos?",
+        "¿Se han rectificado discos o cambiado pinzas por oxidación?"
+      ],
+      "inspectSteps": [
+        "Inspeccionar discos traseros y delanteros: óxido, surcos, grosor",
+        "Frenada firme a 80 km/h: comprobar vibración en volante",
+        "Diagnóstico HV: estado batería, códigos y equilibrio de celdas si es posible"
+      ],
+      "typicalKmFrom": 60000,
+      "typicalKmTo": 150000,
+      "source": "Experiencia flotas híbridas Toyota y manuales de servicio Lexus/Toyota"
+    },
+    {
+      "id": "toyota-hybrid-maintenance",
+      "content": "Los híbridos Toyota destacan en fiabilidad si se respeta aceite (15.000 km), filtro de habitáculo y revisión del sistema HV en concesionario. El aceite en motor Atkinson se contamina más con trayectos cortos. Pide historial completo en MyToyota o facturas.",
+      "symptoms": [
+        "Aceite oscuro y espeso antes del intervalo (uso urbano)",
+        "Falta de revisiones híbridas en historial oficial",
+        "Frenos con poco desgaste pero discos en mal estado"
+      ],
+      "askSeller": [
+        "¿Historial completo en Toyota? ¿Revisiones híbridas al día?",
+        "¿Cada cuántos km cambia aceite y filtro de habitáculo?"
+      ],
+      "inspectSteps": [
+        "Revisar libro digital o facturas: aceite, filtros, líquido de frenos",
+        "Comprobar funcionamiento modo EV y transición gasolina-eléctrico suave",
+        "Inspeccionar frenos y neumáticos: desgaste coherente con km"
+      ],
+      "source": "Manual de mantenimiento Toyota Hybrid Synergy Drive"
+    },
+    {
+      "id": "mercedes-auto-trans",
+      "content": "Muchos automáticos Mercedes (7G/9G-Tronic) no son 'sellados para siempre': Mercedes recomienda cambio de aceite y filtro cada 60.000 km en muchos modelos 2015-2021. Sin factura, el riesgo de tirones, patinaje o avería cara (2.000-5.000 €) sube mucho con el kilometraje.",
+      "symptoms": [
+        "Tirón al cambiar de marcha, sobre todo en frío",
+        "Patinaje en arranque o subida con motor revolucionado",
+        "Olor a quemado en caja tras conducción urbana"
+      ],
+      "askSeller": [
+        "¿Cuándo se cambió aceite y filtro de la caja automática?",
+        "¿Ha tenido actualizaciones de software de transmisión en Mercedes?"
+      ],
+      "inspectSteps": [
+        "Probar arranque en pendiente y cambios secuenciales 1-2-3 en manual",
+        "Revisar manchas rojas/marrones bajo coche (aceite ATF)",
+        "Leer adaptaciones de caja con escáner Mercedes/Xentry si es posible"
+      ],
+      "typicalKmFrom": 80000,
+      "typicalKmTo": 160000,
+      "source": "Recomendaciones mantenimiento caja 9G-Tronic Mercedes-Benz y talleres especializados"
+    },
+    {
+      "id": "mercedes-diesel-maintenance",
+      "content": "Diésel Mercedes 2015-2021: mantenimiento caro pero predecible si está documentado. Prioriza aceite cada 15.000 km, AdBlue/SCR, caja automática y cadena en OM651 (generación anterior). Un historial en estrella oficial da tranquilidad; independiente exige facturas detalladas.",
+      "symptoms": [
+        "Intervalos de servicio superiores a los recomendados por Mercedes",
+        "Avisos SCR/AdBlue recurrentes sin reparación documentada",
+        "Ausencia de cambios de aceite de caja automática"
+      ],
+      "askSeller": [
+        "¿Historial Digital Service de Mercedes completo?",
+        "¿Cuándo fue el último servicio A/B y cambio de filtro de aceite?"
+      ],
+      "inspectSteps": [
+        "Revisar historial: aceite, filtros, AdBlue, líquido de frenos",
+        "Comprobar testigos SCR apagados y autonomía AdBlue coherente",
+        "Probar caja automática en frío y caliente: suavidad de cambios"
+      ],
+      "source": "Manuales Mercedes-Benz ASSYST Plus y guías concesionario España"
+    },
+    {
+      "id": "clio-tce-egr",
+      "content": "El Clio IV TCe (0.9/1.2 turbo) con mucho urbano puede dar problemas de EGR sucia, ralentí irregular y consumo de aceite moderado. Las limpiezas cuestan 150-400 €; una EGR sustituida sin factura es sospechosa. Revisa también historial de aceite de calidad 5W-30 aprobado Renault.",
+      "symptoms": [
+        "Ralentí inestable o caladas en semáforos",
+        "Testigo antipolución encendido tras trayectos cortos",
+        "Humo blanco/azulado al arrancar en frío tras parada larga"
+      ],
+      "askSeller": [
+        "¿EGR limpiada o cambiada? ¿Con qué kilometraje?",
+        "¿Cuánto aceite añade entre revisiones?"
+      ],
+      "inspectSteps": [
+        "Leer códigos EGR/depósito de admisión con escáner",
+        "Observar ralentí 5 min tras arranque en frío",
+        "Comprobar nivel de aceite y facturas de cambios regulares"
+      ],
+      "typicalKmFrom": 70000,
+      "typicalKmTo": 130000,
+      "source": "Foros Renault Clio IV TCe y experiencia talleres independientes Renault"
+    },
+    {
+      "id": "dacia-sandero-rust",
+      "content": "Dacia Sandero/Duster/Logan (2013-2020) pueden oxidarse en pasos de rueda, largueros, umbrales y zona bajo alfombrillas si han vivido en costa o sin tratamiento anticorrosivo. En España, unidades de Galicia, Cantábrico y Levante requieren inspección minuciosa. Reparar óxido estructural encarece mucho la compra.",
+      "symptoms": [
+        "Burbujas bajo pintura en arcos de rueda o umbrales",
+        "Manchas de óxido en tornillos de bajos o subchasis",
+        "Olores a humedad y alfombrillas manchadas en base de pilar A/B"
+      ],
+      "askSeller": [
+        "¿Ha vivido en zona costera o ha tenido filtraciones?",
+        "¿Se ha tratado óxido o repintado por corrosión?"
+      ],
+      "inspectSteps": [
+        "Levantar alfombrillas delanteras y traseras: revisar suelo y puntos de soldadura",
+        "Inspeccionar pasos de rueda, bajos y largueros con linterna",
+        "Comprobar puertas y portón: alineación y signos de repintado local"
+      ],
+      "typicalKmFrom": 80000,
+      "typicalKmTo": 180000,
+      "source": "Inspecciones precompra habituales en unidades Dacia España y guías óxido costero"
+    },
+    {
+      "id": "peugeot-bluehdi-adblue",
+      "content": "Los BlueHDi (Peugeot, Citroën, DS) pueden fallar en sistema SCR: bomba AdBlue, sonda NOx o cristalización si el coche ha estado parado semanas. En España, un fallo SCR puede costar 400-900 €. Pregunta por historial de rellenos y reparaciones antes de comprar.",
+      "symptoms": [
+        "Aviso AdBlue/SCR con contador de km hasta no arrancar",
+        "Cristales blancos alrededor del depósito o tuberías AdBlue",
+        "Pérdida de potencia y testigo antipolución encendido"
+      ],
+      "askSeller": [
+        "¿Ha tenido fallos de AdBlue o sonda NOx? ¿Facturas de reparación?",
+        "¿Cuánto tiempo estuvo parado sin circular?"
+      ],
+      "inspectSteps": [
+        "Comprobar nivel AdBlue y ausencia de cristalización en tapón",
+        "Escaneo PSA: códigos SCR, NOx y estado bomba AdBlue",
+        "Ruta 15 min: verificar que no aparecen avisos antipolución"
+      ],
+      "typicalKmFrom": 70000,
+      "typicalKmTo": 150000,
+      "source": "Patrones BlueHDi Euro 6 Stellantis y foros Peugeot/Citroën España"
+    },
+    {
+      "id": "ford-ecoboost-coolant",
+      "content": "EcoBoost 1.0/1.6 (Focus, Fiesta, Kuga 2012-2019) acumularon quejas por pérdidas de refrigerante por manguitos, bomba de agua o junta de culata en algunas series. Ford lanzó campañas en ciertos bastidores. Revisa nivel, olor a glicol y manchas en suelo antes de negociar.",
+      "symptoms": [
+        "Nivel de refrigerante bajo sin fuga visible externa (posible junta culata)",
+        "Olor dulce a glicol en habitáculo o capó",
+        "Manchas húmedas en manguitos, bomba o junta termostato"
+      ],
+      "askSeller": [
+        "¿Ha tenido pérdidas de refrigerante? ¿Se cambió bomba o manguitos?",
+        "¿Este bastidor estuvo en campaña Ford por refrigerante?"
+      ],
+      "inspectSteps": [
+        "Revisar depósito expansión en frío: nivel entre MIN/MAX",
+        "Inspeccionar manguitos, bomba de agua y radiador con linterna",
+        "Comprobar prueba de gases en depósito (burbujas = posible junta culata)"
+      ],
+      "typicalKmFrom": 70000,
+      "typicalKmTo": 130000,
+      "source": "Campañas Ford EcoBoost refrigerante y comunidad Ford Focus/Fiesta España",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/"
+    },
+    {
+      "id": "generic-diesel-dpf-inspection",
+      "content": "Checklist universal para diésel Euro 5/6 usado en España: confirma FAP regenerado, EGR sana, AdBlue operativo y ausencia de humo negro persistente. Un diésel urbano sin historial de regeneraciones es apuesta arriesgada. Dedica 30 minutos antes de entregar señal.",
+      "symptoms": [
+        "Testigo FAP/SCR encendido o parpadeante",
+        "Humo negro al acelerar y olor a azufre",
+        "Consumo de combustible anormalmente alto"
+      ],
+      "askSeller": [
+        "¿Uso principal ciudad o carretera? ¿Historial de regeneraciones FAP?",
+        "¿AdBlue rellenado regularmente? ¿Fallos SCR reparados?"
+      ],
+      "inspectSteps": [
+        "Escaneo OBD: presión diferencial FAP, EGR y códigos pendientes",
+        "Autopista 20 min a régimen constante: comprobar regeneración",
+        "Revisar humo en aceleración y testigos apagados al finalizar"
+      ],
+      "source": "Checklist precompra diésel Euro 5/6 adaptado a mercado VO español"
+    },
+    {
+      "id": "generic-auto-gearbox-oil",
+      "content": "La mayoría de cajas automáticas (Mercedes, BMW, VAG DSG húmeda, Toyota, Ford) requieren cambio de aceite y filtro cada 60.000-90.000 km aunque el manual diga 'sellada'. Sin factura, descuenta 300-800 € del precio o exige cambio inmediato postcompra.",
+      "symptoms": [
+        "Cambios bruscos o retrasados, especialmente en frío",
+        "Patinaje en arranque o subida pronunciada",
+        "Olor a quemado tras tráfico denso"
+      ],
+      "askSeller": [
+        "¿Cuándo se cambió aceite y filtro de la caja? ¿Qué aceite se usó?",
+        "¿Ha tenido tirones o reparaciones de transmisión?"
+      ],
+      "inspectSteps": [
+        "Probar todas las marchas en manual y automático en frío y caliente",
+        "Revisar fugas de aceite ATF bajo el coche (manchas rojas/marrones)",
+        "Pedir factura de servicio de caja con fecha y kilometraje"
+      ],
+      "typicalKmFrom": 60000,
+      "typicalKmTo": 120000,
+      "source": "Buenas prácticas ATEXA/talleres transmisión España y manuales fabricantes"
+    },
+    {
+      "id": "generic-timing-chain-inspection",
+      "content": "Antes de comprar, identifica si tu motor lleva correa (con intervalo en km/años) o cadena (desgaste progresivo). En España, cambiar correa cuesta 400-1.200 € según motor; una cadena estirada en BMW, Mercedes o Mini puede superar 1.500 €. Escucha arranques en frío y exige facturas.",
+      "symptoms": [
+        "Ruido metálico rítmico al arrancar en frío (cadena)",
+        "Sin factura de correa con km superior al intervalo (correa)",
+        "Testigo motor o códigos de sincronización en escáner"
+      ],
+      "askSeller": [
+        "¿Correa o cadena? ¿Cuándo se sustituyó y con qué km?",
+        "¿Hay ruidos en frío que desaparecen al calentar?"
+      ],
+      "inspectSteps": [
+        "Consultar código motor exacto en ficha técnica o compartimento motor",
+        "Arranque en frío: escuchar 10 segundos con capó abierto",
+        "Pedir factura de kit distribución o historial de cadena/tensores"
+      ],
+      "source": "Checklist mecánico precompra independiente y tablas distribución por motor"
+    },
+    {
+      "id": "vag-dsg-dq200",
+      "content": "La DSG DQ200 (7 vel., embrague seco) en VW, Seat, Skoda y Audi es uno de los puntos débiles más conocidos del grupo VAG en tráfico urbano español. Tirones, patinaje y fallos de mecatrónica aparecen habitualmente entre 80.000 y 150.000 km. Exige prueba en atasco y historial de reparaciones.",
+      "symptoms": [
+        "Tirones y sacudidas en arranque o cambio 1-2 en atasco",
+        "Olor a embrague quemado tras 15 min en ciudad",
+        "Patinaje en cuesta con motor revolucionado sin avanzar"
+      ],
+      "askSeller": [
+        "¿Embragues, mecatrónica o software DSG reparados? ¿Facturas?",
+        "¿Ha tenido actualizaciones de software en concesionario VAG?"
+      ],
+      "inspectSteps": [
+        "Conducir 20 min en tráfico lento: evaluar suavidad 1-2 y arranques",
+        "Arranque en cuesta empinada con aire acondicionado",
+        "Escaneo VCDS: temperatura embrague, adaptaciones y códigos DSG"
+      ],
+      "typicalKmFrom": 80000,
+      "typicalKmTo": 150000,
+      "source": "Patrón DQ200 muy documentado en foros VAG y revisiones técnicas DSG",
+      "sourceUrl": "https://www.volkswagenforum.com/"
+    },
+    {
+      "id": "vag-ea888-water-pump",
+      "content": "Motores EA888 TSI (Golf, Passat, A3, A4, Octavia, León, Tiguan) suelen fugarse refrigerante por bomba de agua/termostato plástico tras 70.000-120.000 km. Es reparación común (250-700 €) pero ignorarla puede recalentar y dañar turbo. Revisa olor a glicol y manchas.",
+      "symptoms": [
+        "Pérdidas de refrigerante con olor dulce en capó",
+        "Manchas de glicol en suelo o bajo bomba de agua",
+        "Temperatura inestable en atascos de verano"
+      ],
+      "askSeller": [
+        "¿Bomba de agua o termostato cambiados? ¿Con qué km?",
+        "¿Rellena refrigerante con frecuencia?"
+      ],
+      "inspectSteps": [
+        "Nivel depósito expansión en frío; buscar fugas húmedas en bomba",
+        "Revisar manguitos y bridas del sistema de refrigeración",
+        "Ruta con tráfico: temperatura estable sin pasar de 100 °C"
+      ],
+      "typicalKmFrom": 70000,
+      "typicalKmTo": 120000,
+      "source": "TSBs VAG EA888 Gen2/Gen3 y foros Audi/VW TSI"
+    },
+    {
+      "id": "audi-a4-b9-oil-consumption",
+      "content": "Audi A4/A5/Q5 B9 (2015-2020) con TFSI o TDI pueden consumir aceite entre servicios, especialmente con turbo y conducción mixta. Audi admite consumo dentro de especificación, pero más de 1 L/1.000 km con humo azulado requiere investigar aros o turbo. Pide historial de reposiciones.",
+      "symptoms": [
+        "Nivel bajo de aceite antes del intervalo de servicio",
+        "Humo azulado al acelerar tras ralentí",
+        "Aviso de nivel de aceite en MMI con frecuencia"
+      ],
+      "askSeller": [
+        "¿Cuánto aceite añade entre revisiones? ¿Hay facturas?",
+        "¿Ha pasado campaña o revisión de consumo en Audi?"
+      ],
+      "inspectSteps": [
+        "Comprobar nivel aceite en frío con coche en llano",
+        "Aceleración fuerte: observar humo por retrovisor",
+        "Revisar historial Audi Digital Service y cambios de aceite"
+      ],
+      "typicalKmFrom": 60000,
+      "typicalKmTo": 140000,
+      "source": "Informes AudiSport B9 y guías precompra premium Motor.es",
+      "sourceUrl": "https://www.audisport.net/"
+    },
+    {
+      "id": "skoda-octavia-dsg-maintenance",
+      "content": "Octavia III/IV: unidad muy fiable si el mantenimiento está al día. Claves: aceite motor cada 15.000 km, aceite DSG (si aplica) cada 60.000 km, correa en TSI por correa, FAP en TDI urbano. En España es favorito de flotas: verifica km reales y historial completo.",
+      "symptoms": [
+        "Historial de mantenimiento incompleto o solo verbal",
+        "Tirones en DSG o avisos FAP en TDI sin reparar",
+        "Aceite motor muy oscuro o intervalos superiores a 20.000 km"
+      ],
+      "askSeller": [
+        "¿Aceite DSG cambiado? ¿Correa de distribución en TSI?",
+        "¿Historial de flota o particular? ¿Libro de revisiones completo?"
+      ],
+      "inspectSteps": [
+        "Revisar facturas: aceite motor, filtros, DSG, correa si aplica",
+        "Probar DSG en urbano y autopista; comprobar FAP en TDI",
+        "Verificar coherencia km con ITV, neumáticos y desgaste volante"
+      ],
+      "source": "Manual Skoda Octavia y práctica talleres independientes VAG España"
+    },
+    {
+      "id": "nissan-qashqai-dpf-clutch",
+      "content": "Qashqai J11 diésel (2014-2021): FAP se colmata con uso urbano y el embrague sufre con conducción agresiva o remolque. Son reparaciones frecuentes en VO español (300-1.200 €). Pregunta por regeneraciones y prueba el punto de mordida del embrague en cuesta.",
+      "symptoms": [
+        "Testigo DPF y pérdida de potencia en ciudad",
+        "Embrague alto: punto de mordida cerca del final del recorrido",
+        "Olor a embrague quemado en arranques en cuesta"
+      ],
+      "askSeller": [
+        "¿Regeneraciones DPF forzadas o FAP limpiado? ¿Factura?",
+        "¿Embrague cambiado? ¿Se usa para remolque?"
+      ],
+      "inspectSteps": [
+        "Escaneo DPF: presión, regeneraciones y códigos",
+        "Arranque en cuesta: comprobar patinaje y altura del pedal",
+        "Autopista 20 min: verificar desaparición avisos DPF"
+      ],
+      "typicalKmFrom": 80000,
+      "typicalKmTo": 150000,
+      "source": "Foros Nissan Qashqai España y guías precompra Motor.es"
+    },
+    {
+      "id": "nissan-qashqai-cvt-historical",
+      "content": "Qashqai/Juke gasolina con CVT (2010-2017) acumularon quejas por patinaje y calor si no se cambió aceite CVT cada 60.000 km. La sustitución de aceite cuesta 150-250 €; una caja dañada puede superar 2.500 €. Prueba aceleración constante en autopista y revisa historial.",
+      "symptoms": [
+        "Motor revoluciona pero el coche no gana velocidad (patinaje)",
+        "Zumbido agudo o vibración a 80-100 km/h constantes",
+        "Olor a quemado tras subida prolongada en autopista"
+      ],
+      "askSeller": [
+        "¿Aceite CVT cambiado? ¿Cuándo y con qué kilometraje?",
+        "¿Ha tenido reparaciones de transmisión o garantía Nissan?"
+      ],
+      "inspectSteps": [
+        "Autopista: aceleración constante 80-120 km/h, detectar patinaje",
+        "Revisar manchas de aceite rosa/verde bajo caja CVT",
+        "Escaneo: temperatura CVT y códigos de transmisión"
+      ],
+      "typicalKmFrom": 70000,
+      "typicalKmTo": 140000,
+      "source": "Patrones CVT Nissan en informes fiabilidad y foros Qashqai/Juke"
+    },
+    {
+      "id": "hyundai-kia-gdi-carbon",
+      "content": "Motores GDI/T-GDI Hyundai/Kia (Tucson, Sportage, i30, Ceed) acumulan carbono en válvulas de admisión con trayectos cortos urbanos. Síntomas: ralentí irregular, pérdida de potencia y consumo alto. Decarbonización cuesta 150-500 €; conviene preguntar si ya se hizo.",
+      "symptoms": [
+        "Ralentí irregular o vibraciones en paradas",
+        "Pérdida de respuesta al acelerar de bajas revoluciones",
+        "Consumo superior al oficial sin explicación"
+      ],
+      "askSeller": [
+        "¿Limpieza de admisión o decarbonización hecha? ¿Con qué km?",
+        "¿Uso principal ciudad o carretera?"
+      ],
+      "inspectSteps": [
+        "Ralentí 5 min en frío: observar estabilidad",
+        "Aceleraciones progresivas: detectar tirones a bajas rpm",
+        "Escaneo: compensaciones de mezcla y códigos admisión"
+      ],
+      "typicalKmFrom": 60000,
+      "typicalKmTo": 120000,
+      "source": "Práctica talleres Hyundai/Kia España y foros T-GDI"
+    },
+    {
+      "id": "hyundai-kia-dct",
+      "content": "Cajas DCT Hyundai/Kia (7DCT) pueden dar tirones y olor a embrague en atascos si no hay actualizaciones de software o aceite de embrague revisado. Prueba conducción lenta prolongada y arranque en cuesta. Reparaciones pueden costar 400-2.000 €.",
+      "symptoms": [
+        "Sacudidas al arrancar o cambiar 1-2 en tráfico denso",
+        "Olor a embrague quemado tras 20 min en ciudad",
+        "Retraso en respuesta al acelerar desde parado"
+      ],
+      "askSeller": [
+        "¿Actualizaciones de software de caja en Hyundai/Kia?",
+        "¿Tirones desde nuevo o aparecieron con el tiempo?"
+      ],
+      "inspectSteps": [
+        "Conducir 30 min en tráfico urbano simulando atasco",
+        "Arranque en pendiente con A/C encendido",
+        "Escaneo: códigos DCT, temperatura embrague y adaptaciones"
+      ],
+      "typicalKmFrom": 50000,
+      "typicalKmTo": 120000,
+      "source": "Foros Hyundai/Kia Europa y revisiones precompra DCT 7 velocidades"
+    },
+    {
+      "id": "opel-adam-corsa-timing",
+      "content": "Opel Corsa/Adam/Astra (2010-2019) mezcla motores con correa y cadena según cilindrada. Los 1.0-1.4 turbo y 1.3 CDTI requieren confirmar tipo de distribución y fecha de cambio. Sin factura cerca del intervalo, reserva 400-1.200 € en la negociación.",
+      "symptoms": [
+        "Ruido metálico en frío en motores con cadena",
+        "Sin factura de correa con km superior al intervalo",
+        "Testigo motor encendido con códigos de sincronización"
+      ],
+      "askSeller": [
+        "¿Correa o cadena en este motor concreto? ¿Factura de cambio?",
+        "¿Ruidos al arrancar en frío?"
+      ],
+      "inspectSteps": [
+        "Identificar motor exacto en ficha técnica (ej. B14XER, D13A) y consultar intervalo",
+        "Arranque en frío: escuchar distribución 10 segundos",
+        "Pedir factura kit distribución o historial cadena en Opel"
+      ],
+      "typicalKmFrom": 90000,
+      "typicalKmTo": 140000,
+      "source": "Foros Opel España y manuales intervalo GM/Stellantis"
+    },
+    {
+      "id": "fiat-twinair-oil",
+      "content": "Motor TwinAir (Fiat 500, Panda, Punto): compacto y eficiente pero exigente con el aceite. Consume lubricante con facilidad y requiere revisiones frecuentes de nivel. Ignorarlo puede dañar cadena auxiliar y turbo. Ideal para ciudad, pero revisa cada 1.000 km hasta confiar en el coche.",
+      "symptoms": [
+        "Nivel de aceite bajo mínimo entre revisiones",
+        "Ruido de cadena auxiliar o traqueteo en frío",
+        "Humo azulado al acelerar con nivel bajo"
+      ],
+      "askSeller": [
+        "¿Cuánto aceite añade al mes? ¿Hay facturas de reposición?",
+        "¿Cadena auxiliar o turbo revisados?"
+      ],
+      "inspectSteps": [
+        "Medir aceite en frío; comprobar historial de cambios cada 10.000 km",
+        "Escuchar arranque en frío: ruidos cadena auxiliar",
+        "Revisar correas accesorios: grietas y tensión"
+      ],
+      "typicalKmFrom": 50000,
+      "typicalKmTo": 110000,
+      "source": "Comunidad Fiat TwinAir y guías precompra urbanos italianos"
+    },
+    {
+      "id": "renault-dci-turbo",
+      "content": "Motores dCi Renault/Dacia (Mégane, Scénic, Kadjar, Duster) con más de 130.000 km pueden desarrollar fallos de turbo, tuberías de admisión agrietadas o inyectores. Reparación turbo: 800-1.800 €. Escucha silbidos bajo carga y humo negro al acelerar.",
+      "symptoms": [
+        "Silbido agudo al acelerar (fuga admisión/turbo)",
+        "Humo negro en aceleración y pérdida de potencia",
+        "Consumo de aceite subido con humo azulado"
+      ],
+      "askSeller": [
+        "¿Turbo sustituido o reparado? ¿Con qué kilometraje?",
+        "¿Inyectores revisados? ¿Humo negro habitual?"
+      ],
+      "inspectSteps": [
+        "Aceleración progresiva: escuchar silbidos y observar humo",
+        "Revisar tuberías intercooler/admisión: grietas y abrazaderas",
+        "Escaneo: presión turbo, caudal inyectores y códigos"
+      ],
+      "typicalKmFrom": 130000,
+      "typicalKmTo": 200000,
+      "source": "Foros Renault dCi y experiencia talleres independientes diésel franceses"
+    },
+    {
+      "id": "renault-megane-eat6",
+      "content": "Cajas automáticas EAT6/EAT8 (Renault, Peugeot, Citroën, origen Aisin) necesitan cambio de aceite cada 60.000 km aprox. Sin mantenimiento, aparecen tirones en frío y patinaje suave. El servicio cuesta 250-400 €; sin factura, negocia descuento.",
+      "symptoms": [
+        "Tirón al pasar de P a D o en primeros cambios en frío",
+        "Patinaje leve en arranque en cuesta",
+        "Cambios con retraso o golpe seco ocasional"
+      ],
+      "askSeller": [
+        "¿Aceite de caja automática cambiado? ¿Fecha y km?",
+        "¿Tirones desde cuándo? ¿Reparaciones de transmisión?"
+      ],
+      "inspectSteps": [
+        "Arranque en frío: secuencia P-R-N-D y conducción suave 5 min",
+        "Arranque en cuesta: detectar patinaje",
+        "Revisar fugas ATF bajo coche y pedir factura cambio aceite caja"
+      ],
+      "typicalKmFrom": 60000,
+      "typicalKmTo": 120000,
+      "source": "Manuales Stellantis/Renault EAT6/EAT8 y foros transmisión Aisin"
+    },
+    {
+      "id": "peugeot-308-puretech-belt",
+      "content": "PureTech 1.2 (308, 3008, C4, Berlingo): correa de distribución bañada en aceite. Es crítico usar aceite aprobado Stellantis y respetar intervalos; retrasar cambio o usar aceite incorrecto acelera desgaste. Stellantis ha ampliado garantías en algunos casos. Exige factura de distribución.",
+      "symptoms": [
+        "Consumo de aceite elevado sin fugas externas",
+        "Ruido metálico procedente del carter (correa)",
+        "Testigo motor encendido con códigos distribución"
+      ],
+      "askSeller": [
+        "¿Cuándo se cambió correa de distribución? ¿Aceite usado en cambios?",
+        "¿Ha estado en campaña o extensión garantía PureTech?"
+      ],
+      "inspectSteps": [
+        "Verificar intervalo correa según año y código PureTech (EB2, etc.)",
+        "Comprobar nivel y calidad aceite; historial cambios cada 10.000 km",
+        "Escaneo: códigos distribución y consumo aceite registrado"
+      ],
+      "typicalKmFrom": 80000,
+      "typicalKmTo": 120000,
+      "source": "Alertas técnicas Stellantis PureTech y documentación pública campañas",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/"
+    },
+    {
+      "id": "mercedes-om651-chain",
+      "content": "Motor diésel OM651 (Clase C/E, GLC, 2008-2016): campañas y quejas por cadena de distribución en ciertas series. Ruido metálico en frío es señal clásica. Reparación: 900-2.800 €. Verifica si la campaña se aplicó a este bastidor y pide facturas.",
+      "symptoms": [
+        "Traqueteo metálico 2-5 seg al arrancar en frío",
+        "Códigos de desfase árboles de levas en escáner",
+        "Pérdida de potencia progresiva en diésel OM651"
+      ],
+      "askSeller": [
+        "¿Campaña cadena OM651 aplicada a este bastidor?",
+        "¿Cadena o tensores sustituidos? ¿Factura Mercedes o especialista?"
+      ],
+      "inspectSteps": [
+        "Arranque en frío: escuchar cadena antes de que suba temperatura",
+        "Escaneo Mercedes/Xentry: desfase distribución y historial campañas",
+        "Revisar facturas reparación cadena completa"
+      ],
+      "typicalKmFrom": 100000,
+      "typicalKmTo": 180000,
+      "source": "TSBs Mercedes-Benz OM651 y foros especializados diésel Mercedes",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/"
+    },
+    {
+      "id": "bmw-n20-n55-oil-leaks",
+      "content": "Motores gasolina BMW N20/N55 (2011-2018): fugas habituales en tapa de balancines, carter y junta filtro de aceite. Suelen ser reparaciones de 150-600 € si se atienden pronto. Olor a aceite quemado y manchas en suelo indican negligencia previa.",
+      "symptoms": [
+        "Olor a aceite quemado tras conducción o en parado",
+        "Manchas negras bajo motor o en suelo del garaje",
+        "Humo azulado leve en escape con nivel bajo de aceite"
+      ],
+      "askSeller": [
+        "¿Fugas reparadas? ¿Tapa balancines o retén carter cambiados?",
+        "¿Cuánto aceite añade entre revisiones?"
+      ],
+      "inspectSteps": [
+        "Inspeccionar tapa balancines, carter y filtro aceite con linterna",
+        "Comprobar nivel aceite y restos en suelo tras prueba",
+        "Revisar olor en habitáculo tras 15 min con A/C recirculación"
+      ],
+      "typicalKmFrom": 80000,
+      "typicalKmTo": 150000,
+      "source": "BMWFAQ fugas N20/N55 y guías inspección precompra BMW gasolina",
+      "sourceUrl": "https://www.bmwfaq.org/"
+    },
+    {
+      "id": "ford-powershift-recall-pattern",
+      "content": "Ford Focus/C-Max/Fiesta con cambio Powershift (doble embrague) de 2011-2016 acumularon problemas graves y campañas públicas en Europa. Antes de comprar, confirma VIN en Safety Gate y pregunta por embrague, actuador o caja sustituidos. Es uno de los cambios más arriesgados del mercado VO español.",
+      "symptoms": [
+        "Tirones violentos, patinaje y paradas inesperadas en marcha",
+        "Testigo transmisión encendido o modo emergencia",
+        "Olor a embrague quemado y ruidos metálicos al arrancar"
+      ],
+      "askSeller": [
+        "¿Este VIN estuvo en campaña Powershift? ¿Qué reparación se hizo?",
+        "¿Embrague o caja sustituidos bajo garantía Ford?"
+      ],
+      "inspectSteps": [
+        "Consultar VIN en Safety Gate y web Ford recalls Europa",
+        "Prueba 30 min urbano: arranques, atascos y cambios repetidos",
+        "Escaneo: códigos Powershift y historial actualizaciones software"
+      ],
+      "source": "Campañas públicas Ford Powershift Europa y Safety Gate UE",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/"
+    },
+    {
+      "id": "volvo-d4-d5-oil-service",
+      "content": "Volvo SPA/CMA (XC60, XC90, V60, V40 2014-2022): aceite Long Life no debe estirarse en diésel urbano. Revisa AdBlue, FAP y actualizaciones software. Mantenimiento en concesionario Volvo da historial digital fiable; independiente exige facturas detalladas.",
+      "symptoms": [
+        "Intervalos aceite superiores a 20.000 km sin justificación",
+        "Avisos AdBlue/SCR sin reparación documentada",
+        "Software desactualizado según historial Volvo"
+      ],
+      "askSeller": [
+        "¿Historial Volvo On Call o libro servicio digital completo?",
+        "¿Cuándo cambio aceite, filtros y AdBlue?"
+      ],
+      "inspectSteps": [
+        "Revisar facturas: aceite, filtros, líquido frenos, AdBlue",
+        "Comprobar testigos SCR y autonomía AdBlue",
+        "Escaneo Volvo: actualizaciones pendientes y códigos FAP"
+      ],
+      "source": "Manual servicio Volvo SPA/CMA y práctica concesionarios Volvo España"
+    },
+    {
+      "id": "mazda-skyactiv-dpf",
+      "content": "Diésel Skyactiv-D (CX-5, Mazda3, Mazda6): necesitan regeneraciones largas en carretera. Uso exclusivo urbano en España colmata el FAP con rapidez. Mazda recomienda trayectos de 20+ min a régimen. Pregunta por historial de regeneraciones y evita unidades solo ciudad.",
+      "symptoms": [
+        "Testigo DPF encendido tras semanas de solo ciudad",
+        "Consumo diesel disparado y olor a azufre",
+        "Modo degradado con potencia limitada"
+      ],
+      "askSeller": [
+        "¿Uso principal autopista o ciudad? ¿Regeneraciones forzadas?",
+        "¿FAP limpiado o sustituido? ¿Factura?"
+      ],
+      "inspectSteps": [
+        "Escaneo: presión FAP y ciclos regeneración",
+        "Autopista 25 min a 2.000 rpm: verificar regeneración activa",
+        "Comprobar humo y testigos al finalizar ruta"
+      ],
+      "typicalKmFrom": 70000,
+      "typicalKmTo": 140000,
+      "source": "Foros Mazda CX-5 Skyactiv-D y guías uso diésel Mazda España"
+    },
+    {
+      "id": "honda-civic-clarity-hybrid",
+      "content": "Híbridos Honda e:HEV (Civic, CR-V, HR-V 2016-2023): muy fiables con mantenimiento básico. Atención a frenos por oxidación (poco uso), filtro habitáculo y diagnóstico batería tracción con HDS Honda. Aceite cada 10.000-15.000 km según manual.",
+      "symptoms": [
+        "Vibración al frenar por discos oxidados",
+        "Ausencia de revisiones en concesionario Honda",
+        "Transiciones gasolina-eléctrico bruscas (poco habitual)"
+      ],
+      "askSeller": [
+        "¿Historial Honda completo? ¿Revisiones híbridas al día?",
+        "¿Frenos rectificados por poco uso?"
+      ],
+      "inspectSteps": [
+        "Revisar discos y pastillas: óxido vs desgaste coherente",
+        "Diagnóstico HDS: estado batería HV y códigos",
+        "Comprobar transiciones suaves en modo EV y hybrid"
+      ],
+      "source": "Manual mantenimiento Honda e:HEV y guías concesionario Honda España"
+    },
+    {
+      "id": "mini-cooper-timing-chain",
+      "content": "Mini Cooper/Countryman/Clubman (motores BMW Group): quejas por cadena de distribución en frío similares a BMW. Traqueteo al arrancar es señal de alerta. Reparación: 700-2.200 €. Revisa historial en Mini/BMW y escucha arranques en frío.",
+      "symptoms": [
+        "Traqueteo metálico al arrancar en frío que cede al calentar",
+        "Testigo motor con códigos sincronización",
+        "Ralentí irregular en motores con cadena estirada"
+      ],
+      "askSeller": [
+        "¿Cadena o tensores cambiados en Mini/BMW? ¿Factura?",
+        "¿Ruido en frío? ¿Desde qué kilometraje?"
+      ],
+      "inspectSteps": [
+        "Arranque en frío: escuchar 10 seg con capó abierto",
+        "Escaneo BMW/Mini: desfase distribución",
+        "Revisar historial servicio Mini Digital Service"
+      ],
+      "typicalKmFrom": 90000,
+      "typicalKmTo": 160000,
+      "source": "Mini Cooper forums y patrones compartidos motores BMW Group"
+    },
+    {
+      "id": "suzuki-vitara-hybrid-battery",
+      "content": "Suzuki mild-hybrid (Vitara, S-Cross, Swift 2016-2023): sistema 12V/48V puede fallar si batería auxiliar está degradada. Síntomas: fallos de arranque, Stop&Start inoperante y avisos eléctricos. Sustitución batería 48V: 400-800 €. Comprueba arranques repetidos en frío.",
+      "symptoms": [
+        "Fallo de arranque intermitente o Start-Stop desactivado",
+        "Avisos batería o sistema híbrido en cuadro",
+        "Luces que parpadean con consumo eléctrico alto"
+      ],
+      "askSeller": [
+        "¿Batería 48V o 12V sustituida? ¿Con qué km?",
+        "¿Problemas de arranque en invierno?"
+      ],
+      "inspectSteps": [
+        "Varios arranques seguidos en frío con luces y A/C encendidos",
+        "Escaneo Suzuki: estado batería HV auxiliar y códigos",
+        "Comprobar funcionamiento Start-Stop en semáforos"
+      ],
+      "typicalKmFrom": 60000,
+      "typicalKmTo": 120000,
+      "source": "Manuales Suzuki SHVS/mild-hybrid y talleres oficiales Suzuki España"
+    },
+    {
+      "id": "tesla-model3-battery-screen",
+      "content": "Tesla Model 3/Y usado: prioriza SOH batería (informe Tesla o escáner terceros), estado pantalla/MCU, suspensión (coche pesado desgasta silentblocks) y garantía batería restante. En España, verifica cargas Supercharger frecuentes vs carga lenta doméstica.",
+      "symptoms": [
+        "Autonomía real muy inferior a la nominal para el SOH",
+        "Pantalla amarillenta, reinicios o líneas en display MCU",
+        "Golpeteo en suspensión delantera o desgaste irregular neumáticos"
+      ],
+      "askSeller": [
+        "¿Informe batería Tesla o SOH medido? ¿Garantía batería vigente?",
+        "¿Pantalla o MCU reparados? ¿Accidentes o sustitución batería?"
+      ],
+      "inspectSteps": [
+        "Solicitar captura app Tesla: SOH, ciclos carga, historial servicio",
+        "Probar pantalla central: respuesta, cámara, climatización",
+        "Inspeccionar suspensión, neumáticos y frenos por desgaste EV"
+      ],
+      "source": "Guías compra EV usados Tesla y documentación pública Tesla Inc."
+    },
+    {
+      "id": "generic-ev-battery-health",
+      "content": "Al comprar EV o PHEV en España, exige datos objetivos: SOH o capacidad restante, historial cargas DC rápidas, garantía batería vigente y prueba carga AC/DC sin errores. Una batería degradada puede costar 5.000-15.000 € según modelo.",
+      "symptoms": [
+        "Autonomía real caída más del 20-25% respecto a nominal",
+        "Errores al cargar en wallbox o punto público",
+        "Garantía batería próxima a expirar sin informe SOH"
+      ],
+      "askSeller": [
+        "¿Informe SOH o diagnóstico oficial de batería?",
+        "¿Cuántas cargas rápidas DC vs lentas AC? ¿Garantía restante?"
+      ],
+      "inspectSteps": [
+        "Diagnóstico SOH con herramienta compatible o informe concesionario",
+        "Prueba carga AC 30 min y comprobar ausencia errores",
+        "Verificar garantía batería en fecha y km con documentación"
+      ],
+      "source": "Buenas prácticas compraventa EV ACEA y guías IDAE vehículo eléctrico usado"
+    },
+    {
+      "id": "landrover-ingenium-oil",
+      "content": "Motores Ingenium (Evoque, Discovery Sport, XE, XF 2015-2022): pueden consumir aceite entre servicios. JLR ha emitido actualizaciones software y revisiones de niveles. Ignorarlo daña catalizador y turbo. Pide historial documentado de reposiciones y actualizaciones.",
+      "symptoms": [
+        "Nivel aceite bajo mínimo entre revisiones oficiales",
+        "Olor a aceite quemado y humo en escape",
+        "Aviso nivel aceite frecuente en cuadro"
+      ],
+      "askSeller": [
+        "¿Cuánto aceite añade entre servicios? ¿Facturas reposición?",
+        "¿Actualizaciones software motor aplicadas en JLR?"
+      ],
+      "inspectSteps": [
+        "Comprobar nivel aceite en frío; revisar historial cambios",
+        "Escaneo JLR: software motor y códigos consumo aceite",
+        "Aceleración fuerte: observar humo por retrovisor"
+      ],
+      "typicalKmFrom": 50000,
+      "typicalKmTo": 120000,
+      "source": "Foros Land Rover/Jaguar Ingenium y comunicados técnicos JLR"
+    },
+    {
+      "id": "cupra-seat-ateca-dsg",
+      "content": "Cupra Ateca/Formentor y SEAT León VZ: versiones deportivas exigen más del mantenimiento. Revisa discos/pastillas, aceite DSG si aplica, y historial de uso intenso o trackdays. Un VZ mal mantenido puede necesitar 500-950 € en frenos y caja solamente.",
+      "symptoms": [
+        "Vibración al frenar por discos ovalados",
+        "Tirones DSG en urbano o olor a embrague",
+        "Aceite motor muy oscuro con intervalos largos"
+      ],
+      "askSeller": [
+        "¿Uso trackday o conducción deportiva habitual?",
+        "¿Aceite DSG y frenos cambiados? ¿Con qué km?"
+      ],
+      "inspectSteps": [
+        "Inspeccionar discos: surcos, grietas, grosor mínimo",
+        "Probar DSG en modo Sport en urbano y autopista",
+        "Revisar facturas mantenimiento acorde a uso deportivo"
+      ],
+      "source": "Manuales Cupra/SEAT VZ y práctica precompra deportivos VAG España"
+    },
+    {
+      "id": "alfa-giulietta-multiair",
+      "content": "Motor MultiAir (Giulietta, MiTo): sistema de gestión válvulas delicado. Fallos de actuador, consumo aceite y testigos motor son frecuentes sin mantenimiento estricto con aceite de calidad. Reparaciones: 600-2.000 €. Escucha ralentí irregular y revisa historial MultiAir.",
+      "symptoms": [
+        "Ralentí irregular y pérdida de potencia en bajas",
+        "Testigo motor encendido con códigos MultiAir",
+        "Consumo aceite elevado con humo azulado"
+      ],
+      "askSeller": [
+        "¿Actuador MultiAir o unidad sustituida? ¿Factura?",
+        "¿Qué aceite usa y cada cuántos km cambia?"
+      ],
+      "inspectSteps": [
+        "Ralentí 5 min: detectar irregularidades y ruidos actuador",
+        "Escaneo Alfa: códigos MultiAir y compensaciones",
+        "Comprobar nivel aceite y historial cambios frecuentes"
+      ],
+      "typicalKmFrom": 80000,
+      "typicalKmTo": 140000,
+      "source": "Foros Alfa Romeo MultiAir y documentación técnica Fiat/Alfa"
+    },
+    {
+      "id": "mitsubishi-outlander-phev-battery",
+      "content": "Outlander PHEV (2014-2021): revisar SOH batería, funcionamiento modo EV puro, calentador habitáculo (unidades antiguas) y actualizaciones BMS. Aunque el motor térmico se use poco, el aceite envejece por tiempo. Pide historial Mitsubishi y prueba carga enchufable.",
+      "symptoms": [
+        "Autonomía EV inferior a la original sin explicación",
+        "Calentador débil en invierno en unidades pre-2018",
+        "Errores al cargar en wallbox o modo EV no disponible"
+      ],
+      "askSeller": [
+        "¿SOH batería medido? ¿Actualizaciones BMS en concesionario?",
+        "¿Aceite motor cambiado aunque se use poco? ¿Calentador revisado?"
+      ],
+      "inspectSteps": [
+        "Prueba carga AC completa y verificar km EV añadidos",
+        "Diagnóstico Mitsubishi: SOH y códigos batería",
+        "Comprobar calentamiento habitáculo en invierno o A/C en verano"
+      ],
+      "source": "Manual Mitsubishi Outlander PHEV y comunidad PHEV España"
+    },
+    {
+      "id": "jeep-compass-trailhawk-dpf",
+      "content": "Jeep Compass/Renegade diésel (Multijet/Fiat 2017-2022): FAP se colmata con urbano español. Off-road puede dañar sensores FAP/AdBlue con barro. Verifica regeneraciones, AdBlue y estado de bajos si ha salido de pista.",
+      "symptoms": [
+        "Testigo DPF encendido tras uso urbano prolongado",
+        "Avisos AdBlue/SCR y pérdida de potencia",
+        "Sensores FAP dañados por barro en unidades Trailhawk"
+      ],
+      "askSeller": [
+        "¿Uso off-road frecuente? ¿Sensores FAP dañados?",
+        "¿Regeneraciones DPF y rellenos AdBlue documentados?"
+      ],
+      "inspectSteps": [
+        "Escaneo: presión FAP, AdBlue y códigos SCR",
+        "Inspeccionar bajos y sensores trasero FAP por golpes/barro",
+        "Autopista 20 min: comprobar regeneración y testigos"
+      ],
+      "typicalKmFrom": 70000,
+      "typicalKmTo": 130000,
+      "source": "Foros Jeep Compass/Renegade Europa y experiencia diésel FCA/Stellantis"
+    },
+    {
+      "id": "toyota-aygo-clutch",
+      "content": "Toyota Aygo y gemelos Peugeot 108/Citroën C1 (2014-2021): embrague desgasta pronto con mucho urbano. Reparación: 350-700 €. Prueba punto de mordida, olor a quemado y arranque en cuesta. Son coches baratos pero un embrague nuevo encarece la compra.",
+      "symptoms": [
+        "Pedal de embrague alto: mordida al final del recorrido",
+        "Olor a quemado al arrancar en cuesta o semáforo",
+        "Vibración al soltar embrague en arranque"
+      ],
+      "askSeller": [
+        "¿Embrague cambiado? ¿Con qué kilometraje?",
+        "¿Uso principal ciudad con muchos semáforos?"
+      ],
+      "inspectSteps": [
+        "Arranque en cuesta empinada: detectar patinaje",
+        "Notar altura del pedal y recorrido antes de mordida",
+        "Olfatear olor a quemado tras varios arranques seguidos"
+      ],
+      "typicalKmFrom": 60000,
+      "typicalKmTo": 100000,
+      "source": "Experiencia compraventa A-segment España y foros Aygo/108/C1"
+    },
+    {
+      "id": "generic-cambelt-vs-chain",
+      "content": "Regla de oro en VO español: identifica el código de motor exacto y confirma si lleva correa (intervalo km/años, factura imprescindible) o cadena (riesgo ruido en frío y reparación cara). Negocia precio si la correa vence en menos de 20.000 km o la cadena tiene historial dudoso.",
+      "symptoms": [
+        "Vendedor no sabe si lleva correa o cadena",
+        "Sin factura de distribución con km cercano al intervalo",
+        "Ruido metálico en frío en motores con cadena"
+      ],
+      "askSeller": [
+        "¿Correa o cadena? ¿Cuándo se cambió y con qué km?",
+        "¿Puedo verificar el código motor en ficha técnica o compartimento?"
+      ],
+      "inspectSteps": [
+        "Anotar código motor de ficha técnica y consultar manual/fabricante",
+        "Pedir factura último cambio distribución o historial cadena",
+        "Arranque en frío: escuchar ruidos metálicos 10 segundos"
+      ],
+      "source": "Checklist precompra mecánica general adaptado mercado VO España"
+    }
+  ]
+}
