@@ -12,7 +12,7 @@ Este repositorio contiene el **MVP**. La interfaz y el motor de valoración est�
 - Motor de valoración por distribución de precios (mínimo, P25, mediana, P75, máximo) + ajustes solo si el usuario aporta el dato
 - Chat sobre el coche concreto
 - Capa `SourceProvider` modular (coches.net, AutoScout24, Wallapop, etc. como mocks)
-- Capa `AIProvider` intercambiable (asistente de demostración o OpenAI / DeepSeek / AI Gateway si hay clave)
+- Capa `AIProvider` intercambiable: en Vercel usa **AI Gateway + DeepSeek** con OIDC (igual que el resto de proyectos). Fuera de Vercel puede usar la clave DeepSeek en `OPENAI_API_KEY` o el asistente de demostración.
 - Documentos `VehicleDocument` e índice por palabras clave, listos para RAG/embeddings
 - Diseño mobile-first con Next.js, TypeScript, Tailwind y shadcn/ui
 
@@ -35,7 +35,17 @@ npm run dev
 
 Abre [http://localhost:3000](http://localhost:3000).
 
-Sin claves de IA, el chat usa el asistente de demostración. Si añades `OPENAI_API_KEY` (o DeepSeek / AI Gateway) en `.env.local`, el proveedor real se usará automáticamente.
+Sin claves de IA, el chat usa el asistente de demostración.
+
+En Vercel no hace falta copiar `OPENAI_API_KEY`: el runtime inyecta `VERCEL_OIDC_TOKEN` y CarQuestions llama a DeepSeek por **AI Gateway**, igual que el resto de proyectos.
+
+En local, o bien `vercel env pull .env.local`, o bien la clave DeepSeek:
+
+```
+OPENAI_API_KEY=<la misma clave DeepSeek>
+OPENAI_BASE_URL=https://api.deepseek.com/v1
+OPENAI_MODEL=deepseek-chat
+```
 
 ## Scripts
 
@@ -52,9 +62,12 @@ Ver `.env.example`. Las claves de API nunca se exponen al navegador: las rutas v
 
 ## Despliegue en Vercel
 
-1. Importa el repositorio en Vercel (framework: Next.js).
-2. Añade las variables de `.env.example` que necesites.
-3. Despliega. No hace falta base de datos para el MVP.
+1. Importa el repositorio (framework: Next.js, Production Branch: `main`).
+2. No hace falta copiar `OPENAI_API_KEY`. En el deploy, Vercel inyecta OIDC y la app usa AI Gateway con `deepseek/deepseek-v4-flash`.
+3. Comprueba que AI Gateway está activo en el equipo (el mismo que usan los otros proyectos).
+4. Tras mergear este cambio a `main`, Vercel redespliega solo. No hace falta base de datos.
+
+Opcional: `AI_GATEWAY_MODEL=deepseek/deepseek-v4-pro` si quieres el modelo más capaz.
 
 ## Arquitectura
 

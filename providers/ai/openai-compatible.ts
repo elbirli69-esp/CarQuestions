@@ -1,4 +1,5 @@
 import type { AIAnswer, AIProvider, ChatMessage, VehicleContext } from "@/types/ai";
+import { ANALYST_SYSTEM_PROMPT, buildVehiclePrompt } from "@/lib/ai/prompt";
 import { getServerEnv } from "@/lib/config/env";
 
 interface CompatibleConfig {
@@ -7,22 +8,6 @@ interface CompatibleConfig {
   apiKey: string;
   baseUrl: string;
   model: string;
-}
-
-function buildPrompt(question: string, context: VehicleContext): string {
-  return [
-    "Eres el asistente de CarQuestions. Hablas en español, de forma clara y prudente.",
-    "Distingue siempre datos observados de estimaciones.",
-    "Si falta información, dilo. No inventes precios de mercado ni averías.",
-    "El usuario pregunta sobre ESTE coche concreto.",
-    `Vehículo: ${JSON.stringify(context.vehicle)}`,
-    `Valoración: ${JSON.stringify(context.marketData)}`,
-    `Fiabilidad: ${JSON.stringify(context.reliabilityData)}`,
-    `Mantenimiento: ${JSON.stringify(context.maintenanceData)}`,
-    `Comparables (recortados): ${JSON.stringify(context.comparableListings.slice(0, 8))}`,
-    `Alternativas: ${JSON.stringify(context.alternatives)}`,
-    `Pregunta: ${question}`,
-  ].join("\n");
 }
 
 export class OpenAICompatibleProvider implements AIProvider {
@@ -55,11 +40,10 @@ export class OpenAICompatibleProvider implements AIProvider {
         messages: [
           {
             role: "system",
-            content:
-              "Eres un analista de compraventa de coches. Separa datos observados de estimaciones. No presentes mocks como hechos reales.",
+            content: ANALYST_SYSTEM_PROMPT,
           },
           ...history.map((message) => ({ role: message.role, content: message.content })),
-          { role: "user", content: buildPrompt(question, context) },
+          { role: "user", content: buildVehiclePrompt(question, context) },
         ],
       }),
     });
@@ -81,7 +65,8 @@ export class OpenAICompatibleProvider implements AIProvider {
       isDemo: false,
       origin: "ai_estimate",
       usedDocuments: context.retrievedDocuments?.map((item) => item.document.id) ?? [],
-      disclaimer: "Respuesta generada por IA a partir del contexto estructurado del vehículo. Verifica fuentes y no la uses como tasación oficial.",
+      disclaimer:
+        "Respuesta generada por IA a partir del contexto estructurado del vehículo. Verifica fuentes y no la uses como tasación oficial.",
     };
   }
 }
@@ -91,33 +76,18 @@ export function createConfiguredCompatibleProvider(): AIProvider | null {
 
   if (env.aiProvider === "mock") return null;
 
-  if ((env.aiProvider === "openai" || env.aiProvider === "auto") && env.openaiApiKey) {
+  if (
+    (env.aiProvider === "openai" ||
+      env.aiProvider === "deepseek" ||
+      env.aiProvider === "auto") &&
+    env.openaiApiKey
+  ) {
     return new OpenAICompatibleProvider({
-      id: "openai",
-      name: "OpenAI",
+      id: env.usesDeepSeek ? "deepseek" : "openai",
+      name: env.usesDeepSeek ? "DeepSeek" : "OpenAI",
       apiKey: env.openaiApiKey,
       baseUrl: env.openaiBaseUrl,
       model: env.openaiModel,
-    });
-  }
-
-  if ((env.aiProvider === "deepseek" || env.aiProvider === "auto") && env.deepseekApiKey) {
-    return new OpenAICompatibleProvider({
-      id: "deepseek",
-      name: "DeepSeek",
-      apiKey: env.deepseekApiKey,
-      baseUrl: "https://api.deepseek.com/v1",
-      model: "deepseek-chat",
-    });
-  }
-
-  if ((env.aiProvider === "gateway" || env.aiProvider === "auto") && env.aiGatewayApiKey) {
-    return new OpenAICompatibleProvider({
-      id: "ai-gateway",
-      name: "Vercel AI Gateway",
-      apiKey: env.aiGatewayApiKey,
-      baseUrl: "https://ai-gateway.vercel.sh/v1",
-      model: env.aiGatewayModel,
     });
   }
 
