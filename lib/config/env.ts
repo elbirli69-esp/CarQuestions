@@ -16,6 +16,6 @@ export function getServerEnv() {
     geminiApiKey: process.env.GEMINI_API_KEY,
     deepseekApiKey: process.env.DEEPSEEK_API_KEY,
     aiGatewayApiKey: process.env.AI_GATEWAY_API_KEY,
-    aiGatewayModel: process.env.AI_GATEWAY_MODEL ?? "openai/gpt-4o-mini",
+    aiGatewayModel: process.env.AI_GATEWAY_MODEL ?? "deepseek/deepseek-v4-flash",
   };
 }
