@@ -6,14 +6,12 @@ import type {
   StaticVehicleInfo,
 } from "@/types/source";
 import type { Vehicle } from "@/types/vehicle";
-import { buildDemoListings } from "@/lib/sources/demo-listings";
-import { listingToDocument } from "@/lib/rag/documents";
 
 function emptyResult(notes: string[], connected = false): SourceSearchResult {
   return {
     listings: [],
     documents: [],
-    isDemo: true,
+    isDemo: false,
     fetchedAt: new Date().toISOString(),
     notes,
     connected,
@@ -34,16 +32,15 @@ function mockMarketplace(
     enabled: true,
     isMock: true,
     hostnames,
-    async searchComparables(query: ComparableQuery) {
-      const listings = buildDemoListings(query, id, count, offset);
+    async searchComparables(_query: ComparableQuery) {
+      void count;
+      void offset;
       return {
-        listings,
-        documents: listings.map(listingToDocument),
-        isDemo: true,
+        listings: [],
+        documents: [],
+        isDemo: false,
         fetchedAt: new Date().toISOString(),
-        notes: [
-          `${name} aún no está conectado. Estos anuncios son de demostración y no proceden del portal real.`,
-        ],
+        notes: [`${name} aún no está conectado. No se incluyen anuncios simulados.`],
         connected: false,
       };
     },
@@ -120,7 +117,7 @@ export const manufacturerProvider: SourceProvider = {
   async getStaticInfo(vehicle: Vehicle): Promise<StaticVehicleInfo> {
     return {
       source: "manufacturer",
-      isDemo: true,
+      isDemo: false,
       fetchedAt: new Date().toISOString(),
       dataKind: "static",
       specs: {

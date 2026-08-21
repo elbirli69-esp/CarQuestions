@@ -25,14 +25,6 @@ export function buildVehiclePrompt(question: string, context: VehicleContext): s
     `Fragmentos RAG recuperados:\n${retrievedKnowledge}`,
     `Comparables (recortados): ${JSON.stringify(context.comparableListings.slice(0, 8))}`,
     `Alternativas (recortadas): ${JSON.stringify(context.alternatives.slice(0, 4))}`,
-    `Comparativa demo precalculada: ${JSON.stringify(
-      context.alternatives.slice(0, 3).map((alt) => ({
-        label: `${alt.brand} ${alt.model}`,
-        year: alt.year,
-        mileage: alt.mileage,
-        price: alt.price,
-      })),
-    )}`,
     `Pregunta: ${question}`,
   ].join("\n");
 }

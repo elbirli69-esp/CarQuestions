@@ -112,7 +112,7 @@ export interface SellerQuestion {
   relatedIssue?: string;
 }
 
-export type DataMode = "demo" | "live" | "mixed";
+export type DataMode = "demo" | "live" | "mixed" | "knowledge";
 
 export interface AnalyzeResponse {
   id: string;

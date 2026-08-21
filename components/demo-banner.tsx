@@ -1,20 +1,35 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
+import type { DataMode } from "@/types/valuation";
 
-export function DemoBanner({ text }: { text?: string }) {
+const COPY: Record<DataMode, { title: string; description: string }> = {
+  live: {
+    title: "Datos de mercado observados",
+    description:
+      "La valoración usa anuncios reales conectados. La fiabilidad y el mantenimiento vienen de la base de conocimiento curada.",
+  },
+  mixed: {
+    title: "Mercado observado + conocimiento curado",
+    description:
+      "Combinamos anuncios reales con la base de conocimiento sobre fiabilidad y mantenimiento. No sustituye inspección ni tasación oficial.",
+  },
+  knowledge: {
+    title: "Sin portales conectados",
+    description:
+      "El precio de mercado es una referencia orientativa por segmento. Fiabilidad, mantenimiento y preguntas al vendedor sí vienen de datos curados.",
+  },
+  demo: {
+    title: "Modo demostración",
+    description: "Algunos datos siguen siendo simulados. Conecta portales reales para mayor fiabilidad.",
+  },
+};
+
+export function DemoBanner({ dataMode = "knowledge" }: { dataMode?: DataMode; text?: string }) {
+  const copy = COPY[dataMode] ?? COPY.knowledge;
+
   return (
-    <Alert className="border-amber-500/30 bg-amber-500/10 text-amber-950 dark:border-amber-400/25 dark:bg-amber-400/10 dark:text-amber-50">
-      <AlertTitle>Datos de demostración</AlertTitle>
-      <AlertDescription>
-        {text ??
-          "Los anuncios y percentiles son simulados. La fiabilidad viene del corpus RAG curado. No sustituye una inspección ni una tasación oficial."}
-      </AlertDescription>
-      <Badge
-        variant="outline"
-        className="mt-2 border-amber-500/40 bg-background/80 text-amber-900 dark:text-amber-100"
-      >
-        Demo
-      </Badge>
+    <Alert className="border-sky-500/30 bg-sky-500/10 text-sky-950 dark:border-sky-400/25 dark:bg-sky-400/10 dark:text-sky-50">
+      <AlertTitle>{copy.title}</AlertTitle>
+      <AlertDescription>{copy.description}</AlertDescription>
     </Alert>
   );
 }

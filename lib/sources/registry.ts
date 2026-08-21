@@ -86,7 +86,7 @@ export function toSourceCitations(
       usedFor: listingCount > 0 ? ["comparables", "precio"] : ["arquitectura"],
       listingCount,
       updatedAt: search.fetchedAt,
-      note: notes[0] ?? (provider.isMock ? "Fuente de demostración. Sustituible por un conector real." : undefined),
+      note: notes[0] ?? (provider.isMock ? "Portal no conectado todavía." : undefined),
     };
   });
 }
