@@ -162,12 +162,15 @@ export function buildDemoAlternatives(query: ComparableQuery): VehicleListing[] 
   ];
 
   return competitors.flatMap((competitor, index) => {
+    const yearShift = index === 0 ? 0 : index === 1 ? 1 : -1;
     const listings = buildDemoListings(
       {
         ...query,
         brand: competitor.brand,
         model: competitor.model,
         version: undefined,
+        year: clamp(query.year + yearShift, query.year - 2, query.year + 2),
+        mileage: Math.max(1000, roundTo(query.mileage + (index - 1) * 8000, 1000)),
       },
       "demo-alternatives",
       1,

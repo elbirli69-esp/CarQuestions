@@ -1,6 +1,7 @@
 import type { AIAnswer, AIProvider, ChatMessage, VehicleContext } from "@/types/ai";
 import { issueToDocument, listingToDocument, vehicleSummaryDocument } from "@/lib/rag/documents";
 import { retrieveDocuments } from "@/lib/rag/index";
+import { formatAlternativeComparisonAnswer } from "@/lib/valuation/compare-alternatives";
 import { formatEuro, formatKm, formatPercent } from "@/lib/utils/format";
 
 function contextSummary(context: VehicleContext): string {
@@ -96,16 +97,15 @@ export class MockAIProvider implements AIProvider {
         v.fuel === "diesel"
           ? "Con 30.000 km al año un diésel bien mantenido puede tener sentido si hay carretera de por medio. Aun así, hay que mirar FAP, distribución y el coste de mantenimiento de esta unidad concreta."
           : "Con 30.000 km al año importa más la fiabilidad y el coste por kilómetro que el precio de compra. Sin datos reales de consumo y averías de esta unidad, no se puede cerrar la recomendación.";
-    } else if (q.includes("cuál comprar") || q.includes("cual comprar") || q.includes("equivalente") || q.includes("mejor")) {
-      const alts = context.alternatives
-        .map((item) => `- ${item.brand} ${item.model} ${item.year ?? ""} · ${item.mileage ? formatKm(item.mileage) : ""} · ${item.price ? formatEuro(item.price) : ""} (demo)`)
-        .join("\n");
-      text = [
-        `Comparando este ${v.brand} ${v.model} con alternativas de demostración del mismo segmento:`,
-        alts || "No hay alternativas generadas.",
-        "Criterios: precio, km, antigüedad y la ficha de fiabilidad de demostración. No hay prueba real ni disponibilidad de recambios verificada.",
-        "Si hubiera que elegir solo con estos datos de demo, priorizaría el que tenga mejor historial documentado y un precio no por encima del percentil 50, no necesariamente el más barato.",
-      ].join("\n\n");
+    } else if (
+      q.includes("cuál comprar") ||
+      q.includes("cual comprar") ||
+      q.includes("equivalente") ||
+      q.includes("mejor") ||
+      q.includes("compar") ||
+      q.includes("alternativ")
+    ) {
+      text = formatAlternativeComparisonAnswer(context);
     } else if (q.includes("revis")) {
       text = [
         "Antes de comprar yo revisaría:",

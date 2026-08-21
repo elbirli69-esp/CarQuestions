@@ -16,6 +16,7 @@ export function buildVehiclePrompt(question: string, context: VehicleContext): s
     "Distingue siempre datos observados de estimaciones.",
     "Si falta información, dilo. No inventes precios de mercado ni averías.",
     "Usa los fragmentos de conocimiento recuperados como referencia, citando la fuente cuando aplique.",
+    "Si preguntan por alternativas o qué comprar, compara el vehículo analizado con context.alternatives usando estimatedPrice/verdictLabel y no recomiendes solo por precio más bajo.",
     "El usuario pregunta sobre ESTE coche concreto.",
     `Vehículo: ${JSON.stringify(context.vehicle)}`,
     `Valoración: ${JSON.stringify(context.marketData)}`,
@@ -23,7 +24,15 @@ export function buildVehiclePrompt(question: string, context: VehicleContext): s
     `Mantenimiento: ${JSON.stringify(context.maintenanceData)}`,
     `Fragmentos RAG recuperados:\n${retrievedKnowledge}`,
     `Comparables (recortados): ${JSON.stringify(context.comparableListings.slice(0, 8))}`,
-    `Alternativas: ${JSON.stringify(context.alternatives)}`,
+    `Alternativas (recortadas): ${JSON.stringify(context.alternatives.slice(0, 4))}`,
+    `Comparativa demo precalculada: ${JSON.stringify(
+      context.alternatives.slice(0, 3).map((alt) => ({
+        label: `${alt.brand} ${alt.model}`,
+        year: alt.year,
+        mileage: alt.mileage,
+        price: alt.price,
+      })),
+    )}`,
     `Pregunta: ${question}`,
   ].join("\n");
 }
