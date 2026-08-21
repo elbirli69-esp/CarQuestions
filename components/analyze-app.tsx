@@ -49,6 +49,9 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
     }
   }
 
+  const hasMarketData = analysis ? analysis.valuation.comparableCount > 0 : false;
+  const hasAlternatives = analysis ? analysis.alternatives.length > 0 : false;
+
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-8 sm:py-12">
       <header className="flex flex-col gap-4">
@@ -60,11 +63,11 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
           ¿Cuánto vale realmente este coche?
         </h1>
         <p className="max-w-xl text-base leading-7 text-muted-foreground">
-          Rellena lo básico y obtén precio de mercado, fiabilidad del modelo y preguntas para el vendedor.
+          Rellena lo básico y obtén referencia de precio, fiabilidad del modelo y preguntas para el vendedor.
         </p>
       </header>
 
-      <DemoBanner />
+      <DemoBanner dataMode={analysis?.dataMode ?? "knowledge"} />
 
       <VehicleForm onSubmit={handleSubmit} isSubmitting={loading} />
 
@@ -86,36 +89,42 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
       {analysis ? (
         <div ref={resultsRef} className="flex flex-col gap-6">
           <ValuationCard valuation={analysis.valuation} />
-          <SourcesPanel
-            sources={analysis.sources}
-            listings={analysis.comparables}
-            comparableCount={analysis.valuation.comparableCount}
-            sourceCount={analysis.valuation.sourceCount}
-            updatedAt={analysis.valuation.dataUpdatedAt}
-          />
+          {hasMarketData ? (
+            <>
+              <SourcesPanel
+                sources={analysis.sources}
+                listings={analysis.comparables}
+                comparableCount={analysis.valuation.comparableCount}
+                sourceCount={analysis.valuation.sourceCount}
+                updatedAt={analysis.valuation.dataUpdatedAt}
+              />
+              <ComparableList
+                title="Coches similares"
+                description={`${analysis.comparables.length} anuncios comparables observados del mismo modelo.`}
+                listings={analysis.comparables}
+              />
+            </>
+          ) : null}
           <ScoreCard scores={analysis.scores} />
-          <ComparableList
-            title="Coches similares"
-            description={`${analysis.comparables.length} anuncios de demostración del mismo modelo. No son anuncios reales.`}
-            listings={analysis.comparables}
-          />
-          <ComparableList
-            title="Alternativas del segmento"
-            description="Coches equivalentes de demostración para comparar. Pregunta cuál comprarías."
-            listings={analysis.alternatives}
-            onAsk={(nextQuestion) => {
-              setPendingQuestion(nextQuestion);
-              requestAnimationFrame(() => {
-                chatRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-              });
-            }}
-          />
           <ListingAnalysisCard
             analysis={analysis.listingAnalysis}
             reliability={analysis.reliability}
             maintenance={analysis.maintenance}
           />
           <SellerQuestions questions={analysis.sellerQuestions} />
+          {hasAlternatives ? (
+            <ComparableList
+              title="Alternativas del segmento"
+              description="Rivales comparables para valorar otras opciones."
+              listings={analysis.alternatives}
+              onAsk={(nextQuestion) => {
+                setPendingQuestion(nextQuestion);
+                requestAnimationFrame(() => {
+                  chatRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+                });
+              }}
+            />
+          ) : null}
           <div ref={chatRef}>
             <VehicleChat
               analysisId={analysis.id}

@@ -1,7 +1,7 @@
 import type { VehicleContext } from "@/types/ai";
 import type { VehicleListing } from "@/types/listing";
 import type { Vehicle } from "@/types/vehicle";
-import { demoMarketAnchor } from "@/lib/sources/demo-listings";
+import { estimateMarketAnchor } from "@/lib/sources/demo-listings";
 import { formatEuro, formatKm, formatPercent } from "@/lib/utils/format";
 import { clamp } from "@/lib/utils/math";
 
@@ -42,10 +42,10 @@ function scoreOption(price: number | undefined, estimated: number, mileage: numb
   const delta = (price - estimated) / estimated;
   let score = 72 - delta * 120;
 
-  if (delta <= -0.08) notes.push("Por debajo del valor estimado de demo");
-  else if (delta <= 0.04) notes.push("Cerca del valor estimado de demo");
-  else if (delta <= 0.12) notes.push("Ligeramente por encima del valor estimado de demo");
-  else notes.push("Claramente por encima del valor estimado de demo");
+  if (delta <= -0.08) notes.push("Por debajo de la referencia orientativa");
+  else if (delta <= 0.04) notes.push("Cerca de la referencia orientativa");
+  else if (delta <= 0.12) notes.push("Ligeramente por encima de la referencia");
+  else notes.push("Claramente por encima de la referencia");
 
   const age = new Date().getFullYear() - year;
   const kmPerYear = mileage / Math.max(age, 1);
@@ -66,6 +66,16 @@ export function buildAlternativeComparison(context: VehicleContext): {
   lines: string[];
 } {
   const { vehicle, marketData, alternatives } = context;
+
+  if (alternatives.length === 0) {
+    return {
+      entries: [],
+      recommendation:
+        "No hay alternativas comparables conectadas en este momento. Revisa anuncios reales de rivales del segmento (misma carrocería y rango de precio) y compara historial, km y fallos típicos del motor.",
+      lines: [],
+    };
+  }
+
   const subjectPrice = vehicle.advertisedPrice ?? marketData.estimatedPrice;
   const subjectEstimate = marketData.estimatedPrice;
   const subjectScoring = scoreOption(subjectPrice, subjectEstimate, vehicle.mileage, vehicle.year);
@@ -88,7 +98,7 @@ export function buildAlternativeComparison(context: VehicleContext): {
 
   const altEntries = alternatives.map((listing) => {
     const estimateInput = listingToEstimateInput(listing, vehicle);
-    const estimatedValue = demoMarketAnchor(estimateInput);
+    const estimatedValue = estimateMarketAnchor(estimateInput);
     const price = listing.price;
     const year = listing.year ?? vehicle.year;
     const mileage = listing.mileage ?? vehicle.mileage;
@@ -115,19 +125,19 @@ export function buildAlternativeComparison(context: VehicleContext): {
     const estimatePart = formatEuro(entry.estimatedValue);
     const deltaPart =
       entry.priceDelta != null
-        ? ` (${entry.priceDelta <= 0 ? "" : "+"}${formatPercent(entry.priceDelta / entry.estimatedValue)} vs estimado demo)`
+        ? ` (${entry.priceDelta <= 0 ? "" : "+"}${formatPercent(entry.priceDelta / entry.estimatedValue)} vs referencia)`
         : "";
-    const tag = entry.isSubject ? " · tu coche" : " · alternativa demo";
-    return `- ${entry.label} ${entry.year ?? "?"} · ${entry.mileage ? formatKm(entry.mileage) : "?"} · ${pricePart}${tag}\n  Valor demo ~${estimatePart}${deltaPart}. Puntuación orientativa ${entry.score}/100. ${entry.notes.join(". ")}.`;
+    const tag = entry.isSubject ? " · tu coche" : " · alternativa";
+    return `- ${entry.label} ${entry.year ?? "?"} · ${entry.mileage ? formatKm(entry.mileage) : "?"} · ${pricePart}${tag}\n  Referencia ~${estimatePart}${deltaPart}. Puntuación orientativa ${entry.score}/100. ${entry.notes.join(". ")}.`;
   });
 
   let recommendation: string;
   if (best?.isSubject) {
-    recommendation = `Con estos datos de demostración, el ${subject.label} queda mejor posicionado que las alternativas simuladas del segmento. Aun así conviene contrastar historial, inspección y fallos típicos del motor concreto antes de decidir.`;
+    recommendation = `Con los datos disponibles, el ${subject.label} queda mejor posicionado que las alternativas del segmento. Conviene contrastar historial, inspección y fallos típicos del motor concreto antes de decidir.`;
   } else if (best) {
-    recommendation = `Solo con datos demo, la opción más equilibrada sería el ${best.label} (${best.year ?? "?"}): precio más razonable frente a su valor estimado simulado. El ${vehicle.brand} ${vehicle.model} sigue siendo defendible si el precio pedido está ${marketData.verdictLabel ? `catalogado como «${marketData.verdictLabel}»` : "cerca de la mediana"} y el historial es mejor documentado.`;
+    recommendation = `La opción más equilibrada sería el ${best.label} (${best.year ?? "?"}): precio más razonable frente a su referencia. El ${vehicle.brand} ${vehicle.model} sigue siendo defendible si el precio pedido está ${marketData.verdictLabel ? `catalogado como «${marketData.verdictLabel}»` : "cerca de la referencia"} y el historial es mejor documentado.`;
   } else {
-    recommendation = "No hay alternativas demo suficientes para recomendar una opción concreta.";
+    recommendation = "No hay alternativas suficientes para recomendar una opción concreta.";
   }
 
   if (context.reliabilityData.knownIssues[0]) {
@@ -141,10 +151,17 @@ export function formatAlternativeComparisonAnswer(context: VehicleContext): stri
   const { lines, recommendation } = buildAlternativeComparison(context);
   const v = context.vehicle;
 
+  if (lines.length === 0) {
+    return [
+      `No tengo rivales comparables conectados para este ${v.brand} ${v.model}.`,
+      recommendation,
+      "Busca anuncios reales de modelos equivalentes (misma carrocería, precio y km similares) y compara historial e inspección.",
+    ].join("\n\n");
+  }
+
   return [
-    `Comparación demo de este ${v.brand} ${v.model} frente a rivales del mismo segmento:`,
+    `Comparación de este ${v.brand} ${v.model} frente a rivales del segmento:`,
     lines.join("\n"),
     recommendation,
-    "Los importes y rivales son simulados. No sustituye ver anuncios reales, probar el coche e inspeccionarlo.",
   ].join("\n\n");
 }

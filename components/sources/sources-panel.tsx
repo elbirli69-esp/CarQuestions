@@ -29,7 +29,7 @@ export function SourcesPanel({
         <CardTitle>Fuentes</CardTitle>
         <CardDescription>
           Precio estimado basado en {comparableCount} anuncios similares, {sourceCount} fuentes y datos actualizados{" "}
-          {ageHours < 1 ? "hace menos de una hora" : `hace ${ageHours} h`}. Todos los anuncios actuales son de demostración.
+          {ageHours < 1 ? "hace menos de una hora" : `hace ${ageHours} h`}.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -44,7 +44,9 @@ export function SourcesPanel({
                       <span className="font-medium">{source.name}</span>
                       <span className="block text-muted-foreground">{source.note}</span>
                     </span>
-                    <Badge variant="outline">{source.isMock ? "Mock" : "Live"} · {source.listingCount}</Badge>
+                    <Badge variant="outline">
+                      {source.connected ? "Conectado" : "Pendiente"} · {source.listingCount}
+                    </Badge>
                   </li>
                 ))}
               </ul>

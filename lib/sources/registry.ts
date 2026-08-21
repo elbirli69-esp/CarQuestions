@@ -16,8 +16,10 @@ import {
   milanunciosProvider,
   wallapopProvider,
 } from "@/lib/sources/providers";
+import { autoHubProvider } from "@/lib/sources/autohub/provider";
 
 const providers: SourceProvider[] = [
+  autoHubProvider,
   carsNetProvider,
   autoScoutProvider,
   wallapopProvider,
@@ -82,11 +84,11 @@ export function toSourceCitations(
       name: provider.name,
       kind: provider.kind,
       isMock: provider.isMock,
-      connected: !provider.isMock,
+      connected: provider.id === "autohub" ? listingCount > 0 : !provider.isMock,
       usedFor: listingCount > 0 ? ["comparables", "precio"] : ["arquitectura"],
       listingCount,
       updatedAt: search.fetchedAt,
-      note: notes[0] ?? (provider.isMock ? "Fuente de demostración. Sustituible por un conector real." : undefined),
+      note: notes[0] ?? (provider.isMock ? "Portal no conectado todavía." : undefined),
     };
   });
 }

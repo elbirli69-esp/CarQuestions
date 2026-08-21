@@ -37,9 +37,9 @@ export function ListingAnalysisCard({
         <CardHeader>
           <CardTitle>Fiabilidad y mantenimiento</CardTitle>
           <CardDescription>
-            {reliability.isDemo
-              ? "Base de conocimiento RAG curada. No es un informe de este bastidor."
-              : "Datos estáticos del modelo."}
+            {reliability.available
+              ? "Base de conocimiento curada por modelo. No es un informe de este bastidor."
+              : "Sin ficha específica en la base de conocimiento."}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4 text-sm">
@@ -57,7 +57,7 @@ export function ListingAnalysisCard({
           )}
           {maintenance.available && maintenance.estimatedYearlyCost ? (
             <p className="text-muted-foreground">
-              Coste anual orientativo de demostración: {maintenance.estimatedYearlyCost} €. No es una factura de este coche.
+              Coste anual orientativo del segmento: {maintenance.estimatedYearlyCost} €. No es una factura de este coche.
             </p>
           ) : null}
         </CardContent>

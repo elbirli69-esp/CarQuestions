@@ -19,6 +19,7 @@ export function scoreVehicle(options: {
   listings: VehicleListing[];
 }): VehicleScorecard {
   const { vehicle, valuation, reliability, listings } = options;
+  const hasObservedMarket = listings.length >= 5 && valuation.origin === "observed";
   const dimensions: ScoreDimension[] = [];
 
   if (valuation.percentDifference == null) {
@@ -28,6 +29,15 @@ export function scoreVehicle(options: {
       score: null,
       reason: "No hay precio anunciado, así que no se puntúa la relación calidad-precio.",
       origin: "observed",
+      insufficientData: true,
+    });
+  } else if (valuation.origin === "ai_estimate") {
+    dimensions.push({
+      id: "price",
+      label: "Precio",
+      score: null,
+      reason: "Hay precio anunciado, pero sin anuncios reales conectados la comparación de mercado no es fiable.",
+      origin: "ai_estimate",
       insufficientData: true,
     });
   } else {
@@ -49,7 +59,7 @@ export function scoreVehicle(options: {
       label: "Fiabilidad",
       score: null,
       reason: "No hay una ficha de fiabilidad suficientemente específica para este vehículo.",
-      origin: "demo_model",
+      origin: "ai_estimate",
       insufficientData: true,
     });
   } else {
@@ -57,8 +67,8 @@ export function scoreVehicle(options: {
       id: "reliability",
       label: "Fiabilidad",
       score: reliability.score,
-      reason: reliability.notes[0] ?? "Basado en la ficha de demostración del modelo.",
-      origin: "demo_model",
+      reason: reliability.notes[0] ?? `Basado en la base de conocimiento curada para ${vehicle.brand} ${vehicle.model}.`,
+      origin: "observed",
       insufficientData: false,
     });
   }
@@ -70,8 +80,8 @@ export function scoreVehicle(options: {
     score: maintenanceScore,
     reason: maintenanceScore == null
       ? "Sin datos suficientes para estimar el coste de mantenimiento."
-      : "Estimación a partir de la ficha de demostración de la marca/motor, no de facturas reales de este coche.",
-    origin: "demo_model",
+      : "Estimación orientativa del segmento según la base de conocimiento curada, no facturas de este coche.",
+    origin: reliability.available ? "observed" : "ai_estimate",
     insufficientData: maintenanceScore == null,
   });
 
@@ -82,19 +92,20 @@ export function scoreVehicle(options: {
     id: "depreciation",
     label: "Depreciación",
     score: depreciationScore,
-    reason: `Edad ${age} años y ${Math.round(kmPerYear)} km/año. Es una aproximación, no una predicción de reventa.`,
-    origin: "demo_model",
+    reason: `Edad ${age} años y ${Math.round(kmPerYear)} km/año. Es una aproximación heurística, no una predicción de reventa.`,
+    origin: "ai_estimate",
     insufficientData: false,
   });
 
-  const marketScore = Math.round(clamp(70 + listings.length * 0.4, 55, 90));
   dimensions.push({
     id: "market",
     label: "Adecuación al mercado",
-    score: marketScore,
-    reason: `Se han usado ${listings.length} comparables de demostración del mismo entorno de mercado.`,
-    origin: "demo_model",
-    insufficientData: listings.length < 8,
+    score: hasObservedMarket ? Math.round(clamp(70 + listings.length * 0.4, 55, 90)) : null,
+    reason: hasObservedMarket
+      ? `Se han usado ${listings.length} anuncios comparables observados del mismo entorno de mercado.`
+      : "Sin portales conectados no hay comparables reales. Consulta anuncios en coches.net, AutoScout24 u otros antes de decidir.",
+    origin: hasObservedMarket ? "observed" : "ai_estimate",
+    insufficientData: !hasObservedMarket,
   });
 
   const filled = [

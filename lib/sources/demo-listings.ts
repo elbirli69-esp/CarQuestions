@@ -84,7 +84,10 @@ function vehicleKey(brand: string, model: string): string {
   return `${normalizeKey(brand)}|${normalizeKey(model)}`;
 }
 
-export function demoMarketAnchor(vehicle: Pick<Vehicle, "brand" | "model" | "year" | "mileage" | "power" | "transmission"> & { fuel?: Vehicle["fuel"] }): number {
+/** Referencia de mercado orientativa por marca/modelo/año/km (sin anuncios reales). */
+export function estimateMarketAnchor(
+  vehicle: Pick<Vehicle, "brand" | "model" | "year" | "mileage" | "power" | "transmission"> & { fuel?: Vehicle["fuel"] },
+): number {
   const key = vehicleKey(vehicle.brand, vehicle.model);
   const age = Math.max(0, currentYear() - vehicle.year);
   const known = MODEL_ANCHORS[key] ?? BRAND_FALLBACK[normalizeKey(vehicle.brand)] ?? 18000;
@@ -101,6 +104,9 @@ export function demoMarketAnchor(vehicle: Pick<Vehicle, "brand" | "model" | "yea
   return roundTo(clamp(base, 2500, 180000), 50);
 }
 
+/** @deprecated Usar estimateMarketAnchor */
+export const demoMarketAnchor = estimateMarketAnchor;
+
 function listingTitle(vehicle: { brand: string; model: string; version?: string; year?: number }): string {
   return [vehicle.brand, vehicle.model, vehicle.version, vehicle.year].filter(Boolean).join(" ");
 }
@@ -113,7 +119,7 @@ export function buildDemoListings(
 ): VehicleListing[] {
   const seed = [source, query.brand, query.model, query.year, query.mileage, query.fuel, query.transmission, offset].join("|");
   const random = createSeededRandom(seed);
-  const anchor = demoMarketAnchor(query);
+  const anchor = estimateMarketAnchor(query);
   const fetchedAt = new Date().toISOString();
   const listings: VehicleListing[] = [];
 

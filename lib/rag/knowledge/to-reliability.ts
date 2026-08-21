@@ -19,7 +19,7 @@ export function chunkToKnownIssue(chunk: KnowledgeChunk): KnownIssue | null {
     severity: chunk.severity ?? "medium",
     appliesWhen: chunk.appliesWhen ?? chunk.title,
     source: chunk.source,
-    isDemo: chunk.isDemo,
+    isDemo: false,
   };
 }
 
@@ -60,8 +60,8 @@ export function chunksToReliability(chunks: KnowledgeChunk[], vehicle: Vehicle):
         `No hay ficha de fiabilidad suficientemente específica para ${vehicle.brand} ${vehicle.model} ${vehicle.year} en la base de conocimiento.`,
       ],
       knownIssues: [],
-      isDemo: true,
-      source: "Base de conocimiento RAG",
+      isDemo: false,
+      source: "Base de conocimiento curada",
     };
   }
 
@@ -82,10 +82,10 @@ export function chunksToReliability(chunks: KnowledgeChunk[], vehicle: Vehicle):
     notes:
       maintenanceNotes.length > 0
         ? maintenanceNotes.slice(0, 3)
-        : [`Ficha recuperada de la base de conocimiento para ${vehicle.brand} ${vehicle.model}.`],
+        : [`Ficha curada para ${vehicle.brand} ${vehicle.model} (base de conocimiento RAG).`],
     knownIssues: issues.slice(0, 8),
-    isDemo: relevant.some((chunk) => chunk.isDemo),
-    source: "Base de conocimiento RAG",
+    isDemo: false,
+    source: "Base de conocimiento curada",
   };
 }
 
@@ -99,8 +99,8 @@ export function chunksToMaintenance(chunks: KnowledgeChunk[], vehicle?: Vehicle)
       available: false,
       notes: ["Sin ficha de mantenimiento específica en la base de conocimiento."],
       upcoming: [],
-      isDemo: true,
-      source: "Base de conocimiento RAG",
+      isDemo: false,
+      source: "Base de conocimiento curada",
     };
   }
 
@@ -119,7 +119,7 @@ export function chunksToMaintenance(chunks: KnowledgeChunk[], vehicle?: Vehicle)
     ].slice(0, 6),
     estimatedYearlyCost:
       yearlyCosts.length > 0 ? Math.round(average(yearlyCosts) ?? 0) : undefined,
-    isDemo: relevant.some((chunk) => chunk.isDemo),
-    source: "Base de conocimiento RAG",
+    isDemo: false,
+    source: "Base de conocimiento curada",
   };
 }

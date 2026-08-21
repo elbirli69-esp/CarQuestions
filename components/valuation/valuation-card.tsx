@@ -24,7 +24,15 @@ const VERDICT_DOT: Record<string, string> = {
   sin_precio: "⚪",
 };
 
+const ORIGIN_LABELS: Record<ValuationResult["origin"], string> = {
+  observed: "Basado en anuncios observados",
+  ai_estimate: "Referencia orientativa (sin anuncios reales)",
+  demo_model: "Modelo simulado",
+};
+
 export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
+  const hasDistribution = valuation.comparableCount >= 5;
+
   return (
     <Card className="bg-card">
       <CardHeader>
@@ -37,7 +45,7 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
             <p className="text-sm text-muted-foreground">Valor estimado</p>
             <p className="font-heading text-4xl tracking-tight">{formatEuro(valuation.estimatedPrice)}</p>
             <Badge variant="outline" className="mt-2">
-              Modelo de demostración
+              {ORIGIN_LABELS[valuation.origin]}
             </Badge>
           </div>
           <div>
@@ -63,7 +71,7 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="rounded-xl bg-muted/60 px-4 py-3">
-            <p className="text-xs text-muted-foreground">Valor de mercado</p>
+            <p className="text-xs text-muted-foreground">Intervalo orientativo</p>
             <p className="text-sm font-medium">
               {formatEuro(valuation.low)} – {formatEuro(valuation.high)}
             </p>
@@ -97,13 +105,19 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-5">
-          <Stat label="Mínimo" value={formatEuro(valuation.distribution.min)} />
-          <Stat label="P25" value={formatEuro(valuation.distribution.p25)} />
-          <Stat label="Mediana" value={formatEuro(valuation.distribution.median)} />
-          <Stat label="P75" value={formatEuro(valuation.distribution.p75)} />
-          <Stat label="Máximo" value={formatEuro(valuation.distribution.max)} />
-        </div>
+        {hasDistribution ? (
+          <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-5">
+            <Stat label="Mínimo" value={formatEuro(valuation.distribution.min)} />
+            <Stat label="P25" value={formatEuro(valuation.distribution.p25)} />
+            <Stat label="Mediana" value={formatEuro(valuation.distribution.median)} />
+            <Stat label="P75" value={formatEuro(valuation.distribution.p75)} />
+            <Stat label="Máximo" value={formatEuro(valuation.distribution.max)} />
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            No hay percentiles de mercado: sin anuncios conectados no se simula una distribución de precios.
+          </p>
+        )}
         {valuation.percentDifference != null ? (
           <p className="text-xs text-muted-foreground">
             Desviación frente a la estimación: {formatPercent(valuation.percentDifference)}

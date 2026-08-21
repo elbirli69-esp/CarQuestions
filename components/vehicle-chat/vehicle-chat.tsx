@@ -103,7 +103,6 @@ export function VehicleChat({
         {lastAnswer?.disclaimer ? (
           <p className="text-xs text-muted-foreground">
             {lastAnswer.disclaimer} · {lastAnswer.provider}
-            {lastAnswer.isDemo ? " · respuesta de demostración" : ""}
           </p>
         ) : null}
 

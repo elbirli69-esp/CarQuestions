@@ -50,7 +50,7 @@ export function ComparableList({
               </p>
               <p className="text-xs text-muted-foreground">
                 {listing.source} · {listing.location} · {listing.transmission ? TRANSMISSION_LABELS[listing.transmission] : ""}
-                {listing.bodyType ? ` · ${BODY_LABELS[listing.bodyType]}` : ""} · demo
+                {listing.bodyType ? ` · ${BODY_LABELS[listing.bodyType]}` : ""}
               </p>
             </article>
           ))}
