@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ChevronDownIcon, LoaderCircleIcon } from "lucide-react";
+import { LoaderCircleIcon } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ import {
   TRANSMISSION_LABELS,
 } from "@/lib/vehicles/labels";
 import { BODY_TYPES, CONDITION_LEVELS, FUEL_TYPES, TRANSMISSION_TYPES, type VehicleInput } from "@/types/vehicle";
+import type { ListingExtractResult } from "@/types/source";
 
 const emptyForm = {
   listingUrl: "",
@@ -59,7 +60,8 @@ export function VehicleForm({
 }) {
   const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState<string | null>(null);
-  const [showUrl, setShowUrl] = useState(false);
+  const [urlStatus, setUrlStatus] = useState<string | null>(null);
+  const [extractingUrl, setExtractingUrl] = useState(false);
 
   const years = useMemo(() => {
     const max = new Date().getFullYear() + 1;
@@ -68,6 +70,57 @@ export function VehicleForm({
 
   function update(name: keyof typeof emptyForm, value: string) {
     setForm((current) => ({ ...current, [name]: value }));
+  }
+
+  function applyExtractedVehicle(result: ListingExtractResult) {
+    const vehicle = result.vehicle;
+    if (!vehicle) return;
+    setForm((current) => ({
+      ...current,
+      brand: vehicle.brand?.trim() || current.brand,
+      model: vehicle.model?.trim() || current.model,
+      version: vehicle.version?.trim() || current.version,
+      year: vehicle.year != null ? String(vehicle.year) : current.year,
+      mileage: vehicle.mileage != null ? String(vehicle.mileage) : current.mileage,
+      fuel: vehicle.fuel || current.fuel,
+      power: vehicle.power != null ? String(vehicle.power) : current.power,
+      advertisedPrice:
+        vehicle.advertisedPrice != null ? String(vehicle.advertisedPrice) : current.advertisedPrice,
+      location: vehicle.location?.trim() || current.location,
+      listingUrl: vehicle.listingUrl?.trim() || current.listingUrl,
+    }));
+  }
+
+  async function extractFromUrl(rawUrl: string) {
+    const url = rawUrl.trim();
+    if (!url || !/coches\.net/i.test(url)) {
+      setUrlStatus(null);
+      return;
+    }
+    setExtractingUrl(true);
+    setUrlStatus("Leyendo anuncio de coches.net…");
+    setError(null);
+    try {
+      const response = await fetch("/api/listings/extract", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url }),
+      });
+      const result = (await response.json()) as ListingExtractResult & { error?: string };
+      if (!response.ok) {
+        throw new Error(result.error ?? "No se ha podido leer la URL.");
+      }
+      if (result.status !== "extracted") {
+        setUrlStatus(result.message);
+        return;
+      }
+      applyExtractedVehicle(result);
+      setUrlStatus(result.message);
+    } catch (err) {
+      setUrlStatus(err instanceof Error ? err.message : "No se ha podido leer la URL.");
+    } finally {
+      setExtractingUrl(false);
+    }
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -111,7 +164,7 @@ export function VehicleForm({
         <div className="mb-5 flex flex-col gap-1">
           <h2 className="font-heading text-lg font-medium">Datos del coche</h2>
           <p className="text-sm text-muted-foreground">
-            Lo esencial para comparar con coches.net. Versión y CV afinan mucho el precio.
+            Pega un anuncio de coches.net o rellena lo esencial. Versión y CV afinan el precio.
           </p>
         </div>
 
@@ -121,6 +174,42 @@ export function VehicleForm({
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         ) : null}
+
+        <div className="mb-4">
+          <Field
+            label="URL del anuncio (coches.net)"
+            htmlFor="listingUrl"
+            hint="Al pegar el enlace se intentan rellenar marca, modelo, año, km, combustible y precio."
+          >
+            <div className="relative">
+              <Input
+                id="listingUrl"
+                inputMode="url"
+                placeholder="https://www.coches.net/..."
+                value={form.listingUrl}
+                onChange={(event) => {
+                  update("listingUrl", event.target.value);
+                  setUrlStatus(null);
+                }}
+                onBlur={(event) => {
+                  void extractFromUrl(event.target.value);
+                }}
+                onPaste={(event) => {
+                  const pasted = event.clipboardData.getData("text");
+                  if (pasted) {
+                    window.setTimeout(() => {
+                      void extractFromUrl(pasted);
+                    }, 0);
+                  }
+                }}
+              />
+              {extractingUrl ? (
+                <LoaderCircleIcon className="absolute top-1/2 right-3 size-4 -translate-y-1/2 animate-spin text-muted-foreground" />
+              ) : null}
+            </div>
+          </Field>
+          {urlStatus ? <p className="mt-1.5 text-xs text-muted-foreground">{urlStatus}</p> : null}
+        </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field label="Marca" htmlFor="brand">
@@ -328,34 +417,7 @@ export function VehicleForm({
           </AccordionItem>
         </Accordion>
 
-        <div className="mt-4 border-t pt-4">
-          {!showUrl ? (
-            <button
-              type="button"
-              className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
-              onClick={() => setShowUrl(true)}
-            >
-              <ChevronDownIcon className="size-4" />
-              Tengo enlace del anuncio
-            </button>
-          ) : (
-            <Field
-              label="URL del anuncio"
-              htmlFor="listingUrl"
-              hint="Opcional. Se reconoce coches.net, pero no rellena el formulario: completa marca, modelo, año, km y precio."
-            >
-              <Input
-                id="listingUrl"
-                inputMode="url"
-                placeholder="https://www.coches.net/..."
-                value={form.listingUrl}
-                onChange={(event) => update("listingUrl", event.target.value)}
-              />
-            </Field>
-          )}
-        </div>
-
-        <Button type="submit" size="lg" className="mt-6 h-11 w-full" disabled={isSubmitting}>
+        <Button type="submit" size="lg" className="mt-6 h-11 w-full" disabled={isSubmitting || extractingUrl}>
           {isSubmitting ? <LoaderCircleIcon className="animate-spin" /> : null}
           Analizar coche
         </Button>

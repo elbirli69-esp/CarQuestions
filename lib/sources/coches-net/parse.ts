@@ -181,21 +181,190 @@ export function parseSearchHtml(
   return ads;
 }
 
-/** Extrae datos básicos de una URL de anuncio si la ficha no es scrapeable. */
-export function parseListingUrl(url: string): Partial<ParsedCochesNetAd> | null {
+/** Extrae datos de un slug de anuncio coches.net. */
+export interface ParsedCochesNetListingUrl {
+  id: string;
+  url: string;
+  title: string;
+  brand?: string;
+  model?: string;
+  version?: string;
+  year?: number;
+  fuel?: FuelType;
+  location?: string;
+}
+
+const MULTI_WORD_BRANDS: Array<{ slug: string; label: string }> = [
+  { slug: "mercedes-benz", label: "Mercedes-Benz" },
+  { slug: "alfa-romeo", label: "Alfa Romeo" },
+  { slug: "land-rover", label: "Land Rover" },
+  { slug: "rolls-royce", label: "Rolls-Royce" },
+  { slug: "aston-martin", label: "Aston Martin" },
+];
+
+const SINGLE_BRANDS: Record<string, string> = {
+  bmw: "BMW",
+  audi: "Audi",
+  volkswagen: "Volkswagen",
+  vw: "Volkswagen",
+  seat: "SEAT",
+  cupra: "Cupra",
+  skoda: "Skoda",
+  toyota: "Toyota",
+  hyundai: "Hyundai",
+  kia: "Kia",
+  ford: "Ford",
+  renault: "Renault",
+  peugeot: "Peugeot",
+  citroen: "Citroën",
+  opel: "Opel",
+  nissan: "Nissan",
+  volvo: "Volvo",
+  mazda: "Mazda",
+  honda: "Honda",
+  mini: "Mini",
+  porsche: "Porsche",
+  tesla: "Tesla",
+  dacia: "Dacia",
+  fiat: "Fiat",
+  jeep: "Jeep",
+  lexus: "Lexus",
+  suzuki: "Suzuki",
+  mitsubishi: "Mitsubishi",
+  subaru: "Subaru",
+};
+
+const FUEL_SLUGS: Record<string, FuelType> = {
+  diesel: "diesel",
+  gasolina: "petrol",
+  hibrido: "hybrid",
+  "electrico-hibrido": "plugin_hybrid",
+  electrico: "electric",
+  glp: "lpg",
+  gnc: "cng",
+};
+
+function titleCaseToken(token: string): string {
+  if (/^[a-z]\d/i.test(token) || token.length <= 3) return token.toUpperCase();
+  return token.charAt(0).toUpperCase() + token.slice(1);
+}
+
+export function parseListingUrl(url: string): ParsedCochesNetListingUrl | null {
   try {
     const parsed = new URL(url);
     const host = parsed.hostname.replace(/^www\./, "").toLowerCase();
     if (host !== "coches.net") return null;
-    const match =
-      parsed.pathname.match(/-(\d{6,})-covo\.aspx$/i) || parsed.pathname.match(/-(\d{6,})\.aspx$/i);
-    if (!match) return null;
+
+    const pathname = parsed.pathname.replace(/^\//, "");
+    const idMatch = pathname.match(/-(\d{6,})-covo\.aspx$/i) || pathname.match(/-(\d{6,})\.aspx$/i);
+    if (!idMatch) return null;
+
+    const id = idMatch[1]!;
+    const slug = pathname
+      .replace(/-covo\.aspx$/i, "")
+      .replace(/\.aspx$/i, "")
+      .replace(new RegExp(`-${id}$`), "");
+
+    const tokens = slug.split("-").filter(Boolean);
+    let brand: string | undefined;
+    let rest = tokens;
+
+    for (const multi of MULTI_WORD_BRANDS) {
+      const parts = multi.slug.split("-");
+      if (rest.slice(0, parts.length).join("-") === multi.slug) {
+        brand = multi.label;
+        rest = rest.slice(parts.length);
+        break;
+      }
+    }
+    if (!brand && rest[0]) {
+      brand = SINGLE_BRANDS[rest[0]] ?? titleCaseToken(rest[0]);
+      rest = rest.slice(1);
+    }
+
+    let year: number | undefined;
+    let fuel: FuelType | undefined;
+    let location: string | undefined;
+    const yearIdx = rest.findIndex((token) => /^(19|20)\d{2}$/.test(token));
+    if (yearIdx >= 0) {
+      year = Number(rest[yearIdx]);
+    }
+
+    for (let i = 0; i < rest.length; i += 1) {
+      const two = `${rest[i]}-${rest[i + 1] ?? ""}`;
+      if (FUEL_SLUGS[two]) {
+        fuel = FUEL_SLUGS[two];
+        break;
+      }
+      if (rest[i] && FUEL_SLUGS[rest[i]!]) {
+        fuel = FUEL_SLUGS[rest[i]!];
+        break;
+      }
+    }
+
+    const enIdx = rest.findIndex((token) => token === "en");
+    if (enIdx >= 0 && yearIdx >= 0 && enIdx === yearIdx + 1) {
+      location = rest
+        .slice(enIdx + 1)
+        .map(titleCaseToken)
+        .join(" ");
+    }
+
+    // Modelo: tokens hasta versión/combustible/puertas (5p, 4p) / año.
+    const stop = new Set([
+      "diesel",
+      "gasolina",
+      "hibrido",
+      "electrico",
+      "glp",
+      "gnc",
+      "5p",
+      "3p",
+      "4p",
+      "2p",
+      "en",
+    ]);
+    const modelTokens: string[] = [];
+    for (const token of rest) {
+      if (/^(19|20)\d{2}$/.test(token)) break;
+      if (stop.has(token)) break;
+      if (FUEL_SLUGS[token]) break;
+      // Versiones tipo sdrive18d / xdrive25e suelen ir tras el modelo.
+      if (/^(sdrive|xdrive|mhev|tdi|tsi|dci|hdi|gti|gt)/i.test(token) && modelTokens.length > 0) break;
+      modelTokens.push(token);
+      if (modelTokens.length >= 3) break;
+    }
+
+    const model = modelTokens.length
+      ? modelTokens.map((token, index) => (index === 0 ? titleCaseToken(token) : token)).join(" ")
+      : undefined;
+
+    let version: string | undefined;
+    if (modelTokens.length > 0) {
+      const afterModel = rest.slice(modelTokens.length);
+      const versionTokens: string[] = [];
+      for (const token of afterModel) {
+        if (/^(19|20)\d{2}$/.test(token) || token === "en" || stop.has(token) || FUEL_SLUGS[token]) break;
+        if (/^\d+p$/i.test(token)) continue;
+        versionTokens.push(token);
+      }
+      if (versionTokens.length) {
+        version = versionTokens.join(" ");
+      }
+    }
+
+    const title = [brand, model, version].filter(Boolean).join(" ") || slug.replace(/-/g, " ");
+
     return {
-      id: match[1],
+      id,
       url: parsed.toString(),
-      title: decodeHtml(
-        parsed.pathname.replace(/^\//, "").replace(/-covo\.aspx$/i, "").replace(/-/g, " "),
-      ),
+      title,
+      brand,
+      model,
+      version,
+      year,
+      fuel,
+      location,
     };
   } catch {
     return null;
