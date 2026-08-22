@@ -1,5 +1,6 @@
 import type { VehicleListing } from "@/types/listing";
 import type {
+  MatchStrictness,
   PriceAdjustment,
   PriceDistribution,
   PriceVerdict,
@@ -47,6 +48,12 @@ function verdictFromDelta(delta: number): PriceVerdict {
   if (delta <= 0.04) return "precio_de_mercado";
   if (delta <= 0.12) return "caro";
   return "muy_caro";
+}
+
+function readMatchStrictness(listings: VehicleListing[]): MatchStrictness {
+  const raw = listings[0]?.rawData?.matchStrictness;
+  if (raw === "relaxed" || raw === "broad" || raw === "strict") return raw;
+  return "strict";
 }
 
 function conditionAdjustment(vehicle: Vehicle): PriceAdjustment | null {
@@ -162,14 +169,26 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
   const priced = listings.filter((listing) => typeof listing.price === "number" && listing.price > 0);
   const prices = priced.map((listing) => listing.price as number);
   const limitations: string[] = [];
+  const confidenceDrivers: string[] = [];
+  const matchStrictness = readMatchStrictness(priced);
 
   if (prices.length < 5) {
     limitations.push("Hay pocos comparables. El intervalo de precio es orientativo y de baja confianza.");
   }
+  if (matchStrictness === "relaxed") {
+    limitations.push("Los filtros de comparables se relajaron (p. ej. combustible) para reunir suficientes anuncios.");
+  }
+  if (matchStrictness === "broad") {
+    limitations.push("Los filtros de comparables son amplios: la mediana puede mezclar años o versiones distintas.");
+  }
 
   const distribution = distributionFrom(prices);
-  const comparableMileage = average(priced.map((listing) => listing.mileage).filter((value): value is number => typeof value === "number"));
-  const comparableYear = average(priced.map((listing) => listing.year).filter((value): value is number => typeof value === "number"));
+  const comparableMileage = average(
+    priced.map((listing) => listing.mileage).filter((value): value is number => typeof value === "number"),
+  );
+  const comparableYear = average(
+    priced.map((listing) => listing.year).filter((value): value is number => typeof value === "number"),
+  );
   const adjustments = buildAdjustments(vehicle, { comparableMileage, comparableYear });
 
   let estimated = distribution.median || 0;
@@ -178,29 +197,59 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
   }
 
   estimated = roundTo(clamp(estimated, distribution.min || estimated, distribution.max || estimated + 4000), 50);
-  const spread = Math.max(800, roundTo(estimated * 0.045, 50));
+
+  const iqr = Math.max(0, distribution.p75 - distribution.p25);
+  const iqrRatio = estimated > 0 ? iqr / estimated : 0;
+  const avgSimilarity =
+    average(priced.map((listing) => listing.similarity).filter((value): value is number => typeof value === "number")) ??
+    0.7;
+
+  // Intervalo: con pocos anuncios o pool amplio, usar IQR / % más ancho (evita precisión falsa).
+  let spreadPct = 0.045;
+  if (prices.length < 5) spreadPct = 0.12;
+  else if (prices.length < 8 || matchStrictness !== "strict") spreadPct = 0.08;
+  else if (iqrRatio > 0.2) spreadPct = 0.07;
+
+  const spreadFromIqr = prices.length >= 5 ? roundTo(iqr * 0.55, 50) : 0;
+  const spreadFromPct = Math.max(800, roundTo(estimated * spreadPct, 50));
+  const spread = Math.max(spreadFromPct, spreadFromIqr);
   const low = roundTo(estimated - spread, 50);
   const high = roundTo(estimated + spread, 50);
 
   const advertisedPrice = vehicle.advertisedPrice;
   const percentDifference =
     advertisedPrice && estimated ? (advertisedPrice - estimated) / estimated : undefined;
-  const verdict =
-    percentDifference == null ? "sin_precio" : verdictFromDelta(percentDifference);
+  const verdict = percentDifference == null ? "sin_precio" : verdictFromDelta(percentDifference);
 
   const completeness =
     [
       vehicle.power,
       vehicle.transmission,
-      vehicle.bodyType,
-      vehicle.location,
       vehicle.generalCondition,
       vehicle.equipment,
+      vehicle.accidents,
+      vehicle.itv,
     ].filter(Boolean).length / 6;
 
-  const confidence = Math.round(
-    clamp(38 + priced.length * 1.6 + completeness * 18, 40, 92),
+  let confidence = 28 + priced.length * 2.2 + completeness * 14 + avgSimilarity * 22;
+  if (matchStrictness === "relaxed") confidence -= 8;
+  if (matchStrictness === "broad") confidence -= 14;
+  if (prices.length < 5) confidence -= 12;
+  if (prices.length < 8) confidence -= 4;
+  if (iqrRatio > 0.25) confidence -= 6;
+  if (avgSimilarity < 0.7) confidence -= 8;
+  confidence = Math.round(clamp(confidence, 22, 88));
+
+  confidenceDrivers.push(`${priced.length} anuncios con precio`);
+  confidenceDrivers.push(`Similitud media ${(avgSimilarity * 100).toFixed(0)} %`);
+  confidenceDrivers.push(
+    matchStrictness === "strict"
+      ? "Filtros estrechos"
+      : matchStrictness === "relaxed"
+        ? "Filtros relajados"
+        : "Filtros amplios",
   );
+  if (iqr > 0) confidenceDrivers.push(`Dispersión P25–P75: ${iqr.toLocaleString("es-ES")} €`);
 
   const sourceCount = new Set(priced.map((listing) => listing.source)).size;
   const summary =
@@ -229,16 +278,20 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
     verdictLabel: VERDICT_LABELS[verdict],
     summary,
     confidence,
+    confidenceDrivers,
+    avgSimilarity,
+    matchStrictness,
     distribution,
     adjustments,
     comparableCount: priced.length,
     sourceCount,
-    dataUpdatedAt: new Date().toISOString(),
+    dataUpdatedAt: priced[0]?.fetchedAt ?? new Date().toISOString(),
     origin: "observed",
     methodology: [
       "Se buscan anuncios comparables del mismo modelo, año próximo, combustible y cambio.",
       "Se calcula la distribución de precios: mínimo, percentil 25, mediana, percentil 75 y máximo.",
       "El valor base es la mediana observada en esos comparables.",
+      "La confianza combina número de anuncios, similitud media, dispersión (IQR) y lo estrechos que fueron los filtros.",
       "Se aplican ajustes cuantitativos solo cuando el usuario ha aportado el dato (km, año, estado, historial, etc.).",
     ],
     limitations,
@@ -247,7 +300,7 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
 
 function valueFromHeuristic(vehicle: Vehicle): ValuationResult {
   const limitations: string[] = [
-    "Sin portales conectados no hay anuncios comparables. El valor se estima por referencias de segmento (marca, modelo, año, km).",
+    "Sin anuncios reales de mercado no hay mediana observada. El valor es solo una referencia de segmento.",
   ];
 
   let estimated = estimateMarketAnchor(vehicle);
@@ -257,36 +310,41 @@ function valueFromHeuristic(vehicle: Vehicle): ValuationResult {
   }
   estimated = roundTo(clamp(estimated, 2500, 180000), 50);
 
-  const spread = Math.max(1500, roundTo(estimated * 0.12, 50));
+  const spread = Math.max(2000, roundTo(estimated * 0.14, 50));
   const low = roundTo(estimated - spread, 50);
   const high = roundTo(estimated + spread, 50);
 
   const advertisedPrice = vehicle.advertisedPrice;
   const percentDifference =
     advertisedPrice && estimated ? (advertisedPrice - estimated) / estimated : undefined;
-  const verdict =
-    percentDifference == null ? "sin_precio" : verdictFromDelta(percentDifference);
+
+  // Sin mercado: no hay semáforo barato/caro fiable.
+  const verdict: PriceVerdict = "sin_precio";
+  const verdictLabel = advertisedPrice
+    ? "Solo referencia (sin mercado)"
+    : VERDICT_LABELS.sin_precio;
 
   const completeness =
     [
       vehicle.power,
       vehicle.transmission,
-      vehicle.bodyType,
-      vehicle.location,
       vehicle.generalCondition,
       vehicle.equipment,
+      vehicle.accidents,
+      vehicle.itv,
     ].filter(Boolean).length / 6;
 
-  const confidence = Math.round(clamp(18 + completeness * 12, 15, 38));
+  const confidence = Math.round(clamp(14 + completeness * 10, 12, 32));
+  const confidenceDrivers = [
+    "Sin anuncios observados",
+    "Referencia de segmento por marca/modelo/año/km",
+    `Completitud del formulario ${(completeness * 100).toFixed(0)} %`,
+  ];
 
   const summary =
     percentDifference == null
       ? "No hay precio anunciado ni anuncios reales conectados. Solo se muestra una referencia orientativa de segmento."
-      : percentDifference < 0
-        ? `Frente a la referencia orientativa, el anuncio estaría ~${Math.abs(percentDifference * 100).toFixed(1).replace(".", ",")} % por debajo. Confirma con anuncios reales antes de decidir.`
-        : percentDifference > 0
-          ? `Frente a la referencia orientativa, el anuncio estaría ~${(percentDifference * 100).toFixed(1).replace(".", ",")} % por encima. Confirma con anuncios reales antes de decidir.`
-          : "El precio anunciado coincide con la referencia orientativa de segmento. Confirma con anuncios reales.";
+      : `Frente a una referencia orientativa (no mediana de anuncios), el anuncio quedaría ~${Math.abs(percentDifference * 100).toFixed(1).replace(".", ",")} % ${percentDifference < 0 ? "por debajo" : "por encima"}. Confirma en coches.net antes de decidir.`;
 
   if (!vehicle.power) {
     limitations.push("No se ha indicado la potencia. La referencia no ajusta por motor concreto.");
@@ -302,9 +360,10 @@ function valueFromHeuristic(vehicle: Vehicle): ValuationResult {
     high,
     percentDifference,
     verdict,
-    verdictLabel: VERDICT_LABELS[verdict],
+    verdictLabel,
     summary,
     confidence,
+    confidenceDrivers,
     distribution: emptyDistribution(estimated),
     adjustments,
     comparableCount: 0,
@@ -313,6 +372,7 @@ function valueFromHeuristic(vehicle: Vehicle): ValuationResult {
     origin: "ai_estimate",
     methodology: [
       "Sin anuncios conectados, se usa una referencia de mercado por marca, modelo, antigüedad y kilometraje.",
+      "No se emite veredicto barato/caro: no hay mediana real que lo sustente.",
       "Se aplican ajustes solo con datos que has introducido (estado, historial, equipamiento, etc.).",
       "El intervalo es amplio a propósito: no simula percentiles de anuncios que no existen.",
     ],
@@ -321,7 +381,9 @@ function valueFromHeuristic(vehicle: Vehicle): ValuationResult {
 }
 
 export function valueVehicle(vehicle: Vehicle, listings: VehicleListing[]): ValuationResult {
-  const observed = listings.filter((listing) => !listing.isDemo && typeof listing.price === "number" && listing.price > 0);
+  const observed = listings.filter(
+    (listing) => !listing.isDemo && typeof listing.price === "number" && listing.price > 0,
+  );
   if (observed.length > 0) {
     return valueFromObservedListings(vehicle, observed);
   }

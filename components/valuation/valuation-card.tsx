@@ -7,21 +7,12 @@ import type { ValuationResult } from "@/types/valuation";
 import { cn } from "@/lib/utils";
 
 const VERDICT_STYLES: Record<string, string> = {
-  muy_barato: "bg-emerald-50 text-emerald-800 ring-emerald-200",
-  barato: "bg-emerald-50 text-emerald-800 ring-emerald-200",
-  precio_de_mercado: "bg-amber-50 text-amber-900 ring-amber-200",
-  caro: "bg-orange-50 text-orange-900 ring-orange-200",
-  muy_caro: "bg-red-50 text-red-800 ring-red-200",
+  muy_barato: "bg-emerald-50 text-emerald-800 ring-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-200",
+  barato: "bg-emerald-50 text-emerald-800 ring-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-200",
+  precio_de_mercado: "bg-amber-50 text-amber-900 ring-amber-200 dark:bg-amber-950/40 dark:text-amber-100",
+  caro: "bg-orange-50 text-orange-900 ring-orange-200 dark:bg-orange-950/40 dark:text-orange-100",
+  muy_caro: "bg-red-50 text-red-800 ring-red-200 dark:bg-red-950/40 dark:text-red-200",
   sin_precio: "bg-muted text-muted-foreground ring-border",
-};
-
-const VERDICT_DOT: Record<string, string> = {
-  muy_barato: "🟢",
-  barato: "🟢",
-  precio_de_mercado: "🟡",
-  caro: "🟠",
-  muy_caro: "🔴",
-  sin_precio: "⚪",
 };
 
 const ORIGIN_LABELS: Record<ValuationResult["origin"], string> = {
@@ -30,8 +21,15 @@ const ORIGIN_LABELS: Record<ValuationResult["origin"], string> = {
   demo_model: "Modelo simulado",
 };
 
+function confidenceTone(confidence: number): string {
+  if (confidence >= 70) return "text-emerald-700 dark:text-emerald-300";
+  if (confidence >= 45) return "text-amber-800 dark:text-amber-200";
+  return "text-red-700 dark:text-red-300";
+}
+
 export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
   const hasDistribution = valuation.comparableCount >= 5;
+  const topLimitations = valuation.limitations.slice(0, 2);
 
   return (
     <Card className="bg-card">
@@ -62,12 +60,31 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
                 VERDICT_STYLES[valuation.verdict],
               )}
             >
-              {VERDICT_DOT[valuation.verdict]} {valuation.verdictLabel}
+              <span
+                className={cn(
+                  "mr-2 mt-1.5 size-2 shrink-0 rounded-full",
+                  valuation.verdict === "muy_barato" || valuation.verdict === "barato"
+                    ? "bg-emerald-500"
+                    : valuation.verdict === "precio_de_mercado"
+                      ? "bg-amber-500"
+                      : valuation.verdict === "caro"
+                        ? "bg-orange-500"
+                        : valuation.verdict === "muy_caro"
+                          ? "bg-red-500"
+                          : "bg-muted-foreground/50",
+                )}
+                aria-hidden
+              />
+              {valuation.verdictLabel}
             </div>
           </div>
         </div>
 
         <p className="text-sm leading-6 text-muted-foreground">{valuation.summary}</p>
+
+        {topLimitations.length > 0 ? (
+          <AlertLike items={topLimitations} />
+        ) : null}
 
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div className="rounded-xl bg-muted/60 px-4 py-3">
@@ -78,7 +95,16 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
           </div>
           <div className="rounded-xl bg-muted/60 px-4 py-3">
             <p className="text-xs text-muted-foreground">Confianza</p>
-            <p className="text-sm font-medium">{valuation.confidence} %</p>
+            <p className={cn("text-sm font-medium", confidenceTone(valuation.confidence))}>
+              {valuation.confidence} %
+            </p>
+            {valuation.confidenceDrivers && valuation.confidenceDrivers.length > 0 ? (
+              <ul className="mt-2 space-y-0.5 text-xs text-muted-foreground">
+                {valuation.confidenceDrivers.map((driver) => (
+                  <li key={driver}>· {driver}</li>
+                ))}
+              </ul>
+            ) : null}
           </div>
         </div>
 
@@ -115,10 +141,12 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
           </div>
         ) : (
           <p className="text-sm text-muted-foreground">
-            No hay percentiles de mercado: sin anuncios conectados no se simula una distribución de precios.
+            {valuation.origin === "observed"
+              ? "Pocos anuncios para mostrar percentiles fiables; el intervalo se ha ensanchado a propósito."
+              : "No hay percentiles de mercado: sin anuncios observados no se simula una distribución de precios."}
           </p>
         )}
-        {valuation.percentDifference != null ? (
+        {valuation.percentDifference != null && valuation.origin === "observed" ? (
           <p className="text-xs text-muted-foreground">
             Desviación frente a la estimación: {formatPercent(valuation.percentDifference)}
           </p>
@@ -138,6 +166,19 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
         </Accordion>
       </CardContent>
     </Card>
+  );
+}
+
+function AlertLike({ items }: { items: string[] }) {
+  return (
+    <div className="rounded-xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-950 dark:text-amber-50">
+      <p className="font-medium">Antes de fiarte del número</p>
+      <ul className="mt-1.5 list-disc space-y-1 pl-4 text-amber-950/80 dark:text-amber-50/80">
+        {items.map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    </div>
   );
 }
 

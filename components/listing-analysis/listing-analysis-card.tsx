@@ -16,7 +16,10 @@ export function ListingAnalysisCard({
       <Card>
         <CardHeader>
           <CardTitle>Análisis del anuncio</CardTitle>
-          <CardDescription>Basado en el formulario, no en un scraping del portal.</CardDescription>
+          <CardDescription>
+            {analysis.limitations[0] ??
+              "Basado en el formulario y, si pegaste URL, en los datos que se pudieron leer del anuncio."}
+          </CardDescription>
         </CardHeader>
         <CardContent className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-5">
           <Fact label="Precio" value={analysis.price} />

@@ -1,5 +1,6 @@
 import type { ComparableQuery, VehicleListing } from "@/types/listing";
 import type { FuelType } from "@/types/vehicle";
+import type { MatchStrictness } from "@/types/valuation";
 import type { ParsedCochesNetAd } from "@/lib/sources/coches-net/parse";
 import { createVehicleId, normalizeKey } from "@/lib/utils/math";
 
@@ -76,6 +77,7 @@ export function mapCochesNetAd(
   ad: ParsedCochesNetAd,
   query: ComparableQuery,
   fetchedAt: string,
+  matchStrictness: MatchStrictness = "strict",
 ): VehicleListing | null {
   if (!ad.price || ad.price <= 0) return null;
 
@@ -99,23 +101,32 @@ export function mapCochesNetAd(
     isDemo: false,
     fetchedAt,
     dataKind: "dynamic",
-    rawData: { cochesNetId: ad.id },
+    rawData: { cochesNetId: ad.id, matchStrictness },
   };
 }
 
-function preferTightPool(pool: VehicleListing[], minSize: number, predicate: (listing: VehicleListing) => boolean): VehicleListing[] {
+function preferTightPool(
+  pool: VehicleListing[],
+  minSize: number,
+  predicate: (listing: VehicleListing) => boolean,
+): VehicleListing[] {
   const tight = pool.filter(predicate);
   return tight.length >= minSize ? tight : pool;
+}
+
+export interface FilteredCochesNetResult {
+  listings: VehicleListing[];
+  matchStrictness: MatchStrictness;
 }
 
 export function mapAndFilterCochesNetAds(
   ads: ParsedCochesNetAd[],
   query: ComparableQuery,
   options: { fetchedAt: string; limit: number; yearWindow?: number },
-): VehicleListing[] {
+): FilteredCochesNetResult {
   const yearWindow = options.yearWindow ?? 2;
   const mapped = ads
-    .map((ad) => mapCochesNetAd(ad, query, options.fetchedAt))
+    .map((ad) => mapCochesNetAd(ad, query, options.fetchedAt, "strict"))
     .filter((listing): listing is VehicleListing => listing != null);
 
   const yearFiltered = mapped.filter((listing) => {
@@ -123,25 +134,40 @@ export function mapAndFilterCochesNetAds(
     return Math.abs(listing.year - query.year) <= yearWindow;
   });
 
+  let matchStrictness: MatchStrictness = "strict";
   let pool = yearFiltered.filter((listing) => fuelCompatible(query.fuel, listing.fuel));
-  if (pool.length < 5) pool = yearFiltered;
+  if (pool.length < 5) {
+    pool = yearFiltered;
+    matchStrictness = "relaxed";
+  }
   if (pool.length < 5) {
     const wider = mapped.filter((listing) => {
       if (listing.year == null) return true;
       return Math.abs(listing.year - query.year) <= yearWindow + 2;
     });
-    pool = wider.length >= 5 ? wider : mapped;
+    if (wider.length >= 5) {
+      pool = wider;
+      matchStrictness = "broad";
+    } else {
+      pool = mapped;
+      matchStrictness = "broad";
+    }
   }
 
-  // Si hay masa crítica, estrechar por versión / potencia / km.
   pool = preferTightPool(pool, 5, (listing) =>
     versionMatches(query.version, listing.version, listing.title),
   );
   pool = preferTightPool(pool, 5, (listing) => powerClose(query.power, listing.power));
   pool = preferTightPool(pool, 5, (listing) => mileageClose(query.mileage, listing.mileage));
 
-  return pool
+  const listings = pool
     .slice()
     .sort((a, b) => (b.similarity ?? 0) - (a.similarity ?? 0))
-    .slice(0, options.limit);
+    .slice(0, options.limit)
+    .map((listing) => ({
+      ...listing,
+      rawData: { ...listing.rawData, matchStrictness },
+    }));
+
+  return { listings, matchStrictness };
 }

@@ -87,7 +87,7 @@ export function createCochesNetProvider(): SourceProvider {
 
       try {
         const { ads, searchUrl, notes } = await fetchSearchPages(query, pages);
-        const listings = mapAndFilterCochesNetAds(ads, query, {
+        const { listings, matchStrictness } = mapAndFilterCochesNetAds(ads, query, {
           fetchedAt,
           limit,
           yearWindow: 2,
@@ -104,6 +104,12 @@ export function createCochesNetProvider(): SourceProvider {
           listings.length < 8
             ? `Muestra moderada (${listings.length} anuncios tras filtros). La confianza del precio es orientativa.`
             : `Muestra de ${listings.length} anuncios tras filtrar año/combustible/versión.`;
+        const strictnessNote =
+          matchStrictness === "strict"
+            ? "Filtros estrechos (año y combustible alineados)."
+            : matchStrictness === "relaxed"
+              ? "Filtros relajados: se amplió el pool para llegar a suficientes anuncios."
+              : "Filtros amplios: la mediana puede mezclar versiones o años más lejanos.";
 
         return {
           listings,
@@ -114,6 +120,7 @@ export function createCochesNetProvider(): SourceProvider {
           notes: [
             `${listings.length} anuncios de coches.net (mercado España) para ${query.brand} ${query.model}.`,
             sampleNote,
+            strictnessNote,
             `Fuente: ${searchUrl}`,
             `Anuncios brutos leídos: ${ads.length} en ${pages} página(s).`,
             ...notes,
