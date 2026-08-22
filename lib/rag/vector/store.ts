@@ -61,6 +61,17 @@ export class KnowledgeVectorStore {
         const semanticScore = cosineSimilarity(queryVector, vector);
         const brand = input.vehicle?.brand?.toLowerCase() ?? "";
         const isUniversal = chunk.brands.some((item) => item.trim() === "*");
+        const intentHints = (input.text ?? "").toLowerCase();
+        const wantsIssues = /aver|fallo|problem|sintoma|ruido|fiab|cadena|fap|egr|turbo|caja|dsg/.test(
+          intentHints,
+        );
+        const wantsMaint = /manten|aceite|intervalo|revision|servicio/.test(intentHints);
+        const wantsInspect = /inspecc|precompra|revisar|checklist|obd/.test(intentHints);
+        const typeBoost =
+          (wantsIssues && (chunk.type === "issue" || chunk.type === "recall") ? 0.06 : 0) +
+          (wantsMaint && chunk.type === "maintenance" ? 0.06 : 0) +
+          (wantsInspect && chunk.type === "inspection" ? 0.06 : 0);
+
         const metadataBoost =
           (chunk.type === "issue" || chunk.type === "recall" ? 0.05 : 0) +
           (brand &&
@@ -69,7 +80,8 @@ export class KnowledgeVectorStore {
             ? 0.1
             : 0) +
           (isUniversal ? 0.02 : 0) +
-          (chunk.symptoms && chunk.symptoms.length > 0 ? 0.03 : 0);
+          (chunk.symptoms && chunk.symptoms.length > 0 ? 0.03 : 0) +
+          typeBoost;
         return {
           chunk,
           score: semanticScore + metadataBoost,
