@@ -1,11 +1,25 @@
 import type { ComparableQuery, VehicleListing } from "@/types/listing";
 import type { FuelType } from "@/types/vehicle";
 import type { ParsedCochesNetAd } from "@/lib/sources/coches-net/parse";
-import { createVehicleId } from "@/lib/utils/math";
+import { createVehicleId, normalizeKey } from "@/lib/utils/math";
+
+function versionOverlap(queryVersion: string | undefined, listingVersion: string | undefined, title: string): number {
+  if (!queryVersion?.trim()) return 0;
+  const needle = normalizeKey(queryVersion);
+  if (!needle) return 0;
+  const haystack = normalizeKey([listingVersion, title].filter(Boolean).join(" "));
+  if (!haystack) return 0;
+  if (haystack.includes(needle) || needle.includes(haystack)) return 0.06;
+  // Coincidencia parcial por tokens (sDrive 18d ≈ sdrive18d).
+  const tokens = needle.split(" ").filter((token) => token.length >= 3);
+  if (tokens.length === 0) return 0;
+  const hits = tokens.filter((token) => haystack.includes(token)).length;
+  return hits === tokens.length ? 0.05 : hits > 0 ? 0.02 : -0.03;
+}
 
 function computeSimilarity(
   query: ComparableQuery,
-  listing: Pick<ParsedCochesNetAd, "year" | "mileage" | "fuel" | "power">,
+  listing: Pick<ParsedCochesNetAd, "year" | "mileage" | "fuel" | "power" | "version" | "title">,
 ): number {
   const yearDelta = listing.year != null ? Math.abs(query.year - listing.year) : 2;
   const mileageDelta =
@@ -18,6 +32,7 @@ function computeSimilarity(
   if (query.power && listing.power) {
     score -= Math.min(0.08, Math.abs(query.power - listing.power) / 800);
   }
+  score += versionOverlap(query.version, listing.version, listing.title);
 
   return Math.max(0.4, Math.min(0.99, score));
 }

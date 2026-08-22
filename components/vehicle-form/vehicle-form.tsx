@@ -74,7 +74,7 @@ export function VehicleForm({
     event.preventDefault();
     setError(null);
     if (!form.brand.trim() || !form.model.trim() || !form.year || !form.mileage || !form.fuel) {
-      setError("Marca, modelo, año, kilómetros y combustible son obligatorios.");
+      setError("Marca, modelo, año de matriculación, kilómetros y combustible son obligatorios.");
       return;
     }
     const vehicle: VehicleInput = {
@@ -110,7 +110,9 @@ export function VehicleForm({
       <section className="rounded-2xl border bg-card p-4 shadow-sm sm:p-6">
         <div className="mb-5 flex flex-col gap-1">
           <h2 className="font-heading text-lg font-medium">Datos del coche</h2>
-          <p className="text-sm text-muted-foreground">Solo lo esencial. El resto es opcional.</p>
+          <p className="text-sm text-muted-foreground">
+            Lo esencial para comparar con coches.net. Versión y CV afinan mucho el precio.
+          </p>
         </div>
 
         {error ? (
@@ -146,7 +148,36 @@ export function VehicleForm({
               onChange={(event) => update("model", event.target.value)}
             />
           </Field>
-          <Field label="Año" htmlFor="year">
+          <Field
+            label="Versión"
+            htmlFor="version"
+            hint="Recomendado. Ej. sDrive18d, xDrive25e… Distingue motorizaciones."
+          >
+            <Input
+              id="version"
+              placeholder="sDrive18d"
+              value={form.version}
+              onChange={(event) => update("version", event.target.value)}
+            />
+          </Field>
+          <Field
+            label="Potencia (CV)"
+            htmlFor="power"
+            hint="Recomendado. coches.net la muestra en cada anuncio."
+          >
+            <Input
+              id="power"
+              inputMode="numeric"
+              placeholder="150"
+              value={form.power}
+              onChange={(event) => update("power", event.target.value)}
+            />
+          </Field>
+          <Field
+            label="Año de matriculación"
+            htmlFor="year"
+            hint="El mismo dato que usa coches.net en los listados."
+          >
             <Select value={form.year || undefined} onValueChange={(value) => update("year", value)}>
               <SelectTrigger id="year" className="w-full">
                 <SelectValue placeholder="Año" />
@@ -198,35 +229,10 @@ export function VehicleForm({
         <Accordion type="single" collapsible className="mt-4">
           <AccordionItem value="more" className="border-none">
             <AccordionTrigger className="py-2 text-sm text-muted-foreground hover:no-underline">
-              Más detalles (opcional)
+              Más detalles de compra (opcional)
             </AccordionTrigger>
             <AccordionContent className="pt-2">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <Field label="Versión" htmlFor="version">
-                  <Input
-                    id="version"
-                    placeholder="sDrive18d"
-                    value={form.version}
-                    onChange={(event) => update("version", event.target.value)}
-                  />
-                </Field>
-                <Field label="Ubicación" htmlFor="location">
-                  <Input
-                    id="location"
-                    placeholder="Madrid"
-                    value={form.location}
-                    onChange={(event) => update("location", event.target.value)}
-                  />
-                </Field>
-                <Field label="Potencia (CV)" htmlFor="power">
-                  <Input
-                    id="power"
-                    inputMode="numeric"
-                    placeholder="150"
-                    value={form.power}
-                    onChange={(event) => update("power", event.target.value)}
-                  />
-                </Field>
                 <Field label="Cambio" htmlFor="transmission">
                   <Select value={form.transmission || undefined} onValueChange={(value) => update("transmission", value)}>
                     <SelectTrigger id="transmission" className="w-full">
@@ -241,19 +247,17 @@ export function VehicleForm({
                     </SelectContent>
                   </Select>
                 </Field>
-                <Field label="Carrocería" htmlFor="bodyType">
-                  <Select value={form.bodyType || undefined} onValueChange={(value) => update("bodyType", value)}>
-                    <SelectTrigger id="bodyType" className="w-full">
-                      <SelectValue placeholder="Carrocería" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {BODY_TYPES.map((item) => (
-                        <SelectItem key={item} value={item}>
-                          {BODY_LABELS[item]}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <Field
+                  label="Provincia del anuncio"
+                  htmlFor="location"
+                  hint="Del coche que miras tú. No filtra los comparables de coches.net."
+                >
+                  <Input
+                    id="location"
+                    placeholder="Madrid"
+                    value={form.location}
+                    onChange={(event) => update("location", event.target.value)}
+                  />
                 </Field>
                 <Field label="Estado general" htmlFor="generalCondition">
                   <Select
@@ -292,6 +296,24 @@ export function VehicleForm({
                     </SelectContent>
                   </Select>
                 </Field>
+                <Field
+                  label="Carrocería"
+                  htmlFor="bodyType"
+                  hint="Poco uso en la comparación con coches.net."
+                >
+                  <Select value={form.bodyType || undefined} onValueChange={(value) => update("bodyType", value)}>
+                    <SelectTrigger id="bodyType" className="w-full">
+                      <SelectValue placeholder="Carrocería" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {BODY_TYPES.map((item) => (
+                        <SelectItem key={item} value={item}>
+                          {BODY_LABELS[item]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </Field>
                 <Field label="Algo más que debamos saber" htmlFor="maintenanceHistory" className="sm:col-span-2">
                   <Textarea
                     id="maintenanceHistory"
@@ -317,7 +339,11 @@ export function VehicleForm({
               Tengo enlace del anuncio
             </button>
           ) : (
-            <Field label="URL del anuncio" htmlFor="listingUrl" hint="Opcional. La extracción automática llegará después.">
+            <Field
+              label="URL del anuncio"
+              htmlFor="listingUrl"
+              hint="Opcional. Se reconoce coches.net, pero no rellena el formulario: completa marca, modelo, año, km y precio."
+            >
               <Input
                 id="listingUrl"
                 inputMode="url"
