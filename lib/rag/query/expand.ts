@@ -32,6 +32,8 @@ const SYNONYM_GROUPS: string[][] = [
   ["egmp", "ioniq", "ev6", "iccu", "800v"],
   ["byd", "blade", "atto", "seal", "dm-i", "nev"],
   ["maf", "map", "lambda", "o2", "knock", "ect", "ckp", "cmp", "sensor"],
+  ["invierno", "verano", "otono", "primavera", "viaje", "vacaciones"],
+  ["import", "uk", "rhd", "jdm", "homologacion", "grey"],
   ["frenos", "discos", "pastillas", "epb", "pulsacion", "alabeado"],
   ["direccion", "cremallera", "eps", "bieletas", "asistencia"],
   ["fiabilidad", "averia", "fallo", "problema", "averias", "fallos", "problemas", "sintoma"],

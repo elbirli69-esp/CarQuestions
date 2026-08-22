@@ -157,6 +157,18 @@ const CASES: Case[] = [
     vehicle: { brand: "Volkswagen", model: "Golf", year: 2015, fuel: "petrol" },
     expectIdIncludes: ["maf", "sensor", "mezcla"],
   },
+  {
+    name: "Invierno 12V",
+    text: "invierno bateria 12v no arranca frio",
+    vehicle: { brand: "Seat", model: "Leon", year: 2017, fuel: "petrol" },
+    expectIdIncludes: ["invierno", "12v", "arranque", "bateria"],
+  },
+  {
+    name: "Import UK RHD",
+    text: "importacion uk volante derecha homologacion faros",
+    vehicle: { brand: "BMW", model: "320d", year: 2015, fuel: "diesel" },
+    expectIdIncludes: ["import", "uk", "rhd", "homologacion"],
+  },
 ];
 
 function matchesExpectation(id: string, expectIdIncludes: string[]): boolean {
