@@ -8,7 +8,6 @@ import type {
 import {
   autoScoutProvider,
   autocasionProvider,
-  carsNetProvider,
   cochesComProvider,
   dgtProvider,
   genericWebProvider,
@@ -16,11 +15,10 @@ import {
   milanunciosProvider,
   wallapopProvider,
 } from "@/lib/sources/providers";
-import { autoHubProvider } from "@/lib/sources/autohub/provider";
+import { cochesNetProvider } from "@/lib/sources/coches-net/provider";
 
 const providers: SourceProvider[] = [
-  autoHubProvider,
-  carsNetProvider,
+  cochesNetProvider,
   autoScoutProvider,
   wallapopProvider,
   milanunciosProvider,
@@ -84,7 +82,7 @@ export function toSourceCitations(
       name: provider.name,
       kind: provider.kind,
       isMock: provider.isMock,
-      connected: provider.id === "autohub" ? listingCount > 0 : !provider.isMock,
+      connected: provider.id === "coches.net" ? listingCount > 0 : !provider.isMock,
       usedFor: listingCount > 0 ? ["comparables", "precio"] : ["arquitectura"],
       listingCount,
       updatedAt: search.fetchedAt,

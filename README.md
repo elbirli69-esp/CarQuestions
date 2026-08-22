@@ -2,7 +2,7 @@
 
 Tasador, comparador y asistente para comprar coches de segunda mano.
 
-Este repositorio contiene el **MVP**. La interfaz y el motor de valoración están listos para Vercel. Las fuentes de anuncios reales todavía no están conectadas: los comparables se generan con proveedores mock claramente identificados.
+Este repositorio contiene el **MVP**. La interfaz y el motor de valoración están listos para Vercel. Los comparables de mercado salen de **coches.net** (España); el resto de portales siguen como stubs.
 
 ## Qué hay ahora
 
@@ -10,8 +10,9 @@ Este repositorio contiene el **MVP**. La interfaz y el motor de valoración est�
 - Campo de URL de anuncio preparado para extracción futura
 - `POST /api/vehicle/analyze` con valoración, scores, comparables, análisis y preguntas al vendedor
 - Motor de valoración por distribución de precios (mínimo, P25, mediana, P75, máximo) + ajustes solo si el usuario aporta el dato
+- Comparables reales desde **coches.net** (SSR de resultados de segunda mano, mercado España)
 - Chat sobre el coche concreto
-- Capa `SourceProvider` modular (coches.net, AutoScout24, Wallapop, etc. como mocks)
+- Capa `SourceProvider` modular (coches.net conectado; AutoScout24, Wallapop, etc. como stubs)
 - Capa `AIProvider` intercambiable: en Vercel usa **AI Gateway + DeepSeek** con OIDC (igual que el resto de proyectos). Fuera de Vercel puede usar la clave DeepSeek en `OPENAI_API_KEY` o el asistente de demostración.
 - Documentos `VehicleDocument` e índice RAG con **base vectorial TF-IDF** (`data/knowledge/`)
 - Corpus curado de fiabilidad/mantenimiento por marca, modelo, año y combustible
@@ -19,8 +20,8 @@ Este repositorio contiene el **MVP**. La interfaz y el motor de valoración est�
 
 ## Qué no hace todavía
 
-- No scrapea portales ni incumple términos de uso
 - No consulta DGT, ITV ni fichas oficiales reales
+- No scrapea fichas individuales de coches.net de forma fiable (sí la lista de resultados)
 - No presenta precios de demostración como datos de mercado reales
 - No persiste análisis (el almacén en memoria no sobrevive en Vercel)
 

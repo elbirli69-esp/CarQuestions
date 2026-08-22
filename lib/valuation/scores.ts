@@ -103,7 +103,7 @@ export function scoreVehicle(options: {
     score: hasObservedMarket ? Math.round(clamp(70 + listings.length * 0.4, 55, 90)) : null,
     reason: hasObservedMarket
       ? `Se han usado ${listings.length} anuncios comparables observados del mismo entorno de mercado.`
-      : "Sin portales conectados no hay comparables reales. Consulta anuncios en coches.net, AutoScout24 u otros antes de decidir.",
+      : "Sin anuncios de coches.net no hay comparables reales. Reintenta más tarde o consulta el portal directamente antes de decidir.",
     origin: hasObservedMarket ? "observed" : "ai_estimate",
     insufficientData: !hasObservedMarket,
   });

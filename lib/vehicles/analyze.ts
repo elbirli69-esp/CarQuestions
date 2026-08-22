@@ -68,12 +68,12 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
   const limitations = [...valuation.limitations];
   if (comparables.length === 0) {
     limitations.push(
-      "Ningún portal de anuncios está conectado. El precio de mercado es una estimación orientativa por segmento, no una mediana de anuncios reales.",
+      "No se obtuvieron anuncios de coches.net. El precio de mercado es una estimación orientativa por segmento, no una mediana de anuncios reales.",
     );
   }
-  if (comparables.some((listing) => listing.source === "autohub")) {
+  if (comparables.some((listing) => listing.source === "coches.net")) {
     limitations.push(
-      "Los comparables de AutoHub provienen del mercado estadounidense (KBB/Carmax). Los precios se convierten de USD a EUR de forma orientativa; no reflejan el mercado español al 100 %.",
+      "Los comparables proceden de anuncios públicos de coches.net (mercado España). El valor estimado es la mediana de esos anuncios filtrados por modelo y año próximo.",
     );
   }
   if (hasKnowledge) {

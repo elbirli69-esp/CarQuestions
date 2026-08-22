@@ -5,17 +5,17 @@ const COPY: Record<DataMode, { title: string; description: string }> = {
   live: {
     title: "Datos de mercado observados",
     description:
-      "La valoración usa anuncios reales (AutoHub u otros portales conectados). La fiabilidad y el mantenimiento vienen de la base de conocimiento curada.",
+      "La valoración usa anuncios reales de coches.net (España). La fiabilidad y el mantenimiento vienen de la base de conocimiento curada.",
   },
   mixed: {
     title: "Mercado observado + conocimiento curado",
     description:
-      "Combinamos anuncios reales con la base de conocimiento sobre fiabilidad y mantenimiento. Si los comparables son de AutoHub, provienen del mercado EE. UU.",
+      "Combinamos anuncios reales de coches.net con la base de conocimiento sobre fiabilidad y mantenimiento.",
   },
   knowledge: {
-    title: "Sin portales conectados",
+    title: "Sin anuncios de mercado",
     description:
-      "El precio de mercado es una referencia orientativa por segmento. Fiabilidad, mantenimiento y preguntas al vendedor sí vienen de datos curados.",
+      "No se pudieron obtener comparables de coches.net. El precio es una referencia orientativa por segmento. Fiabilidad y mantenimiento sí vienen de datos curados.",
   },
   demo: {
     title: "Modo demostración",

@@ -55,14 +55,6 @@ function mockMarketplace(
   };
 }
 
-export const carsNetProvider = mockMarketplace(
-  "coches.net",
-  "coches.net",
-  ["coches.net", "www.coches.net"],
-  8,
-  0,
-);
-
 export const autoScoutProvider = mockMarketplace(
   "autoscout24",
   "AutoScout24",
