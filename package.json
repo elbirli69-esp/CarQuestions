@@ -8,13 +8,10 @@
     "start": "next start",
     "lint": "eslint",
     "rag:ingest": "tsx scripts/rag-ingest.ts",
-<<<<<<< HEAD
-    "smoke:store": "tsx scripts/smoke-analysis-store.ts"
-=======
     "rag:generate-packs": "tsx scripts/generate-knowledge-packs.ts",
     "rag:eval": "tsx scripts/rag-eval.ts",
-    "rag:coverage": "tsx scripts/rag-coverage.ts"
->>>>>>> origin/cursor/automotive-rag-corpus-53d8
+    "rag:coverage": "tsx scripts/rag-coverage.ts",
+    "smoke:store": "tsx scripts/smoke-analysis-store.ts"
   },
   "dependencies": {
     "@upstash/redis": "^1.38.2",
