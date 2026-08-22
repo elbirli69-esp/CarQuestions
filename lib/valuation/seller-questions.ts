@@ -61,6 +61,13 @@ export function buildSellerQuestions(
     });
   }
 
+  if (/4x4|awd|4wd|quattro|xdrive|4motion|4matic|allgrip|haldex|traction/i.test(`${vehicle.model}`)) {
+    questions.push({
+      question: "¿Se ha hecho el servicio de Haldex/transferencia/diferenciales y los neumáticos son del mismo tamaño/desgaste?",
+      why: "Los AWD fallan caro si se omite el aceite del acoplamiento o si las ruedas tienen radios distintos.",
+    });
+  }
+
   const looksCommercial =
     /transit|sprinter|crafter|ducato|boxer|jumper|master|trafic|vivaro|daily|movano|custom|vito/i.test(
       `${vehicle.model} ${vehicle.brand}`,

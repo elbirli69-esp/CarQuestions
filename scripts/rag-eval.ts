@@ -301,6 +301,24 @@ const CASES: Case[] = [
     vehicle: { brand: "Mercedes-Benz", model: "E-Class", year: 1992, fuel: "petrol" },
     expectIdIncludes: ["w124", "youngtimer", "mercedes", "oxido"],
   },
+  {
+    name: "Haldex bomba",
+    text: "haldex bomba 4motion sin traccion trasera aceite",
+    vehicle: { brand: "Volkswagen", model: "Golf", year: 2016, fuel: "petrol" },
+    expectIdIncludes: ["haldex", "4motion", "awd", "bomba"],
+  },
+  {
+    name: "NVH aullido velocidad",
+    text: "aullido segun velocidad rodamiento diferencial nvh",
+    vehicle: { brand: "BMW", model: "320d", year: 2017, fuel: "diesel" },
+    expectIdIncludes: ["nvh", "aullido", "rodamiento", "whine"],
+  },
+  {
+    name: "xDrive transferencia",
+    text: "xdrive caja transferencia ruido al girar aceite",
+    vehicle: { brand: "BMW", model: "X3", year: 2018, fuel: "diesel" },
+    expectIdIncludes: ["xdrive", "transfer", "bmw", "awd"],
+  },
 ];
 
 function matchesExpectation(id: string, expectIdIncludes: string[]): boolean {

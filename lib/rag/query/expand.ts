@@ -51,6 +51,8 @@ const SYNONYM_GROUPS: string[][] = [
   ["adblue", "scr", "urea", "nox", "cristalizacion"],
   ["youngtimer", "clasico", "clasicos", "oxido", "estribos", "w124", "e30", "mx5"],
   ["regen", "regenerativo", "one pedal", "brake-by-wire", "epb", "blending"],
+  ["nvh", "aullido", "chirrido", "golpeteo", "clunk", "traqueteo", "silbido", "temblor"],
+  ["haldex", "4motion", "quattro", "xdrive", "4matic", "allgrip", "awd", "4x4", "ptu"],
   ["fiabilidad", "averia", "fallo", "problema", "averias", "fallos", "problemas", "sintoma"],
   ["mantenimiento", "revision", "servicio", "intervalo"],
   ["inspeccion", "precompra", "revisar", "checklist", "taller", "obd"],
