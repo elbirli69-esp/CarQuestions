@@ -169,6 +169,24 @@ const CASES: Case[] = [
     vehicle: { brand: "BMW", model: "320d", year: 2015, fuel: "diesel" },
     expectIdIncludes: ["import", "uk", "rhd", "homologacion"],
   },
+  {
+    name: "Alpine A110",
+    text: "alpine a110 mantenimiento dct track",
+    vehicle: { brand: "Alpine", model: "A110", year: 2020, fuel: "petrol" },
+    expectIdIncludes: ["alpine", "a110", "dct"],
+  },
+  {
+    name: "Theta recall VIN",
+    text: "theta ii recall campana motor vin hyundai",
+    vehicle: { brand: "Hyundai", model: "Tucson", year: 2016, fuel: "petrol" },
+    expectIdIncludes: ["theta", "recall", "vin"],
+  },
+  {
+    name: "DS PureTech",
+    text: "ds3 puretech correa aceite wet belt",
+    vehicle: { brand: "DS", model: "DS3", year: 2019, fuel: "petrol" },
+    expectIdIncludes: ["ds3", "puretech", "wet", "correa", "ds"],
+  },
 ];
 
 function matchesExpectation(id: string, expectIdIncludes: string[]): boolean {

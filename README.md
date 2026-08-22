@@ -78,6 +78,7 @@ Opcional: `AI_GATEWAY_MODEL=deepseek/deepseek-v4-pro` si quieres el modelo más 
 - Metodología de fuentes: `data/knowledge/SOURCES.md`
 - Índice vectorial (TF-IDF): `data/knowledge/vector-index.json` (generado con `npm run rag:ingest`)
 - Recuperación híbrida: filtros por vehículo + expansión de sinónimos de mecánica + similitud coseno + documentos del análisis
+- `npm run rag:coverage` — informe de cobertura por marca/tipo
 - Orientado a conocimiento: playbooks síntoma→causa→solución, patrones de foros técnicos, manuales, recalls y síntesis ADAC/TÜV/papers
 - Integrado en fiabilidad, mantenimiento, preguntas al vendedor y chat
 
