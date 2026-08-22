@@ -85,6 +85,30 @@ const CASES: Case[] = [
     vehicle: { brand: "Audi", model: "A4", year: 2019, fuel: "diesel" },
     expectIdIncludes: ["adas", "calibracion", "camara"],
   },
+  {
+    name: "MEB software carga",
+    text: "id.3 carga dc debil software bateria meb",
+    vehicle: { brand: "Volkswagen", model: "ID.3", year: 2022, fuel: "electric" },
+    expectIdIncludes: ["meb", "id3", "id.3", "software", "ev"],
+  },
+  {
+    name: "E-GMP ICCU",
+    text: "ioniq 5 no carga ac iccu campana",
+    vehicle: { brand: "Hyundai", model: "Ioniq 5", year: 2023, fuel: "electric" },
+    expectIdIncludes: ["egmp", "iccu", "ioniq", "carga"],
+  },
+  {
+    name: "Frenos vibracion",
+    text: "vibracion al frenar discos alabeados",
+    vehicle: { brand: "BMW", model: "320d", year: 2016, fuel: "diesel" },
+    expectIdIncludes: ["frenos", "discos", "pulsation", "brake"],
+  },
+  {
+    name: "Audi DL501",
+    text: "tirones s tronic mechatronic dl501",
+    vehicle: { brand: "Audi", model: "A5", year: 2013, fuel: "petrol" },
+    expectIdIncludes: ["dl501", "stronic", "mechatronic", "s-tronic"],
+  },
 ];
 
 function matchesExpectation(id: string, expectIdIncludes: string[]): boolean {

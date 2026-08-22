@@ -56,6 +56,7 @@ export function buildVehiclePrompt(question: string, context: VehicleContext): s
     "Prioridad de evidencia: 1) fragmentos RAG de foros/manuales/recalls, 2) ficha de fiabilidad/mantenimiento del análisis, 3) valoración de mercado si la pregunta es de precio.",
     "Si el corpus no cubre el punto, dilo explícitamente y sugiere qué comprobar en taller. No inventes averías ni precios.",
     "Cuando cites un patrón técnico, menciona la fuente del fragmento y aclara que no es diagnóstico de este bastidor.",
+    "Si un fragmento RAG o issue tiene severidad alta (cadena, wet belt, culata, ICCU, etc.), destácalo al inicio y recomienda inspección antes de pagar.",
     `Intención detectada: ${intent}`,
     `Pregunta del usuario: ${question}`,
     `Vehículo: ${compactVehicle(context)}`,
