@@ -37,6 +37,7 @@ const SYNONYM_GROUPS: string[][] = [
   ["airbag", "srs", "tpms", "cinturon", "isofix", "seguridad"],
   ["catalizador", "p0420", "evap", "emisiones", "opacidad", "gpf"],
   ["hvac", "heater", "calefaccion", "climatizador", "habitaculo", "blend"],
+  ["remolque", "caravana", "enganche", "tow", "portabicis", "cofre"],
   ["frenos", "discos", "pastillas", "epb", "pulsacion", "alabeado"],
   ["direccion", "cremallera", "eps", "bieletas", "asistencia"],
   ["fiabilidad", "averia", "fallo", "problema", "averias", "fallos", "problemas", "sintoma"],

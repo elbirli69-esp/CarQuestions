@@ -223,6 +223,24 @@ const CASES: Case[] = [
     vehicle: { brand: "Volvo", model: "XC60", year: 2020, fuel: "plugin_hybrid" },
     expectIdIncludes: ["volvo", "t8", "phev"],
   },
+  {
+    name: "Remolque automatica",
+    text: "remolcar caravana automatica sobrecalentamiento caja",
+    vehicle: { brand: "Volkswagen", model: "Passat", year: 2017, fuel: "diesel" },
+    expectIdIncludes: ["remolque", "caravana", "automatico", "dsg", "cvt", "tow"],
+  },
+  {
+    name: "MultiAir aceite",
+    text: "multiair aceite especificacion actuador",
+    vehicle: { brand: "Fiat", model: "500X", year: 2018, fuel: "petrol" },
+    expectIdIncludes: ["multiair", "aceite", "fiat"],
+  },
+  {
+    name: "Giulia 2.0",
+    text: "giulia 2.0 turbo carbonilla termostato",
+    vehicle: { brand: "Alfa Romeo", model: "Giulia", year: 2019, fuel: "petrol" },
+    expectIdIncludes: ["giulia", "alfa", "2.0", "carbonilla"],
+  },
 ];
 
 function matchesExpectation(id: string, expectIdIncludes: string[]): boolean {
