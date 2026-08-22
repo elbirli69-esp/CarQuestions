@@ -205,6 +205,24 @@ const CASES: Case[] = [
     vehicle: { brand: "Ford", model: "Focus", year: 2016, fuel: "petrol" },
     expectIdIncludes: ["airbag", "srs", "pretensor", "seguridad"],
   },
+  {
+    name: "Heater core",
+    text: "olor dulce alfombra copiloto heater core calefaccion",
+    vehicle: { brand: "BMW", model: "320d", year: 2015, fuel: "diesel" },
+    expectIdIncludes: ["heater", "calor", "refrigerante", "hvac"],
+  },
+  {
+    name: "Blend door",
+    text: "click salpicadero actuador trampilla clima solo frio",
+    vehicle: { brand: "Volkswagen", model: "Golf", year: 2014, fuel: "petrol" },
+    expectIdIncludes: ["blend", "trampilla", "hvac", "actuador", "click"],
+  },
+  {
+    name: "Volvo T8",
+    text: "volvo t8 phev autonomia carga xc60",
+    vehicle: { brand: "Volvo", model: "XC60", year: 2020, fuel: "plugin_hybrid" },
+    expectIdIncludes: ["volvo", "t8", "phev"],
+  },
 ];
 
 function matchesExpectation(id: string, expectIdIncludes: string[]): boolean {
