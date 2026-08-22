@@ -187,6 +187,24 @@ const CASES: Case[] = [
     vehicle: { brand: "DS", model: "DS3", year: 2019, fuel: "petrol" },
     expectIdIncludes: ["ds3", "puretech", "wet", "correa", "ds"],
   },
+  {
+    name: "TPMS sensor",
+    text: "testigo tpms sensor presion neumaticos",
+    vehicle: { brand: "Volkswagen", model: "Golf", year: 2018, fuel: "petrol" },
+    expectIdIncludes: ["tpms", "presion", "sensor"],
+  },
+  {
+    name: "Catalizador P0420",
+    text: "codigo p0420 catalizador ineficiente olor",
+    vehicle: { brand: "Toyota", model: "Corolla", year: 2014, fuel: "petrol" },
+    expectIdIncludes: ["catalizador", "p0420", "cat", "emisiones"],
+  },
+  {
+    name: "Airbag light",
+    text: "testigo airbag encendido pretensor",
+    vehicle: { brand: "Ford", model: "Focus", year: 2016, fuel: "petrol" },
+    expectIdIncludes: ["airbag", "srs", "pretensor", "seguridad"],
+  },
 ];
 
 function matchesExpectation(id: string, expectIdIncludes: string[]): boolean {
