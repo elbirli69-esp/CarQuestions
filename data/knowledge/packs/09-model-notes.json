@@ -1,0 +1,267 @@
+{
+  "version": 1,
+  "id": "model-notes",
+  "title": "Notas por modelo y genéricos",
+  "updatedAt": "2026-08-22T03:09:29.600Z",
+  "methodology": "Resúmenes curados a partir de patrones recurrentes en foros técnicos (BMWFAQ, VAG/Cupra, ClubToyota, PureTech/BlueHDi communities), manuales de mantenimiento, recalls públicos (Safety Gate/NHTSA) e informes de fiabilidad (ADAC/TÜV). No son diagnósticos de un bastidor concreto.",
+  "chunks": [
+    {
+      "isDemo": true,
+      "id": "seat-cupra-ea888-brake",
+      "type": "maintenance",
+      "brands": [
+        "seat",
+        "cupra"
+      ],
+      "yearFrom": 2018,
+      "yearTo": 2025,
+      "title": "SEAT/Cupra: frenos, DSG y revisiones deportivas",
+      "content": "Uso deportivo acelera pastillas/discos y aceite DSG. Pedir intervalos reales, no solo los del ordenador. Revisar estado de neumáticos semi-slick de origen si aplica.",
+      "source": "Foros Cupra / SEAT León",
+      "tags": [
+        "cupra",
+        "frenos",
+        "dsg"
+      ],
+      "estimatedCostEur": {
+        "min": 300,
+        "max": 900
+      }
+    },
+    {
+      "isDemo": true,
+      "id": "skoda-octavia-liberty",
+      "type": "inspection",
+      "brands": [
+        "skoda"
+      ],
+      "models": [
+        "octavia",
+        "superb",
+        "kodiaq"
+      ],
+      "yearFrom": 2013,
+      "yearTo": 2024,
+      "title": "Škoda Octavia/Superb: puntos de inspección VAG",
+      "content": "Aplicar checklist VAG: DSG servicio, FAP en TDI, bomba de agua/termostato en TSI, Haldex en 4x4. Octavia suele ser buena compra si el historial DSG/TDI está completo.",
+      "source": "Škoda Forum / OctaviaClub",
+      "tags": [
+        "skoda",
+        "octavia",
+        "inspeccion"
+      ]
+    },
+    {
+      "isDemo": true,
+      "id": "vw-id-thermal-battery",
+      "type": "issue",
+      "brands": [
+        "volkswagen",
+        "vw",
+        "cupra",
+        "skoda",
+        "audi"
+      ],
+      "fuels": [
+        "electric"
+      ],
+      "yearFrom": 2020,
+      "yearTo": 2025,
+      "models": [
+        "id.3",
+        "id.4",
+        "id.5",
+        "born",
+        "enyaq",
+        "q4"
+      ],
+      "title": "MEB/ID: gestión térmica y software de batería",
+      "content": "Plataforma MEB: vigilar actualizaciones de software de carga/batería, historial de DC fast, y posibles campañas de gestión térmica. Pedir informe de salud y potencia de carga sostenida.",
+      "severity": "medium",
+      "source": "Foros ID. / SpeakEV + notas de servicio VW MEB",
+      "tags": [
+        "meb",
+        "id3",
+        "id4",
+        "bateria"
+      ],
+      "reliabilityScore": 80
+    },
+    {
+      "isDemo": true,
+      "id": "tesla-suspension-12v",
+      "type": "issue",
+      "brands": [
+        "tesla"
+      ],
+      "fuels": [
+        "electric"
+      ],
+      "yearFrom": 2018,
+      "yearTo": 2024,
+      "models": [
+        "model 3",
+        "model y",
+        "model s",
+        "model x"
+      ],
+      "title": "Tesla: batería 12V, brazos de suspensión y alineación",
+      "content": "Fallos frecuentes de propiedad: batería 12V (síntomas electrónicos raros), brazos/silentblocks traseros y alineación. Pedir historial de servicio Tesla y revisar ruidos de suspensión en badenes.",
+      "severity": "medium",
+      "source": "Tesla Motors Club / foros Model 3",
+      "tags": [
+        "tesla",
+        "12v",
+        "suspension"
+      ],
+      "estimatedCostEur": {
+        "min": 150,
+        "max": 1200
+      },
+      "reliabilityScore": 78
+    },
+    {
+      "isDemo": true,
+      "id": "dacia-duster-timing",
+      "type": "maintenance",
+      "brands": [
+        "dacia",
+        "renault"
+      ],
+      "models": [
+        "duster",
+        "sandero",
+        "logan"
+      ],
+      "yearFrom": 2012,
+      "yearTo": 2023,
+      "title": "Dacia: correa, óxido y mantenimiento low-cost",
+      "content": "Buen valor si la correa está hecha y se acepta acabado simple. Vigilar óxido en bajos, estado de dirección/suspensión y, en GLP, estanqueidad. Historial de correa es crítico.",
+      "maintenanceInterval": "Correa según motor; no alargar años",
+      "source": "Foros Dacia / Duster",
+      "tags": [
+        "dacia",
+        "correa",
+        "oxido"
+      ],
+      "reliabilityScore": 80
+    },
+    {
+      "isDemo": true,
+      "id": "suzuki-vitara-mild-hybrid",
+      "type": "maintenance",
+      "brands": [
+        "suzuki"
+      ],
+      "models": [
+        "vitara",
+        "s-cross",
+        "swift"
+      ],
+      "yearFrom": 2015,
+      "yearTo": 2024,
+      "title": "Suzuki: cadena, mild-hybrid y 4x4 AllGrip",
+      "content": "Motores Suzuki suelen usar cadena; fiabilidad buena con aceite correcto. En mild-hybrid revisar sistema ISG. AllGrip: probar modos y escuchar ruidos de transmisión.",
+      "source": "Suzuki Forums / Vitara owners",
+      "tags": [
+        "suzuki",
+        "allgrip",
+        "cadena"
+      ],
+      "reliabilityScore": 86
+    },
+    {
+      "isDemo": true,
+      "id": "mitsubishi-outlander-phev-cells",
+      "type": "issue",
+      "brands": [
+        "mitsubishi"
+      ],
+      "fuels": [
+        "plugin_hybrid"
+      ],
+      "yearFrom": 2014,
+      "yearTo": 2021,
+      "models": [
+        "outlander"
+      ],
+      "title": "Outlander PHEV: batería y bomba de calor",
+      "content": "PHEV Outlander: degradación de celdas y fallos de bomba de calor/climatización afectan autonomía EV. Pedir SOH y historial de garantías de batería.",
+      "severity": "medium",
+      "source": "Outlander PHEV Forum",
+      "tags": [
+        "phev",
+        "outlander",
+        "bateria"
+      ],
+      "estimatedCostEur": {
+        "min": 1000,
+        "max": 8000
+      },
+      "reliabilityScore": 72
+    },
+    {
+      "isDemo": true,
+      "id": "generic-brake-fluid-2y",
+      "type": "maintenance",
+      "brands": [
+        "*"
+      ],
+      "title": "Líquido de frenos cada 2 años",
+      "content": "El líquido de frenos es higroscópico: absorbe agua y baja el punto de ebullición. Cambio cada 2 años independientemente del km. En precompra: color oscuro = negociar servicio.",
+      "maintenanceInterval": "Líquido de frenos cada 2 años",
+      "source": "Manuales multi-marca + buenas prácticas de taller",
+      "tags": [
+        "frenos",
+        "liquido",
+        "mantenimiento"
+      ],
+      "estimatedCostEur": {
+        "min": 50,
+        "max": 120
+      }
+    },
+    {
+      "isDemo": true,
+      "id": "generic-spark-plugs-turbo",
+      "type": "maintenance",
+      "brands": [
+        "*"
+      ],
+      "fuels": [
+        "petrol",
+        "hybrid"
+      ],
+      "title": "Bujías en turbo de inyección directa",
+      "content": "En gasolina turbo GDI las bujías y bobinas sufren más. Intervalos cortos (30-60.000 km) previenen misfires. Pedir última sustitución en Focus/Golf/PureTech/EcoBoost/Skyactiv.",
+      "maintenanceInterval": "Bujías 30.000-60.000 km en turbo GDI según fabricante",
+      "source": "Manuales GDI + foros de misfire turbo",
+      "tags": [
+        "bujias",
+        "gdi",
+        "turbo"
+      ],
+      "estimatedCostEur": {
+        "min": 80,
+        "max": 250
+      }
+    },
+    {
+      "isDemo": true,
+      "id": "generic-timing-belt-years",
+      "type": "maintenance",
+      "brands": [
+        "*"
+      ],
+      "title": "Correa de distribución: km Y años",
+      "content": "La correa envejece por tiempo aunque haya pocos km. Siempre verificar el límite en años del fabricante (a menudo 5-10). Un coche de bajo km pero 9 años puede llevar correa vencida.",
+      "maintenanceInterval": "Respetar el primero que se cumpla: km o años",
+      "source": "Manuales de distribución multi-marca",
+      "tags": [
+        "correa",
+        "años",
+        "distribucion"
+      ]
+    }
+  ]
+}

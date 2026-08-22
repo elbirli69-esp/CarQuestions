@@ -63,8 +63,8 @@ export function VehicleChat({
       <CardHeader>
         <CardTitle>Pregunta lo que quieras sobre este coche</CardTitle>
         <CardDescription>
-          El asistente usa el vehículo que has introducido, la valoración y los documentos recuperados. Si no hay un
-          dato, lo dice.
+          El asistente prioriza la base de conocimiento técnica (averías, síntomas, soluciones, mantenimiento) del
+          modelo/motor, más la valoración de este anuncio. Si no hay dato en el corpus, lo dice.
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">

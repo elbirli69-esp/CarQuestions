@@ -1,7 +1,8 @@
 import type { KnowledgeChunk } from "@/types/knowledge";
 import type { KnownIssue, MaintenanceSummary, ReliabilitySummary } from "@/types/valuation";
 import type { Vehicle } from "@/types/vehicle";
-import { average, clamp, normalizeKey } from "@/lib/utils/math";
+import { chunkMatchesVehicle } from "@/lib/rag/knowledge/filters";
+import { average, clamp } from "@/lib/utils/math";
 
 export function chunkToKnownIssue(chunk: KnowledgeChunk): KnownIssue | null {
   if (chunk.type !== "issue" && chunk.type !== "recall") return null;
@@ -21,23 +22,6 @@ export function chunkToKnownIssue(chunk: KnowledgeChunk): KnownIssue | null {
     source: chunk.source,
     isDemo: false,
   };
-}
-
-function chunkMatchesVehicle(chunk: KnowledgeChunk, vehicle: Vehicle): boolean {
-  const brand = normalizeKey(vehicle.brand);
-  const model = normalizeKey(vehicle.model);
-  const brandOk = chunk.brands.some((item) => {
-    const key = normalizeKey(item);
-    return brand.includes(key) || key.includes(brand);
-  });
-  if (!brandOk) return false;
-  if (chunk.models && chunk.models.length > 0) {
-    return chunk.models.some((item) => {
-      const key = normalizeKey(item);
-      return model === key || model.includes(key) || key.includes(model);
-    });
-  }
-  return true;
 }
 
 export function chunksToReliability(chunks: KnowledgeChunk[], vehicle: Vehicle): ReliabilitySummary {

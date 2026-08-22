@@ -36,7 +36,7 @@ export async function POST(request: Request) {
           fuel: analysis.vehicle.fuel,
           version: analysis.vehicle.version,
         },
-        limit: 8,
+        limit: 10,
       },
       documents,
     );

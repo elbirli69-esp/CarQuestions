@@ -73,14 +73,21 @@ Opcional: `AI_GATEWAY_MODEL=deepseek/deepseek-v4-pro` si quieres el modelo más 
 
 ## Base de conocimiento RAG
 
-- Corpus editable: `data/knowledge/chunks.json`
+- Corpus editable: `data/knowledge/chunks.json` + packs en `data/knowledge/packs/`
 - Enriquecimientos (síntomas, preguntas, inspección): `data/knowledge/enrichments.json`
 - Metodología de fuentes: `data/knowledge/SOURCES.md`
 - Índice vectorial (TF-IDF): `data/knowledge/vector-index.json` (generado con `npm run rag:ingest`)
-- Recuperación híbrida: filtros por vehículo + similitud coseno + documentos dinámicos del análisis
+- Recuperación híbrida: filtros por vehículo + expansión de sinónimos de mecánica + similitud coseno + documentos del análisis
+- Orientado a conocimiento: playbooks síntoma→causa→solución, patrones de foros técnicos, manuales, recalls y síntesis ADAC/TÜV/papers
 - Integrado en fiabilidad, mantenimiento, preguntas al vendedor y chat
 
-Para añadir un modelo: crea chunks con `brands`, `models`, `yearFrom`/`yearTo`, `fuels`, `type` (`issue`, `maintenance`, `inspection`, `recall`) y vuelve a ejecutar `npm run rag:ingest`.
+Para añadir un modelo: crea chunks con `brands`, `models`, `yearFrom`/`yearTo`, `fuels`, `type` (`issue`, `maintenance`, `inspection`, `recall`) — o usa `brands: ["*"]` para conocimiento transversal — y vuelve a ejecutar `npm run rag:ingest`.
+
+```bash
+npm run rag:generate-packs  # regenera packs curados
+npm run rag:ingest          # reconstruye el índice
+```
+
 
 ## Arquitectura
 

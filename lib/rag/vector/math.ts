@@ -1,5 +1,6 @@
 import type { KnowledgeChunk } from "@/types/knowledge";
-import { normalizeKey, tokenize } from "@/lib/utils/math";
+import { chunkMatchesBrand, chunkMatchesModel } from "@/lib/rag/knowledge/filters";
+import { tokenize } from "@/lib/utils/math";
 
 export function chunkSearchText(chunk: KnowledgeChunk): string {
   return [
@@ -92,26 +93,15 @@ export function matchesVehicleFilters(
 ): boolean {
   if (!vehicle) return true;
 
-  const brand = normalizeKey(vehicle.brand ?? "");
-  const model = normalizeKey(vehicle.model ?? "");
-  const version = normalizeKey(vehicle.version ?? "");
-  const fuel = vehicle.fuel;
-
-  const brandOk = chunk.brands.some((item) => {
-    const key = normalizeKey(item);
-    return brand.includes(key) || key.includes(brand);
-  });
-  if (brand && !brandOk) return false;
-
-  if (chunk.models && chunk.models.length > 0) {
-    const modelOk = chunk.models.some((item) => {
-      const key = normalizeKey(item);
-      return model === key || model.includes(key) || key.includes(model) || version.includes(key);
-    });
-    if (model && !modelOk) return false;
+  if (vehicle.brand && !chunkMatchesBrand(chunk, vehicle.brand)) return false;
+  if (
+    (vehicle.model || vehicle.version) &&
+    !chunkMatchesModel(chunk, vehicle.model ?? "", vehicle.version ?? "")
+  ) {
+    return false;
   }
 
-  if (chunk.fuels && chunk.fuels.length > 0 && fuel && !chunk.fuels.includes(fuel as never)) {
+  if (chunk.fuels && chunk.fuels.length > 0 && vehicle.fuel && !chunk.fuels.includes(vehicle.fuel as never)) {
     return false;
   }
 

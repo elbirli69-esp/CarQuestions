@@ -1,0 +1,194 @@
+{
+  "version": 1,
+  "id": "mercedes-ford-renault",
+  "title": "Mercedes / Ford / Renault",
+  "updatedAt": "2026-08-22T03:09:29.599Z",
+  "methodology": "Resúmenes curados a partir de patrones recurrentes en foros técnicos (BMWFAQ, VAG/Cupra, ClubToyota, PureTech/BlueHDi communities), manuales de mantenimiento, recalls públicos (Safety Gate/NHTSA) e informes de fiabilidad (ADAC/TÜV). No son diagnósticos de un bastidor concreto.",
+  "chunks": [
+    {
+      "isDemo": true,
+      "id": "mercedes-om654-om651-dpf",
+      "type": "issue",
+      "brands": [
+        "mercedes",
+        "mercedes-benz",
+        "mercedes benz"
+      ],
+      "fuels": [
+        "diesel"
+      ],
+      "yearFrom": 2012,
+      "yearTo": 2022,
+      "motorCodes": [
+        "OM651",
+        "OM654"
+      ],
+      "title": "Mercedes OM651/OM654: cadena, EGR cooler y FAP",
+      "content": "OM651: vigilancia de cadena y cooler EGR (fugas). OM654 mejora pero FAP/AdBlue siguen críticos en ciudad. Pedir historial Star Diagnosis y facturas de distribución/EGR.",
+      "severity": "medium",
+      "source": "BenzWorld / MercedesForum + talleres independientes MB",
+      "tags": [
+        "om651",
+        "om654",
+        "egr",
+        "cadena"
+      ],
+      "estimatedCostEur": {
+        "min": 400,
+        "max": 2800
+      },
+      "reliabilityScore": 76
+    },
+    {
+      "isDemo": true,
+      "id": "mercedes-7229-conductor-plate",
+      "type": "issue",
+      "brands": [
+        "mercedes",
+        "mercedes-benz",
+        "mercedes benz"
+      ],
+      "yearFrom": 2004,
+      "yearTo": 2015,
+      "title": "Caja 722.9: conductor plate y aceite",
+      "content": "La 7G-Tronic 722.9 puede fallar por conductor plate/velocímetros y aceite quemado. Síntomas: modos de emergencia, cambios erráticos. Solución: kit conductor plate + aceite/filtro; a veces mechatronic.",
+      "severity": "high",
+      "source": "BenzWorld 722.9 sticky threads",
+      "tags": [
+        "722.9",
+        "7gtronic"
+      ],
+      "estimatedCostEur": {
+        "min": 600,
+        "max": 2500
+      },
+      "reliabilityScore": 72
+    },
+    {
+      "isDemo": true,
+      "id": "ford-ecoboost-coolant-intrusion",
+      "type": "issue",
+      "brands": [
+        "ford"
+      ],
+      "fuels": [
+        "petrol"
+      ],
+      "yearFrom": 2010,
+      "yearTo": 2019,
+      "motorCodes": [
+        "EcoBoost",
+        "2.0 EB"
+      ],
+      "models": [
+        "focus",
+        "mondeo",
+        "kuga",
+        "escape",
+        "edge",
+        "fiesta"
+      ],
+      "title": "EcoBoost: intrusion de refrigerante (juntas/block)",
+      "content": "Algunos EcoBoost 1.5/1.6/2.0 tuvieron problemas de refrigerante al cilindro por junta/cast. Síntomas: pérdida de refrigerante sin fuga, misfire, humo blanco. Verificar campañas y pruebas de presión/CO2. Riesgo alto de reparación mayor.",
+      "severity": "high",
+      "source": "Ford EcoBoost forums + acciones de servicio públicas",
+      "tags": [
+        "ecoboost",
+        "refrigerante",
+        "culata"
+      ],
+      "estimatedCostEur": {
+        "min": 1500,
+        "max": 5000
+      },
+      "reliabilityScore": 64
+    },
+    {
+      "isDemo": true,
+      "id": "ford-powershift-dct-history",
+      "type": "issue",
+      "brands": [
+        "ford"
+      ],
+      "yearFrom": 2011,
+      "yearTo": 2018,
+      "models": [
+        "focus",
+        "fiesta",
+        "kuga",
+        "ecosport"
+      ],
+      "title": "PowerShift DPS6: historial de fallos y litigios",
+      "content": "La PowerShift de embrague seco tuvo vibraciones, tirones y fallos tempranos; hubo extensiones de garantía/litigios en varios mercados. Evitar sin historial de reparaciones mayores; preferir manual o convertidor moderno.",
+      "severity": "high",
+      "source": "Quejas públicas PowerShift + foros FocusMk3",
+      "tags": [
+        "powershift",
+        "dps6",
+        "dct"
+      ],
+      "estimatedCostEur": {
+        "min": 1000,
+        "max": 3500
+      },
+      "reliabilityScore": 58
+    },
+    {
+      "isDemo": true,
+      "id": "renault-edc-dct",
+      "type": "issue",
+      "brands": [
+        "renault",
+        "dacia"
+      ],
+      "yearFrom": 2012,
+      "yearTo": 2020,
+      "models": [
+        "clio",
+        "megane",
+        "captur",
+        "scenic"
+      ],
+      "title": "EDC Renault: embragues y actuadores",
+      "content": "Cajas EDC (doble embrague) pueden mostrar tirones y desgaste prematuro de embragues/actuadores, sobre todo en ciudad. Pedir facturas de EDC y probar atascos. Alternativa: manual o EAT en generaciones posteriores.",
+      "severity": "medium",
+      "source": "Foros Renault / Clio4 / Mégane",
+      "tags": [
+        "edc",
+        "dct",
+        "renault"
+      ],
+      "estimatedCostEur": {
+        "min": 800,
+        "max": 2200
+      },
+      "reliabilityScore": 70
+    },
+    {
+      "isDemo": true,
+      "id": "renault-dci-timing-belt",
+      "type": "maintenance",
+      "brands": [
+        "renault",
+        "dacia"
+      ],
+      "fuels": [
+        "diesel"
+      ],
+      "yearFrom": 2010,
+      "yearTo": 2020,
+      "title": "dCi: correa de distribución e inyección",
+      "content": "Confirmar intervalo de correa (km y años) en dCi; un kit a tiempo evita rotura cara. Vigilar también turbo e inyectores en alto km. Historial de correa es negociador clave.",
+      "maintenanceInterval": "Correa según motor: típico 6 años / 100-160.000 km",
+      "source": "Manuales Renault dCi + foros diesel",
+      "tags": [
+        "dci",
+        "correa"
+      ],
+      "estimatedCostEur": {
+        "min": 450,
+        "max": 900
+      }
+    }
+  ]
+}

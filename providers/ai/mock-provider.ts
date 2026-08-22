@@ -1,6 +1,5 @@
 import type { AIAnswer, AIProvider, ChatMessage, VehicleContext } from "@/types/ai";
-import { issueToDocument, listingToDocument, vehicleSummaryDocument } from "@/lib/rag/documents";
-import { retrieveDocuments } from "@/lib/rag/index";
+import { classifyQuestionIntent } from "@/lib/rag/query/expand";
 import { formatAlternativeComparisonAnswer } from "@/lib/valuation/compare-alternatives";
 import { formatEuro, formatKm, formatPercent } from "@/lib/utils/format";
 
@@ -22,6 +21,16 @@ function contextSummary(context: VehicleContext): string {
     .join(" ");
 }
 
+function knowledgeSnippets(context: VehicleContext, limit = 4): string[] {
+  return (context.retrievedDocuments ?? [])
+    .filter((item) => item.document.id.startsWith("knowledge_"))
+    .slice(0, limit)
+    .map(
+      (item) =>
+        `- ${item.document.content.slice(0, 320)}${item.document.content.length > 320 ? "…" : ""} (${item.document.source})`,
+    );
+}
+
 export class MockAIProvider implements AIProvider {
   readonly id = "mock";
   readonly name = "Asistente CarQuestions";
@@ -34,31 +43,14 @@ export class MockAIProvider implements AIProvider {
   ): Promise<AIAnswer> {
     void history;
     const v = context.vehicle;
-    const documents = [
-      vehicleSummaryDocument(context.vehicle),
-      ...context.comparableListings.slice(0, 8).map(listingToDocument),
-      ...context.reliabilityData.knownIssues.map((issue) => issueToDocument(context.vehicle, issue)),
-    ];
-    const retrieved = await retrieveDocuments(
-      {
-        text: question,
-        vehicle: {
-          brand: v.brand,
-          model: v.model,
-          year: v.year,
-          fuel: v.fuel,
-          version: v.version,
-        },
-        limit: 8,
-      },
-      documents,
-    );
-    const q = question.toLowerCase();
     const m = context.marketData;
     const hasMarket = m.comparableCount > 0;
+    const intent = classifyQuestionIntent(question);
+    const snippets = knowledgeSnippets(context);
+    const retrievedIds = (context.retrievedDocuments ?? []).map((item) => item.document.id);
     let text = "";
 
-    if (q.includes("precio") || q.includes("barato") || q.includes("caro") || q.includes("pagar")) {
+    if (intent === "price") {
       const maxPay = m.low;
       text = [
         contextSummary(context),
@@ -72,20 +64,24 @@ export class MockAIProvider implements AIProvider {
           : m.advertisedPrice
             ? `Como referencia prudente sin anuncios reales, un techo orientativo podría rondar ${formatEuro(maxPay)}, pero hay que contrastarlo con anuncios actuales.`
             : "",
+        snippets.length ? `Contexto técnico a tener en cuenta al negociar:\n${snippets.join("\n")}` : "",
       ]
         .filter(Boolean)
         .join("\n\n");
-    } else if (q.includes("problema") || q.includes("aver") || q.includes("fiab")) {
-      if (context.reliabilityData.knownIssues.length === 0) {
-        text = `No hay una ficha de problemas conocidos para ${v.brand} ${v.model} en la base de conocimiento. No invento averías. Conviene buscar boletines del fabricante y un informe de un taller especialista.`;
+    } else if (intent === "reliability") {
+      if (context.reliabilityData.knownIssues.length === 0 && snippets.length === 0) {
+        text = `No hay una ficha de problemas conocidos suficientemente específica para ${v.brand} ${v.model} en la base de conocimiento. No invento averías. Conviene buscar boletines del fabricante y un informe de un taller especialista.`;
       } else {
         text = [
-          `Para un ${v.brand} ${v.model} ${v.year} ${v.fuel}, la base de conocimiento curada señala:`,
+          `Para un ${v.brand} ${v.model} ${v.year} ${v.fuel}, el conocimiento técnico curado (foros/manuales/recalls) señala:`,
           ...context.reliabilityData.knownIssues.map((issue) => `- ${issue.title}: ${issue.detail}`),
+          snippets.length ? `Fragmentos RAG adicionales:\n${snippets.join("\n")}` : "",
           "No significa que este coche concreto las tenga. Hay que contrastarlo con historial y una inspección.",
-        ].join("\n");
+        ]
+          .filter(Boolean)
+          .join("\n");
       }
-    } else if (q.includes("manten") || q.includes("distribuci") || q.includes("itv")) {
+    } else if (intent === "maintenance") {
       text = context.maintenanceData.available
         ? [
             context.maintenanceData.notes.join(" "),
@@ -95,30 +91,24 @@ export class MockAIProvider implements AIProvider {
             context.maintenanceData.estimatedYearlyCost
               ? `Coste anual orientativo del segmento: ${formatEuro(context.maintenanceData.estimatedYearlyCost)}. No es una factura real de este coche.`
               : "",
+            snippets.length ? `Detalle técnico:\n${snippets.join("\n")}` : "",
           ]
             .filter(Boolean)
             .join("\n\n")
-        : "No hay ficha de mantenimiento específica para este vehículo. No estimo un coste para no inventarlo.";
-    } else if (q.includes("consum")) {
-      text = "No hay datos de consumo homologado ni de usuarios conectados para este anuncio. No invento litros/100 km. Revisa la ficha del fabricante o una prueba de una revista especializada.";
-    } else if (q.includes("3 años") || q.includes("depreci") || q.includes("valer")) {
-      const future = Math.round(m.estimatedPrice * Math.pow(0.9, 3));
-      text = `Una regla orientativa (no predicción) sería perder en torno a un 10 % anual: ${formatEuro(m.estimatedPrice)} → unos ${formatEuro(future)} dentro de 3 años, si el mercado y el kilometraje se mantienen razonables. Confirma con anuncios reales del segmento.`;
-    } else if (q.includes("30.000") || q.includes("30000") || q.includes("km al año")) {
+        : snippets.length
+          ? `No hay ficha de mantenimiento dedicada, pero el RAG recuperó:\n${snippets.join("\n")}`
+          : "No hay ficha de mantenimiento específica para este vehículo. No estimo un coste para no inventarlo.";
+    } else if (intent === "consumption") {
       text =
-        v.fuel === "diesel"
-          ? "Con 30.000 km al año un diésel bien mantenido puede tener sentido si hay carretera de por medio. Aun así, hay que mirar FAP, distribución y el coste de mantenimiento de esta unidad concreto."
-          : "Con 30.000 km al año importa más la fiabilidad y el coste por kilómetro que el precio de compra. Sin datos reales de consumo y averías de esta unidad, no se puede cerrar la recomendación.";
-    } else if (
-      q.includes("cuál comprar") ||
-      q.includes("cual comprar") ||
-      q.includes("equivalente") ||
-      q.includes("mejor") ||
-      q.includes("compar") ||
-      q.includes("alternativ")
-    ) {
-      text = formatAlternativeComparisonAnswer(context);
-    } else if (q.includes("revis")) {
+        "No hay datos de consumo homologado ni de usuarios conectados para este anuncio. No invento litros/100 km. Revisa la ficha del fabricante o una prueba de una revista especializada.";
+    } else if (intent === "comparison") {
+      text = [
+        formatAlternativeComparisonAnswer(context),
+        snippets.length ? `Riesgos técnicos del modelo analizado:\n${snippets.slice(0, 2).join("\n")}` : "",
+      ]
+        .filter(Boolean)
+        .join("\n\n");
+    } else if (intent === "inspection") {
       text = [
         "Antes de comprar yo revisaría:",
         "- Historial y distribución / caja automática si aplica.",
@@ -127,26 +117,45 @@ export class MockAIProvider implements AIProvider {
         context.reliabilityData.knownIssues[0]
           ? `- En este modelo, especialmente: ${context.reliabilityData.knownIssues[0].title}.`
           : "",
+        snippets.length ? `Checklist técnico del corpus:\n${snippets.join("\n")}` : "",
       ]
         .filter(Boolean)
         .join("\n");
     } else {
       text = [
-        `Puedo hablar de este ${v.brand} ${v.model} ${v.year} concreto, no solo del modelo genérico.`,
+        `Puedo hablar de este ${v.brand} ${v.model} ${v.year} concreto con la base de conocimiento técnica.`,
         contextSummary(context),
-        retrieved[0] ? `Contexto recuperado: ${retrieved[0].document.content}` : "No he recuperado documentos extra para esta pregunta.",
+        snippets.length
+          ? `Lo más relevante del RAG para tu pregunta:\n${snippets.join("\n")}`
+          : "No he recuperado fragmentos extra suficientemente cercanos a la pregunta.",
         "Si no hay un dato, lo digo. No invento precios de mercado ni averías.",
       ].join("\n\n");
+    }
+
+    // Reglas puntuales de depreciación / km año sobre el intent general
+    const q = question.toLowerCase();
+    if (q.includes("3 años") || q.includes("depreci") || q.includes("valer")) {
+      const future = Math.round(m.estimatedPrice * Math.pow(0.9, 3));
+      text = `Una regla orientativa (no predicción) sería perder en torno a un 10 % anual: ${formatEuro(m.estimatedPrice)} → unos ${formatEuro(future)} dentro de 3 años, si el mercado y el kilometraje se mantienen razonables. Confirma con anuncios reales del segmento.`;
+    } else if (q.includes("30.000") || q.includes("30000") || q.includes("km al año")) {
+      text = [
+        v.fuel === "diesel"
+          ? "Con 30.000 km al año un diésel bien mantenido puede tener sentido si hay carretera de por medio. Aun así, hay que mirar FAP, distribución y el coste de mantenimiento de esta unidad concreta."
+          : "Con 30.000 km al año importa más la fiabilidad y el coste por kilómetro que el precio de compra. Sin datos reales de consumo y averías de esta unidad, no se puede cerrar la recomendación.",
+        snippets.length ? `Patrones técnicos a vigilar:\n${snippets.slice(0, 3).join("\n")}` : "",
+      ]
+        .filter(Boolean)
+        .join("\n\n");
     }
 
     return {
       text,
       provider: this.name,
-      isDemo: false,
+      isDemo: true,
       origin: hasMarket ? "observed" : "ai_estimate",
-      usedDocuments: retrieved.map((item) => item.document.id),
+      usedDocuments: retrievedIds,
       disclaimer:
-        "Respuesta basada en los datos que has introducido y la base de conocimiento curada. No sustituye tasación oficial ni inspección mecánica.",
+        "Respuesta basada en los datos que has introducido y la base de conocimiento curada (foros/manuales/recalls). No sustituye tasación oficial ni inspección mecánica.",
     };
   }
 }
