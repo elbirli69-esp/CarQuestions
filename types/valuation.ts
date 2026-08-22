@@ -134,6 +134,8 @@ export interface AnalyzeResponse {
   sources: SourceCitation[];
   /** Notas del scrape / búsqueda (antibot, muestra, páginas…). */
   searchNotes?: string[];
+  /** Notas del scrape de la ficha del anuncio (URL pegada). */
+  listingDetailNotes?: string[];
   listingAnalysis: ListingAnalysis;
   sellerQuestions: SellerQuestion[];
   reliability: ReliabilitySummary;

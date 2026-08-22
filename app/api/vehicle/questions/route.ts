@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import { handleRouteError, jsonError } from "@/lib/api/errors";
-import { issueToDocument, listingToDocument, vehicleSummaryDocument } from "@/lib/rag/documents";
+import { fetchListingDetail } from "@/lib/sources/coches-net/fetch-listing-detail";
+import {
+  issueToDocument,
+  listingDetailDocuments,
+  listingToDocument,
+  marketStatsDocument,
+  vehicleSummaryDocument,
+} from "@/lib/rag/documents";
 import { retrieveDocuments } from "@/lib/rag/index";
 import { getAnalysis } from "@/lib/store/vehicle-store";
 import { analyzeVehicle, toVehicleContext } from "@/lib/vehicles/analyze";
@@ -21,11 +28,22 @@ export async function POST(request: Request) {
       return jsonError("No hay un vehículo analizado para esta pregunta.", 404);
     }
 
+    let listingDetailDocs: ReturnType<typeof listingDetailDocuments> = [];
+    if (analysis.vehicle.listingUrl) {
+      const detail = await fetchListingDetail(analysis.vehicle.listingUrl);
+      if (detail) {
+        listingDetailDocs = listingDetailDocuments(analysis.vehicle, detail);
+      }
+    }
+
     const documents = [
       vehicleSummaryDocument(analysis.vehicle),
-      ...analysis.comparables.slice(0, 10).map(listingToDocument),
+      marketStatsDocument(analysis.valuation, analysis.comparables),
+      ...analysis.comparables.slice(0, 15).map(listingToDocument),
+      ...listingDetailDocs,
       ...analysis.reliability.knownIssues.map((issue) => issueToDocument(analysis.vehicle, issue)),
     ];
+
     const retrieved = await retrieveDocuments(
       {
         text: parsed.data.question,
@@ -36,7 +54,7 @@ export async function POST(request: Request) {
           fuel: analysis.vehicle.fuel,
           version: analysis.vehicle.version,
         },
-        limit: 10,
+        limit: 12,
       },
       documents,
     );

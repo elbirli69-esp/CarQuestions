@@ -86,6 +86,8 @@ export type QuestionIntent =
   | "inspection"
   | "consumption"
   | "comparison"
+  | "equipment"
+  | "negotiation"
   | "general";
 
 export function classifyQuestionIntent(question: string): QuestionIntent {
@@ -95,6 +97,8 @@ export function classifyQuestionIntent(question: string): QuestionIntent {
     .toLowerCase();
 
   if (/precio|barato|caro|pagar|tasacion|valoraci[oó]n|oferta/.test(q)) return "price";
+  if (/negoci|rebaja|bajar|descuento|oferta|margen/.test(q)) return "negotiation";
+  if (/equip|extras|techo|navegador|carplay|cuero|led|c[aá]mara|sensor/.test(q)) return "equipment";
   if (/consum|litros|autonomia|kwh|eficiencia/.test(q)) return "consumption";
   if (/compar|alternativ|equivalente|cual comprar|mejor comprar|otro modelo/.test(q)) {
     return "comparison";
@@ -120,7 +124,11 @@ export function intentRetrievalBoost(intent: QuestionIntent): string {
     case "comparison":
       return "alternativas equivalentes ranking compra comparativa";
     case "price":
-      return "precio mercado valoracion comparables oferta";
+      return "precio mercado valoracion comparables oferta mediana p25 p75 intervalo confianza";
+    case "negotiation":
+      return "negociar rebaja dias mercado precio anunciado margen oferta descuento";
+    case "equipment":
+      return "equipamiento extras techo navegador carplay cuero led camara sensor garantia";
     default:
       return "fiabilidad mantenimiento averias soluciones inspeccion";
   }

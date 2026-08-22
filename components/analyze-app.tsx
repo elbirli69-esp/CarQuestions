@@ -110,7 +110,7 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
             comparableCount={analysis.valuation.comparableCount}
             sourceCount={analysis.valuation.sourceCount}
             updatedAt={analysis.valuation.dataUpdatedAt}
-            searchNotes={analysis.searchNotes}
+            searchNotes={[...(analysis.searchNotes ?? []), ...(analysis.listingDetailNotes ?? [])]}
             matchStrictness={analysis.valuation.matchStrictness}
             emptyMessage="coches.net no devolvió comparables útiles para este coche. El precio mostrado es solo una referencia de segmento."
           />
