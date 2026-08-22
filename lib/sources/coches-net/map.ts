@@ -1,8 +1,11 @@
 import type { ComparableQuery, VehicleListing } from "@/types/listing";
-import type { FuelType } from "@/types/vehicle";
+import type { FuelType, TransmissionType } from "@/types/vehicle";
 import type { MatchStrictness } from "@/types/valuation";
 import type { ParsedCochesNetAd } from "@/lib/sources/coches-net/parse";
 import { createVehicleId, normalizeKey } from "@/lib/utils/math";
+
+const MIN_SIMILARITY_STRICT = 0.62;
+const MIN_SIMILARITY_RELAXED = 0.52;
 
 function versionOverlap(
   queryVersion: string | undefined,
@@ -32,18 +35,34 @@ function versionMatches(
 function powerClose(queryPower: number | undefined, listingPower: number | undefined): boolean {
   if (!queryPower || !listingPower) return true;
   const delta = Math.abs(queryPower - listingPower);
-  return delta <= Math.max(15, queryPower * 0.12);
+  return delta <= Math.max(12, queryPower * 0.1);
 }
 
 function mileageClose(queryMileage: number, listingMileage: number | undefined): boolean {
   if (listingMileage == null) return true;
   const delta = Math.abs(queryMileage - listingMileage);
-  return delta <= Math.max(25000, queryMileage * 0.4);
+  return delta <= Math.max(20000, queryMileage * 0.35);
+}
+
+function yearClose(queryYear: number, listingYear: number | undefined, window: number): boolean {
+  if (listingYear == null) return true;
+  return Math.abs(queryYear - listingYear) <= window;
+}
+
+function transmissionCompatible(
+  query: TransmissionType | undefined,
+  listing: TransmissionType | undefined,
+): boolean {
+  if (!query || !listing) return true;
+  return query === listing;
 }
 
 function computeSimilarity(
   query: ComparableQuery,
-  listing: Pick<ParsedCochesNetAd, "year" | "mileage" | "fuel" | "power" | "version" | "title">,
+  listing: Pick<
+    ParsedCochesNetAd,
+    "year" | "mileage" | "fuel" | "power" | "version" | "title" | "transmission"
+  >,
 ): number {
   const yearDelta = listing.year != null ? Math.abs(query.year - listing.year) : 2;
   const mileageDelta =
@@ -51,14 +70,17 @@ function computeSimilarity(
   let score = 0.94 - yearDelta * 0.06 - mileageDelta / 450000;
 
   if (query.fuel && listing.fuel) {
-    score += query.fuel === listing.fuel ? 0.04 : -0.05;
+    score += query.fuel === listing.fuel ? 0.04 : -0.06;
   }
   if (query.power && listing.power) {
-    score -= Math.min(0.1, Math.abs(query.power - listing.power) / 700);
+    score -= Math.min(0.12, Math.abs(query.power - listing.power) / 650);
+  }
+  if (query.transmission && listing.transmission) {
+    score += query.transmission === listing.transmission ? 0.03 : -0.05;
   }
   score += versionOverlap(query.version, listing.version, listing.title);
 
-  return Math.max(0.35, Math.min(0.99, score));
+  return Math.max(0.3, Math.min(0.99, score));
 }
 
 function fuelCompatible(queryFuel: FuelType | undefined, listingFuel: FuelType | undefined): boolean {
@@ -117,6 +139,10 @@ function preferTightPool(
 export interface FilteredCochesNetResult {
   listings: VehicleListing[];
   matchStrictness: MatchStrictness;
+  /** Anuncios mapeados con precio antes de filtros de calidad. */
+  mappedCount: number;
+  /** Tras año+combustible (sin relajar). */
+  coreCount: number;
 }
 
 export function mapAndFilterCochesNetAds(
@@ -129,36 +155,52 @@ export function mapAndFilterCochesNetAds(
     .map((ad) => mapCochesNetAd(ad, query, options.fetchedAt, "strict"))
     .filter((listing): listing is VehicleListing => listing != null);
 
-  const yearFiltered = mapped.filter((listing) => {
-    if (listing.year == null) return true;
-    return Math.abs(listing.year - query.year) <= yearWindow;
-  });
+  const core = mapped.filter(
+    (listing) =>
+      yearClose(query.year, listing.year, yearWindow) && fuelCompatible(query.fuel, listing.fuel),
+  );
 
   let matchStrictness: MatchStrictness = "strict";
-  let pool = yearFiltered.filter((listing) => fuelCompatible(query.fuel, listing.fuel));
-  if (pool.length < 5) {
-    pool = yearFiltered;
-    matchStrictness = "relaxed";
-  }
-  if (pool.length < 5) {
-    const wider = mapped.filter((listing) => {
-      if (listing.year == null) return true;
-      return Math.abs(listing.year - query.year) <= yearWindow + 2;
-    });
-    if (wider.length >= 5) {
-      pool = wider;
-      matchStrictness = "broad";
-    } else {
-      pool = mapped;
-      matchStrictness = "broad";
-    }
-  }
+  let pool = core;
 
+  // Preferir año ±1 si hay masa.
+  pool = preferTightPool(pool, 6, (listing) => yearClose(query.year, listing.year, 1));
+
+  // Cambio si el usuario lo indicó.
+  pool = preferTightPool(pool, 5, (listing) =>
+    transmissionCompatible(query.transmission, listing.transmission),
+  );
+
+  // Versión / potencia / km.
   pool = preferTightPool(pool, 5, (listing) =>
     versionMatches(query.version, listing.version, listing.title),
   );
   pool = preferTightPool(pool, 5, (listing) => powerClose(query.power, listing.power));
   pool = preferTightPool(pool, 5, (listing) => mileageClose(query.mileage, listing.mileage));
+
+  // Umbral de similarity: solo mantener bajos si no hay alternativa.
+  const highSim = pool.filter((listing) => (listing.similarity ?? 0) >= MIN_SIMILARITY_STRICT);
+  if (highSim.length >= 5) {
+    pool = highSim;
+  } else {
+    const midSim = pool.filter((listing) => (listing.similarity ?? 0) >= MIN_SIMILARITY_RELAXED);
+    if (midSim.length >= 5) pool = midSim;
+  }
+
+  // Relajar solo si el core no da para valorar.
+  if (pool.length < 5) {
+    const yearOnly = mapped.filter((listing) => yearClose(query.year, listing.year, yearWindow));
+    if (yearOnly.length >= 5) {
+      pool = yearOnly.filter((listing) => (listing.similarity ?? 0) >= MIN_SIMILARITY_RELAXED);
+      if (pool.length < 5) pool = yearOnly;
+      matchStrictness = "relaxed";
+    }
+  }
+  if (pool.length < 5) {
+    const wider = mapped.filter((listing) => yearClose(query.year, listing.year, yearWindow + 2));
+    pool = wider.length >= 5 ? wider : mapped;
+    matchStrictness = "broad";
+  }
 
   const listings = pool
     .slice()
@@ -169,5 +211,10 @@ export function mapAndFilterCochesNetAds(
       rawData: { ...listing.rawData, matchStrictness },
     }));
 
-  return { listings, matchStrictness };
+  return {
+    listings,
+    matchStrictness,
+    mappedCount: mapped.length,
+    coreCount: core.length,
+  };
 }

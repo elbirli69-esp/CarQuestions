@@ -21,10 +21,11 @@ function emptyResult(notes: string[], connected = false): SourceSearchResult {
 async function fetchSearchPages(
   query: Pick<ComparableQuery, "brand" | "model">,
   pages: number,
-): Promise<{ ads: ParsedCochesNetAd[]; searchUrl: string; notes: string[] }> {
+  startPage = 1,
+): Promise<{ ads: ParsedCochesNetAd[]; searchUrl: string; notes: string[]; pagesFetched: number }> {
   const notes: string[] = [];
   const searchUrl = buildSearchUrl(query.brand, query.model, 1);
-  const pageNumbers = Array.from({ length: pages }, (_, index) => index + 1);
+  const pageNumbers = Array.from({ length: pages }, (_, index) => startPage + index);
 
   const results = await Promise.all(
     pageNumbers.map(async (page) => {
@@ -45,17 +46,19 @@ async function fetchSearchPages(
     }),
   );
 
-  if (results[0]?.error) {
+  if (startPage === 1 && results[0]?.error) {
     throw new CochesNetFetchError(results[0].error);
   }
 
   const allAds: ParsedCochesNetAd[] = [];
   const seen = new Set<string>();
+  let pagesFetched = 0;
   for (const result of results) {
     if (result.error) {
       notes.push(`No se pudo leer la página ${result.page}: ${result.error}`);
       continue;
     }
+    pagesFetched += 1;
     if (result.ads.length === 0) {
       notes.push(`Página ${result.page} de coches.net sin anuncios parseables.`);
       continue;
@@ -67,7 +70,18 @@ async function fetchSearchPages(
     }
   }
 
-  return { ads: allAds, searchUrl, notes };
+  return { ads: allAds, searchUrl, notes, pagesFetched };
+}
+
+function mergeAds(base: ParsedCochesNetAd[], extra: ParsedCochesNetAd[]): ParsedCochesNetAd[] {
+  const seen = new Set(base.map((ad) => ad.id));
+  const merged = [...base];
+  for (const ad of extra) {
+    if (seen.has(ad.id)) continue;
+    seen.add(ad.id);
+    merged.push(ad);
+  }
+  return merged;
 }
 
 export function createCochesNetProvider(): SourceProvider {
@@ -81,35 +95,57 @@ export function createCochesNetProvider(): SourceProvider {
 
     async searchComparables(query: ComparableQuery): Promise<SourceSearchResult> {
       const fetchedAt = new Date().toISOString();
-      const limit = query.limit ?? 24;
-      // ~8 cards SSR por página; 3 páginas en paralelo ≈ hasta ~24 anuncios brutos.
-      const pages = 3;
+      const limit = query.limit ?? 30;
 
       try {
-        const { ads, searchUrl, notes } = await fetchSearchPages(query, pages);
-        const { listings, matchStrictness } = mapAndFilterCochesNetAds(ads, query, {
+        // Primera pasada: 3 páginas (~24 cards SSR).
+        let pagesFetched = 0;
+        const first = await fetchSearchPages(query, 3, 1);
+        pagesFetched += first.pagesFetched;
+        let ads = first.ads;
+        const notes = [...first.notes];
+
+        let filtered = mapAndFilterCochesNetAds(ads, query, {
           fetchedAt,
           limit,
           yearWindow: 2,
         });
 
+        // Si el núcleo (año+combustible) es corto, pedir 2 páginas más antes de relajar filtros.
+        if (filtered.coreCount < 10 || filtered.listings.length < 8) {
+          const more = await fetchSearchPages(query, 2, 4);
+          pagesFetched += more.pagesFetched;
+          notes.push(...more.notes);
+          if (more.ads.length > 0) {
+            ads = mergeAds(ads, more.ads);
+            filtered = mapAndFilterCochesNetAds(ads, query, {
+              fetchedAt,
+              limit,
+              yearWindow: 2,
+            });
+            notes.push(`Ampliación de búsqueda: +${more.ads.length} anuncios brutos (págs. 4–5).`);
+          }
+        }
+
+        const { listings, matchStrictness, mappedCount, coreCount } = filtered;
+
         if (listings.length === 0) {
           return emptyResult([
             ...notes,
-            `No hay comparables útiles en coches.net para ${query.brand} ${query.model} (~${query.year}). Búsqueda: ${searchUrl}`,
+            `No hay comparables útiles en coches.net para ${query.brand} ${query.model} (~${query.year}). Búsqueda: ${first.searchUrl}`,
           ]);
         }
 
         const sampleNote =
           listings.length < 8
-            ? `Muestra moderada (${listings.length} anuncios tras filtros). La confianza del precio es orientativa.`
-            : `Muestra de ${listings.length} anuncios tras filtrar año/combustible/versión.`;
+            ? `Muestra moderada (${listings.length} tras filtros de ${coreCount} núcleo / ${mappedCount} mapeados).`
+            : `Muestra de ${listings.length} anuncios (núcleo año+combustible: ${coreCount}; brutos: ${ads.length}).`;
         const strictnessNote =
           matchStrictness === "strict"
-            ? "Filtros estrechos (año y combustible alineados)."
+            ? "Filtros estrechos (año, combustible, similitud)."
             : matchStrictness === "relaxed"
               ? "Filtros relajados: se amplió el pool para llegar a suficientes anuncios."
-              : "Filtros amplios: la mediana puede mezclar versiones o años más lejanos.";
+              : "Filtros amplios: la mediana puede mezclar años o versiones más lejanos.";
 
         return {
           listings,
@@ -121,8 +157,8 @@ export function createCochesNetProvider(): SourceProvider {
             `${listings.length} anuncios de coches.net (mercado España) para ${query.brand} ${query.model}.`,
             sampleNote,
             strictnessNote,
-            `Fuente: ${searchUrl}`,
-            `Anuncios brutos leídos: ${ads.length} en ${pages} página(s).`,
+            `Fuente: ${first.searchUrl}`,
+            `Anuncios brutos leídos: ${ads.length} en ${pagesFetched} página(s).`,
             ...notes,
           ],
         };
@@ -161,15 +197,21 @@ export function createCochesNetProvider(): SourceProvider {
       let matched: ParsedCochesNetAd | undefined;
       if (fromUrl.brand && fromUrl.model) {
         try {
-          const { ads } = await fetchSearchPages({ brand: fromUrl.brand, model: fromUrl.model }, 3);
+          const first = await fetchSearchPages({ brand: fromUrl.brand, model: fromUrl.model }, 3, 1);
+          let ads = first.ads;
           matched = ads.find((ad) => ad.id === fromUrl.id);
-          // Si no está en las primeras páginas, usar el anuncio más similar del slug (mismo año/versión).
+          if (!matched) {
+            const more = await fetchSearchPages({ brand: fromUrl.brand, model: fromUrl.model }, 2, 4);
+            ads = mergeAds(ads, more.ads);
+            matched = ads.find((ad) => ad.id === fromUrl.id);
+          }
           if (!matched && fromUrl.year) {
             matched = ads.find(
               (ad) =>
                 ad.year === fromUrl.year &&
                 (!fromUrl.version ||
-                  (ad.version && ad.version.toLowerCase().includes(fromUrl.version.toLowerCase().split(" ")[0] ?? ""))),
+                  (ad.version &&
+                    ad.version.toLowerCase().includes(fromUrl.version.toLowerCase().split(" ")[0] ?? ""))),
             );
           }
         } catch {
@@ -185,6 +227,7 @@ export function createCochesNetProvider(): SourceProvider {
         vehicle.fuel = matched.fuel ?? vehicle.fuel;
         vehicle.location = matched.location ?? vehicle.location;
         vehicle.version = matched.version ?? vehicle.version;
+        vehicle.transmission = matched.transmission ?? vehicle.transmission;
       }
 
       const filled = [
@@ -195,6 +238,7 @@ export function createCochesNetProvider(): SourceProvider {
         vehicle.mileage != null && "km",
         vehicle.advertisedPrice != null && "precio",
         vehicle.power != null && "CV",
+        vehicle.transmission && "cambio",
       ].filter(Boolean);
 
       return {
@@ -212,6 +256,7 @@ export function createCochesNetProvider(): SourceProvider {
           mileage: vehicle.mileage,
           fuel: vehicle.fuel,
           power: vehicle.power,
+          transmission: vehicle.transmission,
           price: vehicle.advertisedPrice,
           location: vehicle.location,
           isDemo: false,

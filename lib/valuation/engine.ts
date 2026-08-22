@@ -8,7 +8,7 @@ import type {
 } from "@/types/valuation";
 import type { Vehicle } from "@/types/vehicle";
 import { estimateMarketAnchor } from "@/lib/sources/demo-listings";
-import { average, clamp, percentile, roundTo } from "@/lib/utils/math";
+import { average, clamp, percentile, roundTo, trimPriceOutliers, weightedMedian } from "@/lib/utils/math";
 
 const VERDICT_LABELS: Record<PriceVerdict, string> = {
   muy_barato: "Muy barato",
@@ -167,12 +167,12 @@ function buildAdjustments(
 
 function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[]): ValuationResult {
   const priced = listings.filter((listing) => typeof listing.price === "number" && listing.price > 0);
-  const prices = priced.map((listing) => listing.price as number);
+  const rawPrices = priced.map((listing) => listing.price as number);
   const limitations: string[] = [];
   const confidenceDrivers: string[] = [];
   const matchStrictness = readMatchStrictness(priced);
 
-  if (prices.length < 5) {
+  if (rawPrices.length < 5) {
     limitations.push("Hay pocos comparables. El intervalo de precio es orientativo y de baja confianza.");
   }
   if (matchStrictness === "relaxed") {
@@ -182,35 +182,62 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
     limitations.push("Los filtros de comparables son amplios: la mediana puede mezclar años o versiones distintas.");
   }
 
-  const distribution = distributionFrom(prices);
+  const { kept: trimmedPrices, removed: outliersRemoved } = trimPriceOutliers(rawPrices);
+  const trimmedPriceSet = new Set(trimmedPrices);
+  const workingListings =
+    outliersRemoved > 0
+      ? priced.filter((listing) => trimmedPriceSet.has(listing.price as number))
+      : priced;
+
+  if (outliersRemoved > 0) {
+    limitations.push(
+      `Se excluyeron ${outliersRemoved} precio(s) atípico(s) antes de calcular la mediana (vallas IQR).`,
+    );
+  }
+
+  const distribution = distributionFrom(workingListings.map((listing) => listing.price as number));
   const comparableMileage = average(
-    priced.map((listing) => listing.mileage).filter((value): value is number => typeof value === "number"),
+    workingListings
+      .map((listing) => listing.mileage)
+      .filter((value): value is number => typeof value === "number"),
   );
   const comparableYear = average(
-    priced.map((listing) => listing.year).filter((value): value is number => typeof value === "number"),
+    workingListings.map((listing) => listing.year).filter((value): value is number => typeof value === "number"),
   );
   const adjustments = buildAdjustments(vehicle, { comparableMileage, comparableYear });
 
-  let estimated = distribution.median || 0;
+  // Mediana ponderada por similarity: los anuncios más parecidos pesan más.
+  const weighted = weightedMedian(
+    workingListings.map((listing) => ({
+      value: listing.price as number,
+      weight: Math.max(0.15, listing.similarity ?? 0.6),
+    })),
+  );
+  let estimated = roundTo(weighted || distribution.median || 0, 50);
   for (const adjustment of adjustments) {
     estimated += adjustment.amount;
   }
 
-  estimated = roundTo(clamp(estimated, distribution.min || estimated, distribution.max || estimated + 4000), 50);
+  estimated = roundTo(
+    clamp(estimated, distribution.min || estimated, distribution.max || estimated + 4000),
+    50,
+  );
 
   const iqr = Math.max(0, distribution.p75 - distribution.p25);
   const iqrRatio = estimated > 0 ? iqr / estimated : 0;
   const avgSimilarity =
-    average(priced.map((listing) => listing.similarity).filter((value): value is number => typeof value === "number")) ??
-    0.7;
+    average(
+      workingListings
+        .map((listing) => listing.similarity)
+        .filter((value): value is number => typeof value === "number"),
+    ) ?? 0.7;
 
-  // Intervalo: con pocos anuncios o pool amplio, usar IQR / % más ancho (evita precisión falsa).
   let spreadPct = 0.045;
-  if (prices.length < 5) spreadPct = 0.12;
-  else if (prices.length < 8 || matchStrictness !== "strict") spreadPct = 0.08;
+  if (workingListings.length < 5) spreadPct = 0.12;
+  else if (workingListings.length < 8 || matchStrictness !== "strict") spreadPct = 0.08;
   else if (iqrRatio > 0.2) spreadPct = 0.07;
 
-  const spreadFromIqr = prices.length >= 5 ? roundTo(iqr * 0.55, 50) : 0;
+  const spreadFromIqr = workingListings.length >= 5 ? roundTo(iqr * 0.55, 50) : 0;
   const spreadFromPct = Math.max(800, roundTo(estimated * spreadPct, 50));
   const spread = Math.max(spreadFromPct, spreadFromIqr);
   const low = roundTo(estimated - spread, 50);
@@ -231,16 +258,18 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
       vehicle.itv,
     ].filter(Boolean).length / 6;
 
-  let confidence = 28 + priced.length * 2.2 + completeness * 14 + avgSimilarity * 22;
+  let confidence =
+    26 + workingListings.length * 2.4 + completeness * 12 + avgSimilarity * 26;
   if (matchStrictness === "relaxed") confidence -= 8;
   if (matchStrictness === "broad") confidence -= 14;
-  if (prices.length < 5) confidence -= 12;
-  if (prices.length < 8) confidence -= 4;
+  if (workingListings.length < 5) confidence -= 12;
+  if (workingListings.length < 8) confidence -= 4;
   if (iqrRatio > 0.25) confidence -= 6;
-  if (avgSimilarity < 0.7) confidence -= 8;
-  confidence = Math.round(clamp(confidence, 22, 88));
+  if (avgSimilarity < 0.7) confidence -= 10;
+  if (outliersRemoved > 0) confidence += 2; // muestra más limpia
+  confidence = Math.round(clamp(confidence, 22, 90));
 
-  confidenceDrivers.push(`${priced.length} anuncios con precio`);
+  confidenceDrivers.push(`${workingListings.length} anuncios tras limpieza`);
   confidenceDrivers.push(`Similitud media ${(avgSimilarity * 100).toFixed(0)} %`);
   confidenceDrivers.push(
     matchStrictness === "strict"
@@ -249,9 +278,13 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
         ? "Filtros relajados"
         : "Filtros amplios",
   );
+  confidenceDrivers.push("Mediana ponderada por similitud");
+  if (outliersRemoved > 0) {
+    confidenceDrivers.push(`${outliersRemoved} outlier(s) excluidos`);
+  }
   if (iqr > 0) confidenceDrivers.push(`Dispersión P25–P75: ${iqr.toLocaleString("es-ES")} €`);
 
-  const sourceCount = new Set(priced.map((listing) => listing.source)).size;
+  const sourceCount = new Set(workingListings.map((listing) => listing.source)).size;
   const summary =
     percentDifference == null
       ? "No hay precio anunciado, así que solo se estima el intervalo de mercado a partir de comparables."
@@ -283,15 +316,15 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
     matchStrictness,
     distribution,
     adjustments,
-    comparableCount: priced.length,
+    comparableCount: workingListings.length,
     sourceCount,
-    dataUpdatedAt: priced[0]?.fetchedAt ?? new Date().toISOString(),
+    dataUpdatedAt: workingListings[0]?.fetchedAt ?? new Date().toISOString(),
     origin: "observed",
     methodology: [
-      "Se buscan anuncios comparables del mismo modelo, año próximo, combustible y cambio.",
-      "Se calcula la distribución de precios: mínimo, percentil 25, mediana, percentil 75 y máximo.",
-      "El valor base es la mediana observada en esos comparables.",
-      "La confianza combina número de anuncios, similitud media, dispersión (IQR) y lo estrechos que fueron los filtros.",
+      "Se buscan anuncios comparables del mismo modelo, año próximo y combustible (ampliando páginas si hace falta).",
+      "Se filtran por similitud, versión, potencia y km; se excluyen precios atípicos (IQR).",
+      "El valor base es la mediana ponderada por similitud de esos comparables.",
+      "La confianza combina tamaño de muestra limpia, similitud media, dispersión y lo estrechos que fueron los filtros.",
       "Se aplican ajustes cuantitativos solo cuando el usuario ha aportado el dato (km, año, estado, historial, etc.).",
     ],
     limitations,
