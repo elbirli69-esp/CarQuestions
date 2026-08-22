@@ -61,8 +61,46 @@ export function normalizeKey(value: string): string {
     .trim();
 }
 
+const SHORT_AUTOMOTIVE_TOKENS = new Set([
+  "ac",
+  "abs",
+  "agm",
+  "at",
+  "awd",
+  "cvt",
+  "dc",
+  "dct",
+  "dpf",
+  "dsg",
+  "eat",
+  "efb",
+  "egr",
+  "esp",
+  "ev",
+  "fap",
+  "gdi",
+  "gpf",
+  "hv",
+  "hp",
+  "ims",
+  "itv",
+  "kw",
+  "obd",
+  "oem",
+  "pcv",
+  "phev",
+  "scr",
+  "soh",
+  "tsi",
+  "tdi",
+  "vin",
+  "vvt",
+  "zf",
+  "4x4",
+]);
+
 export function tokenize(text: string): string[] {
   return normalizeKey(text)
     .split(" ")
-    .filter((token) => token.length > 2);
+    .filter((token) => token.length > 2 || SHORT_AUTOMOTIVE_TOKENS.has(token));
 }

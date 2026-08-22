@@ -1,7 +1,12 @@
+import type { KnowledgeChunk } from "@/types/knowledge";
 import type { KnownIssue, SellerQuestion } from "@/types/valuation";
 import type { Vehicle } from "@/types/vehicle";
 
-export function buildSellerQuestions(vehicle: Vehicle, issues: KnownIssue[]): SellerQuestion[] {
+export function buildSellerQuestions(
+  vehicle: Vehicle,
+  issues: KnownIssue[],
+  knowledgeChunks: KnowledgeChunk[] = [],
+): SellerQuestion[] {
   const questions: SellerQuestion[] = [
     {
       question: "¿Tiene historial completo de mantenimiento y facturas?",
@@ -16,9 +21,10 @@ export function buildSellerQuestions(vehicle: Vehicle, issues: KnownIssue[]): Se
       why: "Un siniestro no siempre se ve en fotos. Hay que preguntarlo por escrito.",
     },
     {
-      question: vehicle.fuel === "electric" || vehicle.fuel === "hybrid" || vehicle.fuel === "plugin_hybrid"
-        ? "¿Cuál es el estado de la batería y hay informe de salud?"
-        : "¿Cuándo se cambió la distribución (correa o cadena) y con qué kilometraje?",
+      question:
+        vehicle.fuel === "electric" || vehicle.fuel === "hybrid" || vehicle.fuel === "plugin_hybrid"
+          ? "¿Cuál es el estado de la batería y hay informe de salud?"
+          : "¿Cuándo se cambió la distribución (correa o cadena) y con qué kilometraje?",
       why: "Es una de las intervenciones caras más habituales según el tipo de motor.",
     },
   ];
@@ -44,13 +50,32 @@ export function buildSellerQuestions(vehicle: Vehicle, issues: KnownIssue[]): Se
     });
   }
 
+  const seen = new Set(questions.map((item) => item.question.toLowerCase()));
+
+  for (const chunk of knowledgeChunks) {
+    for (const ask of chunk.askSeller ?? []) {
+      const key = ask.toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      questions.push({
+        question: ask,
+        why: `${chunk.title}. Fuente: ${chunk.source}`,
+        relatedIssue: chunk.title,
+      });
+    }
+  }
+
   for (const issue of issues.slice(0, 3)) {
+    const question = `Respecto a ${issue.title.toLowerCase()}, ¿se ha revisado o reparado en este coche?`;
+    const key = question.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
     questions.push({
-      question: `Respecto a ${issue.title.toLowerCase()}, ¿se ha revisado o reparado en este coche?`,
+      question,
       why: issue.detail,
       relatedIssue: issue.title,
     });
   }
 
-  return questions.slice(0, 8);
+  return questions.slice(0, 12);
 }

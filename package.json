@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "rag:ingest": "tsx scripts/rag-ingest.ts",
-    "rag:generate-packs": "tsx scripts/generate-knowledge-packs.ts"
+    "rag:generate-packs": "tsx scripts/generate-knowledge-packs.ts",
+    "rag:eval": "tsx scripts/rag-eval.ts"
   },
   "dependencies": {
     "ai": "^7.0.73",

@@ -57,7 +57,11 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
     listings: comparables,
   });
   const listingAnalysis = analyzeListing(vehicle, valuation.verdict);
-  const sellerQuestions = buildSellerQuestions(vehicle, knowledge.reliability.knownIssues);
+  const sellerQuestions = buildSellerQuestions(
+    vehicle,
+    knowledge.reliability.knownIssues,
+    knowledge.knowledgeChunks,
+  );
 
   const hasKnowledge = knowledge.reliability.available || knowledge.maintenance.available;
   const dataMode = resolveDataMode({
