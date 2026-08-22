@@ -283,6 +283,24 @@ const CASES: Case[] = [
     vehicle: { brand: "Mercedes-Benz", model: "Sprinter", year: 2021, fuel: "diesel" },
     expectIdIncludes: ["sprinter", "om654", "lcv", "adblue"],
   },
+  {
+    name: "E30 oxido",
+    text: "bmw e30 oxido estribos suelos youngtimer",
+    vehicle: { brand: "BMW", model: "E30", year: 1988, fuel: "petrol" },
+    expectIdIncludes: ["e30", "youngtimer", "oxido", "estribos"],
+  },
+  {
+    name: "EV regen frenos",
+    text: "freno regenerativo discos oxidados one pedal blending",
+    vehicle: { brand: "Tesla", model: "Model 3", year: 2021, fuel: "electric" },
+    expectIdIncludes: ["regen", "frenos", "oxido", "one", "blending", "epb"],
+  },
+  {
+    name: "W124 youngtimer",
+    text: "mercedes w124 oxido cableado youngtimer",
+    vehicle: { brand: "Mercedes-Benz", model: "E-Class", year: 1992, fuel: "petrol" },
+    expectIdIncludes: ["w124", "youngtimer", "mercedes", "oxido"],
+  },
 ];
 
 function matchesExpectation(id: string, expectIdIncludes: string[]): boolean {

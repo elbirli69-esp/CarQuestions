@@ -49,6 +49,8 @@ const SYNONYM_GROUPS: string[][] = [
   ["lcv", "furgoneta", "furgon", "sprinter", "transit", "ducato", "iveco", "crafter", "trafic", "flota"],
   ["heat pump", "bomba de calor", "preconditioning", "preacondicion", "ptc", "termica", "derating"],
   ["adblue", "scr", "urea", "nox", "cristalizacion"],
+  ["youngtimer", "clasico", "clasicos", "oxido", "estribos", "w124", "e30", "mx5"],
+  ["regen", "regenerativo", "one pedal", "brake-by-wire", "epb", "blending"],
   ["fiabilidad", "averia", "fallo", "problema", "averias", "fallos", "problemas", "sintoma"],
   ["mantenimiento", "revision", "servicio", "intervalo"],
   ["inspeccion", "precompra", "revisar", "checklist", "taller", "obd"],

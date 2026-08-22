@@ -48,6 +48,17 @@ export function buildSellerQuestions(
       question: "¿Lleva bomba de calor (heat pump) y preacondiciona la batería antes de cargar rápido?",
       why: "Sin heat pump y sin preconditioning, la autonomía invierno y la curva DC suelen ser peores de lo anunciado.",
     });
+    questions.push({
+      question: "¿Cómo se sienten los frenos en una frenada fuerte? ¿Hay óxido en discos o avisos de EPB/brake-by-wire?",
+      why: "El regenerativo reduce desgaste de pastillas pero los discos oxidan y los sistemas brake-by-wire/EPB fallan si se ignoran.",
+    });
+  }
+
+  if (vehicle.year > 0 && vehicle.year <= 2005) {
+    questions.push({
+      question: "¿Hay fotos de bajos/estribos y qué trabajos de óxido o chapa estructural se hicieron?",
+      why: "En youngtimers el chasis manda: un cosmético bonito con óxido estructural sale caro.",
+    });
   }
 
   const looksCommercial =

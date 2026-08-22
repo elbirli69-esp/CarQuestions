@@ -62,7 +62,7 @@ export class KnowledgeVectorStore {
         const brand = input.vehicle?.brand?.toLowerCase() ?? "";
         const isUniversal = chunk.brands.some((item) => item.trim() === "*");
         const intentHints = (input.text ?? "").toLowerCase();
-        const wantsIssues = /aver|fallo|problem|sintoma|ruido|fiab|cadena|fap|egr|turbo|caja|dsg/.test(
+        const wantsIssues = /aver|fallo|problem|sintoma|ruido|fiab|cadena|fap|egr|turbo|caja|dsg|oxido|regen|freno/.test(
           intentHints,
         );
         const wantsMaint = /manten|aceite|intervalo|revision|servicio/.test(intentHints);
