@@ -337,6 +337,24 @@ const CASES: Case[] = [
     vehicle: { brand: "BMW", model: "320d", year: 2016, fuel: "diesel" },
     expectIdIncludes: ["perdida", "total", "seguro", "writeoff", "siniestro"],
   },
+  {
+    name: "OBD P0420",
+    text: "codigo p0420 catalizador obd eficiencia",
+    vehicle: { brand: "Toyota", model: "Corolla", year: 2015, fuel: "petrol" },
+    expectIdIncludes: ["p0420", "catalizador", "obd"],
+  },
+  {
+    name: "OBD misfire",
+    text: "p0300 fallo encendido misfire bobina bujia",
+    vehicle: { brand: "Volkswagen", model: "Golf", year: 2016, fuel: "petrol" },
+    expectIdIncludes: ["p0300", "misfire", "bobina", "obd"],
+  },
+  {
+    name: "OBD precompra scan",
+    text: "escaneo obd precompra readiness codigos pending",
+    vehicle: { brand: "Seat", model: "Leon", year: 2018, fuel: "diesel" },
+    expectIdIncludes: ["obd", "precompra", "readiness", "pending", "scan"],
+  },
 ];
 
 function matchesExpectation(id: string, expectIdIncludes: string[]): boolean {

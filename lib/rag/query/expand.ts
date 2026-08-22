@@ -55,6 +55,7 @@ const SYNONYM_GROUPS: string[][] = [
   ["haldex", "4motion", "quattro", "xdrive", "4matic", "allgrip", "awd", "4x4", "ptu"],
   ["chapa", "pintura", "siniestro", "golpe", "respray", "masilla", "estructural", "airbag"],
   ["inundacion", "flood", "riada", "moho", "humedad", "salvage", "perdida total", "writeoff"],
+  ["obd", "p0420", "p0300", "codigo averia", "readiness", "freeze frame", "diagnosis"],
   ["fiabilidad", "averia", "fallo", "problema", "averias", "fallos", "problemas", "sintoma"],
   ["mantenimiento", "revision", "servicio", "intervalo"],
   ["inspeccion", "precompra", "revisar", "checklist", "taller", "obd"],
