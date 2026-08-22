@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRef, useState } from "react";
 import { DemoBanner } from "@/components/demo-banner";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -56,7 +57,17 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-8 sm:py-12">
       <header className="flex flex-col gap-4">
         <div className="flex items-start justify-between gap-4">
-          <p className="text-sm font-medium tracking-wide text-muted-foreground">CarQuestions</p>
+          <div className="flex items-center gap-2.5">
+            <Image
+              src="/icon-512.png"
+              alt="CarQuestions"
+              width={36}
+              height={36}
+              className="size-9 rounded-[9px] shadow-sm"
+              priority
+            />
+            <p className="text-sm font-medium tracking-wide text-muted-foreground">CarQuestions</p>
+          </div>
           <ThemeToggle />
         </div>
         <h1 className="font-heading max-w-xl text-3xl leading-tight font-medium tracking-tight sm:text-4xl">

@@ -26,11 +26,16 @@ export const metadata: Metadata = {
     "BMW X1",
     "CarQuestions",
   ],
+  icons: {
+    icon: [{ url: "/icon-512.png", type: "image/png", sizes: "512x512" }],
+    apple: [{ url: "/apple-icon.png", type: "image/png", sizes: "180x180" }],
+  },
   openGraph: {
     title: "CarQuestions",
     description: "Tasador, comparador y asistente para comprar coches de segunda mano.",
     locale: "es_ES",
     type: "website",
+    images: [{ url: "/icon-512.png", width: 512, height: 512, alt: "CarQuestions" }],
   },
 };
 
