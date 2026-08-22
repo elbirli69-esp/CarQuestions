@@ -43,6 +43,24 @@ export function buildSellerQuestions(
     });
   }
 
+  if (vehicle.fuel === "electric" || vehicle.fuel === "plugin_hybrid") {
+    questions.push({
+      question: "¿Lleva bomba de calor (heat pump) y preacondiciona la batería antes de cargar rápido?",
+      why: "Sin heat pump y sin preconditioning, la autonomía invierno y la curva DC suelen ser peores de lo anunciado.",
+    });
+  }
+
+  const looksCommercial =
+    /transit|sprinter|crafter|ducato|boxer|jumper|master|trafic|vivaro|daily|movano|custom|vito/i.test(
+      `${vehicle.model} ${vehicle.brand}`,
+    );
+  if (looksCommercial) {
+    questions.push({
+      question: "¿Fue de flota/reparto? ¿Qué peso cargaba habitualmente y hay historial de FAP/AdBlue?",
+      why: "Las furgonetas ex-flota acumulan sobrecarga, regeneraciones forzadas y desgaste de embrague/eje trasero.",
+    });
+  }
+
   if (!vehicle.itv) {
     questions.push({
       question: "¿Hasta cuándo tiene la ITV en vigor y ha pasado alguna con deficiencias?",

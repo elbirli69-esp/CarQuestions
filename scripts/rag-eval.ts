@@ -265,6 +265,24 @@ const CASES: Case[] = [
     vehicle: { brand: "Land Rover", model: "Discovery Sport", year: 2018, fuel: "diesel" },
     expectIdIncludes: ["ingenium", "land", "cadena", "jaguar"],
   },
+  {
+    name: "Iveco Daily FAP",
+    text: "iveco daily fap adblue reparto flota regeneracion",
+    vehicle: { brand: "Iveco", model: "Daily", year: 2019, fuel: "diesel" },
+    expectIdIncludes: ["iveco", "daily", "lcv", "fap", "adblue"],
+  },
+  {
+    name: "EV heat pump",
+    text: "bomba de calor heat pump autonomia invierno ev preconditioning",
+    vehicle: { brand: "Volkswagen", model: "ID.3", year: 2022, fuel: "electric" },
+    expectIdIncludes: ["heat", "pump", "calor", "precondition", "ptc", "termica", "invierno"],
+  },
+  {
+    name: "Sprinter OM654",
+    text: "sprinter om654 adblue cadena scr",
+    vehicle: { brand: "Mercedes-Benz", model: "Sprinter", year: 2021, fuel: "diesel" },
+    expectIdIncludes: ["sprinter", "om654", "lcv", "adblue"],
+  },
 ];
 
 function matchesExpectation(id: string, expectIdIncludes: string[]): boolean {
