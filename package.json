@@ -11,13 +11,18 @@
     "rag:generate-packs": "tsx scripts/generate-knowledge-packs.ts",
     "rag:eval": "tsx scripts/rag-eval.ts",
     "rag:coverage": "tsx scripts/rag-coverage.ts",
-    "smoke:store": "tsx scripts/smoke-analysis-store.ts"
+    "smoke:store": "tsx scripts/smoke-analysis-store.ts",
+    "scraping:benchmark": "tsx scripts/scraping-benchmark.ts",
+    "scraping:fixtures": "tsx scripts/capture-coches-fixtures.ts",
+    "test:scraping": "node --import tsx --test lib/sources/coches-net/__tests__/*.test.ts",
+    "smoke:scraping": "tsx scripts/smoke-scraping-live.ts"
   },
   "dependencies": {
     "@upstash/redis": "^1.38.2",
     "ai": "^7.0.73",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "linkedom": "^0.18.13",
     "lucide-react": "^1.33.0",
     "next": "16.3.2",
     "next-themes": "^0.4.6",
