@@ -102,7 +102,7 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
     limitations,
   };
 
-  saveAnalysis(analysis);
+  await saveAnalysis(analysis);
   return analysis;
 }
 

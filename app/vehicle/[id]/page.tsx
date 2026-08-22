@@ -10,7 +10,7 @@ export default async function VehiclePage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const analysis = getAnalysis(id);
+  const analysis = await getAnalysis(id);
   if (!analysis) {
     notFound();
   }

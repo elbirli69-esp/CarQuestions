@@ -15,7 +15,7 @@ export async function POST(request: Request) {
       return jsonError("La pregunta no es válida.", 400, parsed.error.issues);
     }
 
-    const stored = parsed.data.analysisId ? getAnalysis(parsed.data.analysisId) : undefined;
+    const stored = parsed.data.analysisId ? await getAnalysis(parsed.data.analysisId) : undefined;
     const analysis = stored ?? (parsed.data.vehicle ? await analyzeVehicle(parsed.data.vehicle) : undefined);
     if (!analysis) {
       return jsonError("No hay un vehículo analizado para esta pregunta.", 404);
