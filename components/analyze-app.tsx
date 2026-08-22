@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { DemoBanner } from "@/components/demo-banner";
+import { HelpGuide } from "@/components/help/help-guide";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ComparableList } from "@/components/comparable-cars/comparable-list";
 import { ListingAnalysisCard } from "@/components/listing-analysis/listing-analysis-card";
@@ -68,7 +69,10 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
             />
             <p className="text-sm font-medium tracking-wide text-muted-foreground">CarQuestions</p>
           </div>
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <HelpGuide />
+            <ThemeToggle />
+          </div>
         </div>
         <h1 className="font-heading max-w-xl text-3xl leading-tight font-medium tracking-tight sm:text-4xl">
           ¿Cuánto vale realmente este coche?
