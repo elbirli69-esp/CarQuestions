@@ -32,24 +32,30 @@ function loadEnrichmentOverlays(): Partial<KnowledgeChunk>[] {
 }
 
 function loadPackChunks(): KnowledgeChunk[] {
+  let files: string[];
   try {
-    const files = readdirSync(PACKS_DIR)
+    files = readdirSync(PACKS_DIR)
       .filter((name) => name.endsWith(".json"))
       .sort();
-    const chunks: KnowledgeChunk[] = [];
-    for (const file of files) {
-      const raw = JSON.parse(readFileSync(join(PACKS_DIR, file), "utf8")) as {
-        chunks?: unknown[];
-      };
-      if (!raw.chunks || !Array.isArray(raw.chunks)) continue;
-      for (const item of raw.chunks) {
-        chunks.push(knowledgeChunkSchema.parse(item));
-      }
-    }
-    return chunks;
   } catch {
     return [];
   }
+  const chunks: KnowledgeChunk[] = [];
+  for (const file of files) {
+    const raw = JSON.parse(readFileSync(join(PACKS_DIR, file), "utf8")) as {
+      chunks?: unknown[];
+    };
+    if (!raw.chunks || !Array.isArray(raw.chunks)) continue;
+    for (const [index, item] of raw.chunks.entries()) {
+      try {
+        chunks.push(knowledgeChunkSchema.parse(item));
+      } catch (error) {
+        const detail = error instanceof Error ? error.message : String(error);
+        throw new Error(`Invalid knowledge pack ${file} chunk[${index}]: ${detail}`);
+      }
+    }
+  }
+  return chunks;
 }
 
 export function loadKnowledgeCorpus(): KnowledgeCorpus {

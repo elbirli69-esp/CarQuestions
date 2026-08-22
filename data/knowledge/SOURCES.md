@@ -34,6 +34,8 @@ Los packs `01-symptom-playbooks.json` y afines documentan:
 4. **Qué revisar en taller**
 5. **Coste orientativo** cuando hay rango habitual
 
+Packs recientes cubren también mild-hybrid 48V/ISG, dilución GDI, common-rail, playbooks de chasis/arranque y marcas JLR/Porsche/Cupra.
+
 Marca `"brands": ["*"]` = aplicable a cualquier vehículo (tras filtros de combustible/año).
 
 ## Qué NO es

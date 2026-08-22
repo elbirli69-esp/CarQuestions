@@ -241,6 +241,30 @@ const CASES: Case[] = [
     vehicle: { brand: "Alfa Romeo", model: "Giulia", year: 2019, fuel: "petrol" },
     expectIdIncludes: ["giulia", "alfa", "2.0", "carbonilla"],
   },
+  {
+    name: "MHEV 48V ISG",
+    text: "mild hybrid 48v isg correa start-stop chirrido",
+    vehicle: { brand: "Suzuki", model: "Vitara", year: 2021, fuel: "hybrid" },
+    expectIdIncludes: ["mhev", "48v", "isg", "bsg", "agm", "start-stop"],
+  },
+  {
+    name: "GDI dilucion",
+    text: "inyeccion directa dilucion aceite trayectos cortos gdi",
+    vehicle: { brand: "Ford", model: "Focus", year: 2018, fuel: "petrol" },
+    expectIdIncludes: ["gdi", "dilucion", "aceite", "hpfp", "carbonilla"],
+  },
+  {
+    name: "Bimasa DMF",
+    text: "traqueteo ralenti bimasa volante embrague",
+    vehicle: { brand: "Volkswagen", model: "Golf", year: 2014, fuel: "diesel" },
+    expectIdIncludes: ["bimasa", "dmf", "embrague"],
+  },
+  {
+    name: "Ingenium cadena",
+    text: "ingenium land rover cadena consumo aceite",
+    vehicle: { brand: "Land Rover", model: "Discovery Sport", year: 2018, fuel: "diesel" },
+    expectIdIncludes: ["ingenium", "land", "cadena", "jaguar"],
+  },
 ];
 
 function matchesExpectation(id: string, expectIdIncludes: string[]): boolean {
