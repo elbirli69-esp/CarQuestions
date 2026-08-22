@@ -72,6 +72,14 @@ export class KnowledgeVectorStore {
           (wantsMaint && chunk.type === "maintenance" ? 0.06 : 0) +
           (wantsInspect && chunk.type === "inspection" ? 0.06 : 0);
 
+        const fuel = input.vehicle?.fuel;
+        const fuelBoost =
+          fuel && chunk.fuels && chunk.fuels.length > 0
+            ? chunk.fuels.includes(fuel as never)
+              ? 0.05
+              : -0.04
+            : 0;
+
         const metadataBoost =
           (chunk.type === "issue" || chunk.type === "recall" ? 0.05 : 0) +
           (brand &&
@@ -81,7 +89,8 @@ export class KnowledgeVectorStore {
             : 0) +
           (isUniversal ? 0.02 : 0) +
           (chunk.symptoms && chunk.symptoms.length > 0 ? 0.03 : 0) +
-          typeBoost;
+          typeBoost +
+          fuelBoost;
         return {
           chunk,
           score: semanticScore + metadataBoost,

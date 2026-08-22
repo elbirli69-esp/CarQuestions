@@ -30,6 +30,8 @@ const SYNONYM_GROUPS: string[][] = [
   ["ruido", "traqueteo", "cascabeleo", "silbido", "vibracion", "tirones"],
   ["meb", "id3", "id4", "enyaq", "born", "q4", "plataforma meb"],
   ["egmp", "ioniq", "ev6", "iccu", "800v"],
+  ["byd", "blade", "atto", "seal", "dm-i", "nev"],
+  ["maf", "map", "lambda", "o2", "knock", "ect", "ckp", "cmp", "sensor"],
   ["frenos", "discos", "pastillas", "epb", "pulsacion", "alabeado"],
   ["direccion", "cremallera", "eps", "bieletas", "asistencia"],
   ["fiabilidad", "averia", "fallo", "problema", "averias", "fallos", "problemas", "sintoma"],

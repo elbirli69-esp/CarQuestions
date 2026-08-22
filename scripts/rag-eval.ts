@@ -139,6 +139,24 @@ const CASES: Case[] = [
     vehicle: { brand: "Peugeot", model: "208", year: 2023, fuel: "petrol" },
     expectIdIncludes: ["puretech", "wet", "correa", "belt"],
   },
+  {
+    name: "BYD Blade",
+    text: "byd atto 3 bateria blade garantia carga",
+    vehicle: { brand: "BYD", model: "Atto 3", year: 2024, fuel: "electric" },
+    expectIdIncludes: ["byd", "atto", "blade", "ev"],
+  },
+  {
+    name: "MG4 suspension",
+    text: "mg4 ruido suspension software ota",
+    vehicle: { brand: "MG", model: "MG4", year: 2023, fuel: "electric" },
+    expectIdIncludes: ["mg4", "mg", "suspension", "ev"],
+  },
+  {
+    name: "MAF sucio",
+    text: "sensor maf sucio tirones consumo mezcla",
+    vehicle: { brand: "Volkswagen", model: "Golf", year: 2015, fuel: "petrol" },
+    expectIdIncludes: ["maf", "sensor", "mezcla"],
+  },
 ];
 
 function matchesExpectation(id: string, expectIdIncludes: string[]): boolean {
