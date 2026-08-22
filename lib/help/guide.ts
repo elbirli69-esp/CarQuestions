@@ -1,0 +1,64 @@
+export const HELP_STORAGE_KEY = "carquestions.help.v1.seen";
+
+export interface HelpStep {
+  id: string;
+  title: string;
+  body: string;
+  bullets?: string[];
+}
+
+export const HELP_STEPS: HelpStep[] = [
+  {
+    id: "welcome",
+    title: "Así funciona CarQuestions",
+    body: "Te ayuda a decidir si un coche de segunda mano tiene buen precio, qué fallos suele tener el modelo y qué preguntar al vendedor antes de comprarlo.",
+  },
+  {
+    id: "form",
+    title: "1. Rellena lo esencial",
+    body: "Con marca, modelo, año de matriculación, kilómetros y combustible ya podemos buscar comparables. Versión, potencia (CV) y precio del anuncio afinan mucho el resultado.",
+    bullets: [
+      "Obligatorio: marca, modelo, año, km y combustible",
+      "Recomendado: versión, CV y precio del anuncio",
+      "Opcional: estado, libro, propietarios… para ajustar y preparar preguntas",
+    ],
+  },
+  {
+    id: "market",
+    title: "2. Precio de mercado",
+    body: "Buscamos anuncios similares en el mercado español (coches.net cuando está disponible), filtramos por año y combustible, y estimamos el valor con la mediana de esos precios. Luego lo comparamos con el precio del anuncio.",
+    bullets: [
+      "Veredicto: barato, de mercado o caro",
+      "Intervalo orientativo (bajo–alto)",
+      "Si no hay anuncios, verás una referencia aproximada y baja confianza",
+    ],
+  },
+  {
+    id: "results",
+    title: "3. Resultados y chat",
+    body: "Tras analizar verás valoración, anuncios similares, puntuaciones, fiabilidad del modelo, preguntas para el vendedor y un chat para dudar sobre ese coche concreto.",
+  },
+  {
+    id: "limits",
+    title: "Qué no sustituye",
+    body: "No es un informe de bastidor ni una inspección mecánica. No consulta DGT/ITV en tiempo real. Úsalo como apoyo para negociar y preparar la visita al coche.",
+  },
+];
+
+export function readHelpSeen(): boolean {
+  if (typeof window === "undefined") return true;
+  try {
+    return window.localStorage.getItem(HELP_STORAGE_KEY) === "1";
+  } catch {
+    return true;
+  }
+}
+
+export function writeHelpSeen(): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(HELP_STORAGE_KEY, "1");
+  } catch {
+    // ignore quota / private mode
+  }
+}
