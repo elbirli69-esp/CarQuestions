@@ -23,7 +23,7 @@ Este repositorio contiene el **MVP**. La interfaz y el motor de valoración est�
 - No consulta DGT, ITV ni fichas oficiales reales
 - No scrapea fichas individuales de coches.net de forma fiable (sí la lista de resultados)
 - No presenta precios de demostración como datos de mercado reales
-- No persiste análisis (el almacén en memoria no sobrevive en Vercel)
+- Persistencia de análisis: Upstash Redis en Vercel; en local, ficheros en `.data/analyses/` (TTL 7 días)
 
 ## Arranque local
 
@@ -68,7 +68,8 @@ Ver `.env.example`. Las claves de API nunca se exponen al navegador: las rutas v
 1. Importa el repositorio (framework: Next.js, Production Branch: `main`).
 2. No hace falta copiar `OPENAI_API_KEY`. En el deploy, Vercel inyecta OIDC y la app usa AI Gateway con `deepseek/deepseek-v4-flash`.
 3. Comprueba que AI Gateway está activo en el equipo (el mismo que usan los otros proyectos).
-4. Tras mergear este cambio a `main`, Vercel redespliega solo. No hace falta base de datos.
+4. **Persistencia:** añade [Upstash Redis](https://vercel.com/marketplace/upstash) al proyecto (`UPSTASH_REDIS_REST_URL` + `UPSTASH_REDIS_REST_TOKEN`). Sin Redis, los análisis no sobreviven entre invocaciones serverless.
+5. Tras mergear a `main`, Vercel redespliega solo.
 
 Opcional: `AI_GATEWAY_MODEL=deepseek/deepseek-v4-pro` si quieres el modelo más capaz.
 

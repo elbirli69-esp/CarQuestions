@@ -7,9 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "rag:ingest": "tsx scripts/rag-ingest.ts"
+    "rag:ingest": "tsx scripts/rag-ingest.ts",
+    "smoke:store": "tsx scripts/smoke-analysis-store.ts"
   },
   "dependencies": {
+    "@upstash/redis": "^1.38.2",
     "ai": "^7.0.73",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

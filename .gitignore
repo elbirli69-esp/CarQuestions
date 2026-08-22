@@ -24,6 +24,9 @@
 .DS_Store
 *.pem
 
+# local analysis persistence (file backend)
+.data/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

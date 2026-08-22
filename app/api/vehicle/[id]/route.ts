@@ -8,10 +8,10 @@ export async function GET(
 ) {
   try {
     const { id } = await context.params;
-    const analysis = getAnalysis(id);
+    const analysis = await getAnalysis(id);
     if (!analysis) {
       return jsonError(
-        "No se ha encontrado este análisis. En Vercel el almacén en memoria no persiste entre invocaciones; vuelve a analizar el coche.",
+        "No se ha encontrado este análisis (caducó o no hay almacén persistente). Vuelve a analizar el coche. En Vercel configura Upstash Redis (UPSTASH_REDIS_REST_URL/TOKEN).",
         404,
       );
     }
