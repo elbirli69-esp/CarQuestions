@@ -21,6 +21,10 @@ export function buildSellerQuestions(
       why: "Un siniestro no siempre se ve en fotos. Hay que preguntarlo por escrito.",
     },
     {
+      question: "¿Ha sufrido inundación, filtraciones graves o declarado pérdida total / write-off?",
+      why: "Flood y pérdida total dejan fallos eléctricos y estructurales que un lavado no borra.",
+    },
+    {
       question:
         vehicle.fuel === "electric" || vehicle.fuel === "hybrid" || vehicle.fuel === "plugin_hybrid"
           ? "¿Cuál es el estado de la batería y hay informe de salud?"

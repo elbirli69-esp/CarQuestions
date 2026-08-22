@@ -53,6 +53,8 @@ const SYNONYM_GROUPS: string[][] = [
   ["regen", "regenerativo", "one pedal", "brake-by-wire", "epb", "blending"],
   ["nvh", "aullido", "chirrido", "golpeteo", "clunk", "traqueteo", "silbido", "temblor"],
   ["haldex", "4motion", "quattro", "xdrive", "4matic", "allgrip", "awd", "4x4", "ptu"],
+  ["chapa", "pintura", "siniestro", "golpe", "respray", "masilla", "estructural", "airbag"],
+  ["inundacion", "flood", "riada", "moho", "humedad", "salvage", "perdida total", "writeoff"],
   ["fiabilidad", "averia", "fallo", "problema", "averias", "fallos", "problemas", "sintoma"],
   ["mantenimiento", "revision", "servicio", "intervalo"],
   ["inspeccion", "precompra", "revisar", "checklist", "taller", "obd"],

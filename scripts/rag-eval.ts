@@ -319,6 +319,24 @@ const CASES: Case[] = [
     vehicle: { brand: "BMW", model: "X3", year: 2018, fuel: "diesel" },
     expectIdIncludes: ["xdrive", "transfer", "bmw", "awd"],
   },
+  {
+    name: "Pintura espesor",
+    text: "medidor espesor pintura respray chapa masilla",
+    vehicle: { brand: "Audi", model: "A4", year: 2017, fuel: "diesel" },
+    expectIdIncludes: ["pintura", "espesor", "chapa", "respray", "body"],
+  },
+  {
+    name: "Coche inundado",
+    text: "coche inundado flood moho barro electronica",
+    vehicle: { brand: "Volkswagen", model: "Golf", year: 2018, fuel: "petrol" },
+    expectIdIncludes: ["flood", "inundacion", "moho", "agua"],
+  },
+  {
+    name: "Perdida total seguro",
+    text: "perdida total siniestro writeoff expediente seguro",
+    vehicle: { brand: "BMW", model: "320d", year: 2016, fuel: "diesel" },
+    expectIdIncludes: ["perdida", "total", "seguro", "writeoff", "siniestro"],
+  },
 ];
 
 function matchesExpectation(id: string, expectIdIncludes: string[]): boolean {
