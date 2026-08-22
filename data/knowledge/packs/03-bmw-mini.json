@@ -1,0 +1,169 @@
+{
+  "version": 1,
+  "id": "bmw-mini",
+  "title": "BMW / MINI técnico",
+  "updatedAt": "2026-08-22T03:09:29.599Z",
+  "methodology": "Resúmenes curados a partir de patrones recurrentes en foros técnicos (BMWFAQ, VAG/Cupra, ClubToyota, PureTech/BlueHDi communities), manuales de mantenimiento, recalls públicos (Safety Gate/NHTSA) e informes de fiabilidad (ADAC/TÜV). No son diagnósticos de un bastidor concreto.",
+  "chunks": [
+    {
+      "isDemo": true,
+      "id": "bmw-n63-tu-oil-cooling",
+      "type": "issue",
+      "brands": [
+        "bmw",
+        "mini"
+      ],
+      "fuels": [
+        "petrol"
+      ],
+      "yearFrom": 2012,
+      "yearTo": 2018,
+      "motorCodes": [
+        "N63",
+        "N63TU"
+      ],
+      "models": [
+        "serie 5",
+        "serie 7",
+        "serie 8",
+        "x5",
+        "x6",
+        "650"
+      ],
+      "title": "BMW N63/N63TU: consumo de aceite y enfriamiento",
+      "content": "El V8 biturbo N63 tuvo consumo de aceite, fallos de válvulas PCV y sobrecalentamiento de catalizadores en primeras revisiones. N63TU mejoró pero sigue exigiendo mantenimiento impecable. Pedir historial de campañas y consumo.",
+      "severity": "high",
+      "source": "BMWFAQ / Bimmerpost + campañas N63 públicas",
+      "sourceUrl": "https://www.bmwfaq.org/",
+      "tags": [
+        "n63",
+        "v8",
+        "aceite"
+      ],
+      "estimatedCostEur": {
+        "min": 500,
+        "max": 5000
+      },
+      "reliabilityScore": 66
+    },
+    {
+      "isDemo": true,
+      "id": "bmw-zf8hp-service",
+      "type": "maintenance",
+      "brands": [
+        "bmw",
+        "mini",
+        "mercedes",
+        "mercedes-benz",
+        "mercedes benz",
+        "audi",
+        "jaguar",
+        "land rover",
+        "alfa romeo"
+      ],
+      "yearFrom": 2010,
+      "yearTo": 2025,
+      "title": "ZF 8HP: servicio de aceite aunque digan 'lifetime'",
+      "content": "La ZF 8HP es fiable pero el aceite se degrada. Talleres especialistas recomiendan cambio ~80-100.000 km o 8 años. Tirones leves en caliente mejoran tras servicio. Usar aceite ZF Lifeguard correcto.",
+      "maintenanceInterval": "Aceite ZF 8HP ~80.000-100.000 km",
+      "source": "ZF Aftermarket + foros BMWFAQ/JaguarForum",
+      "tags": [
+        "zf",
+        "8hp",
+        "automatico"
+      ],
+      "estimatedCostEur": {
+        "min": 350,
+        "max": 650
+      },
+      "reliabilityScore": 86
+    },
+    {
+      "isDemo": true,
+      "id": "bmw-b48-b58-maintenance",
+      "type": "maintenance",
+      "brands": [
+        "bmw",
+        "mini"
+      ],
+      "fuels": [
+        "petrol"
+      ],
+      "yearFrom": 2016,
+      "yearTo": 2025,
+      "motorCodes": [
+        "B48",
+        "B58"
+      ],
+      "title": "BMW B48/B58: mantenimiento preventivo recomendado",
+      "content": "B48/B58 son más robustos que N20/N55, pero conviene: aceite de calidad a intervalos realistas, vigilancia de fugas de tapa de balancines, termostato/bomba de agua eléctrica y, en B58, inspección de chargepipe si hay aftermarket. Evitar intervals excesivos.",
+      "maintenanceInterval": "Aceite 10.000-15.000 km uso mixto",
+      "source": "BMWFAQ B48/B58 ownership threads + guías Indie",
+      "tags": [
+        "b48",
+        "b58",
+        "mantenimiento"
+      ],
+      "reliabilityScore": 84
+    },
+    {
+      "isDemo": true,
+      "id": "bmw-transfer-case-atc",
+      "type": "issue",
+      "brands": [
+        "bmw",
+        "mini"
+      ],
+      "models": [
+        "x1",
+        "x3",
+        "x5",
+        "serie 3",
+        "serie 5"
+      ],
+      "yearFrom": 2007,
+      "yearTo": 2018,
+      "title": "Caja de transferencia ATC: ruidos y vibraciones xDrive",
+      "content": "En xDrive, ruidos al girar o vibraciones pueden ser actuador/cadena de la caja de transferencia ATC. Solución: reprogramación, aceite o sustitución del actuador/unidad. Probar círculos lentos y escuchar.",
+      "severity": "medium",
+      "source": "BMWFAQ xDrive / ATC failure patterns",
+      "tags": [
+        "xdrive",
+        "atc",
+        "transfer"
+      ],
+      "estimatedCostEur": {
+        "min": 400,
+        "max": 2200
+      },
+      "reliabilityScore": 74
+    },
+    {
+      "isDemo": true,
+      "id": "mini-vanos-timing",
+      "type": "issue",
+      "brands": [
+        "mini"
+      ],
+      "fuels": [
+        "petrol"
+      ],
+      "yearFrom": 2007,
+      "yearTo": 2016,
+      "title": "MINI: VANOS y cadena en motores Prince",
+      "content": "MINI Cooper/S de esa época pueden sufrir ruido de cadena y fallos VANOS (solenoides, sellos). Síntomas: rattly cold start, pérdida de potencia. Solución kit cadena + VANOS según diagnóstico.",
+      "severity": "high",
+      "source": "North American MINI forums + BMWFAQ MINI",
+      "tags": [
+        "mini",
+        "vanos",
+        "cadena"
+      ],
+      "estimatedCostEur": {
+        "min": 700,
+        "max": 2200
+      },
+      "reliabilityScore": 70
+    }
+  ]
+}

@@ -1,9 +1,10 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { mergeKnowledgeChunks } from "@/lib/rag/knowledge/merge";
 import {
   assertUniqueChunkIds,
   knowledgeChunkSchema,
+  knowledgeCorpusSchema,
   parseKnowledgeCorpus,
   parseKnowledgeVectorIndex,
   type KnowledgeCorpus,
@@ -11,6 +12,7 @@ import {
 import type { KnowledgeChunk, KnowledgeVectorIndex } from "@/types/knowledge";
 
 const KNOWLEDGE_DIR = join(process.cwd(), "data", "knowledge");
+const PACKS_DIR = join(KNOWLEDGE_DIR, "packs");
 
 let cachedCorpus: KnowledgeCorpus | null = null;
 let cachedIndex: KnowledgeVectorIndex | null = null;
@@ -29,13 +31,45 @@ function loadEnrichmentOverlays(): Partial<KnowledgeChunk>[] {
   }
 }
 
+function loadPackChunks(): KnowledgeChunk[] {
+  let files: string[];
+  try {
+    files = readdirSync(PACKS_DIR)
+      .filter((name) => name.endsWith(".json"))
+      .sort();
+  } catch {
+    return [];
+  }
+  const chunks: KnowledgeChunk[] = [];
+  for (const file of files) {
+    const raw = JSON.parse(readFileSync(join(PACKS_DIR, file), "utf8")) as {
+      chunks?: unknown[];
+    };
+    if (!raw.chunks || !Array.isArray(raw.chunks)) continue;
+    for (const [index, item] of raw.chunks.entries()) {
+      try {
+        chunks.push(knowledgeChunkSchema.parse(item));
+      } catch (error) {
+        const detail = error instanceof Error ? error.message : String(error);
+        throw new Error(`Invalid knowledge pack ${file} chunk[${index}]: ${detail}`);
+      }
+    }
+  }
+  return chunks;
+}
+
 export function loadKnowledgeCorpus(): KnowledgeCorpus {
   if (cachedCorpus) return cachedCorpus;
-  const corpus = parseKnowledgeCorpus(readJson("chunks.json"));
-  const merged = {
-    ...corpus,
-    chunks: mergeKnowledgeChunks(corpus.chunks, loadEnrichmentOverlays()),
-  };
+  const base = parseKnowledgeCorpus(readJson("chunks.json"));
+  const packChunks = loadPackChunks();
+  const combined = [...base.chunks, ...packChunks];
+  assertUniqueChunkIds(combined);
+
+  const merged = knowledgeCorpusSchema.parse({
+    version: 1 as const,
+    updatedAt: new Date().toISOString(),
+    chunks: mergeKnowledgeChunks(combined, loadEnrichmentOverlays()),
+  });
   assertUniqueChunkIds(merged.chunks);
   cachedCorpus = merged;
   return merged;

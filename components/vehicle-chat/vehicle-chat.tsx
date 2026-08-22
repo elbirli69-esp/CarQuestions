@@ -10,6 +10,15 @@ import { EXAMPLE_QUESTIONS } from "@/lib/vehicles/labels";
 import type { AIAnswer, ChatMessage } from "@/types/ai";
 import type { VehicleInput } from "@/types/vehicle";
 
+interface RetrievedRef {
+  id: string;
+  source: string;
+  score: number;
+  isDemo: boolean;
+  chunkType?: string | null;
+  severity?: string | null;
+}
+
 export function VehicleChat({
   analysisId,
   vehicle,
@@ -23,6 +32,7 @@ export function VehicleChat({
 }) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [lastAnswer, setLastAnswer] = useState<AIAnswer | null>(null);
+  const [lastRetrieved, setLastRetrieved] = useState<RetrievedRef[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -45,11 +55,16 @@ export function VehicleChat({
           history: messages,
         }),
       });
-      const payload = (await response.json()) as { answer?: AIAnswer; error?: string };
+      const payload = (await response.json()) as {
+        answer?: AIAnswer;
+        error?: string;
+        retrieved?: RetrievedRef[];
+      };
       if (!response.ok || !payload.answer) {
         throw new Error(payload.error ?? "No se ha podido responder.");
       }
       setLastAnswer(payload.answer);
+      setLastRetrieved(payload.retrieved ?? []);
       setMessages([...history, { role: "assistant", content: payload.answer.text }]);
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se ha podido responder.");
@@ -63,8 +78,8 @@ export function VehicleChat({
       <CardHeader>
         <CardTitle>Pregunta lo que quieras sobre este coche</CardTitle>
         <CardDescription>
-          El asistente usa el vehículo que has introducido, la valoración y los documentos recuperados. Si no hay un
-          dato, lo dice.
+          El asistente prioriza la base de conocimiento técnica (averías, síntomas, soluciones, mantenimiento) del
+          modelo/motor, más la valoración de este anuncio. Si no hay dato en el corpus, lo dice.
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
@@ -78,7 +93,9 @@ export function VehicleChat({
 
         <div className="flex min-h-40 flex-col gap-3 rounded-xl bg-muted/40 p-4">
           {messages.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Todavía no hay preguntas. Empieza por un ejemplo o escribe la tuya.</p>
+            <p className="text-sm text-muted-foreground">
+              Todavía no hay preguntas. Empieza por un ejemplo o escribe la tuya.
+            </p>
           ) : (
             messages.map((message, index) => (
               <div
@@ -99,6 +116,30 @@ export function VehicleChat({
             </p>
           ) : null}
         </div>
+
+        {lastRetrieved.length > 0 ? (
+          <div className="rounded-xl border border-border/60 bg-background/80 p-3">
+            <p className="text-xs font-medium text-muted-foreground">Fuentes RAG usadas en la última respuesta</p>
+            <ul className="mt-2 space-y-1.5 text-xs text-muted-foreground">
+              {lastRetrieved.slice(0, 5).map((item) => (
+                <li key={item.id} className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                  <span className="font-medium text-foreground">{(item.score * 100).toFixed(0)}%</span>
+                  {item.chunkType ? (
+                    <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-foreground">
+                      {item.chunkType}
+                    </span>
+                  ) : null}
+                  {item.severity === "high" ? (
+                    <span className="rounded bg-red-500/15 px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-red-700 dark:text-red-300">
+                      alto
+                    </span>
+                  ) : null}
+                  <span>{item.source}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
 
         {lastAnswer?.disclaimer ? (
           <p className="text-xs text-muted-foreground">

@@ -1,0 +1,127 @@
+{
+  "version": 1,
+  "id": "papers-stats",
+  "title": "Papers, ADAC/TÜV y recalls",
+  "updatedAt": "2026-08-22T03:09:29.599Z",
+  "methodology": "Resúmenes curados a partir de patrones recurrentes en foros técnicos (BMWFAQ, VAG/Cupra, ClubToyota, PureTech/BlueHDi communities), manuales de mantenimiento, recalls públicos (Safety Gate/NHTSA) e informes de fiabilidad (ADAC/TÜV). No son diagnósticos de un bastidor concreto.",
+  "chunks": [
+    {
+      "isDemo": true,
+      "id": "paper-adac-breakdown-patterns",
+      "type": "inspection",
+      "brands": [
+        "*"
+      ],
+      "title": "Patrones ADAC: qué falla más según edad/km",
+      "content": "Los informes ADAC de averías destacan baterías de 12V, arranque, electrónica de gestión, FAP/AdBlue en diésel y fallos de motor por falta de mantenimiento. Aplicación práctica: en coches >8 años priorizar batería, alternador, sensores y estado antipolución antes que estética.",
+      "source": "Síntesis de patrones ADAC Breakdown Statistics (informes públicos anuales)",
+      "sourceUrl": "https://www.adac.de/",
+      "tags": [
+        "adac",
+        "estadistica",
+        "averias",
+        "paper"
+      ]
+    },
+    {
+      "isDemo": true,
+      "id": "paper-tuv-report-weak-points",
+      "type": "inspection",
+      "brands": [
+        "*"
+      ],
+      "title": "Informe TÜV: puntos débiles recurrentes en ITV",
+      "content": "Los reportes TÜV señalan con frecuencia alumbrado, frenos desgastados, fugas de aceite, ejes/suspensión y emisiones. En precompra española/ITV: faros, discos/pastillas, silentblocks y lectura de opacidad/OBD emisiones.",
+      "source": "Síntesis TÜV Report (publicaciones anuales)",
+      "sourceUrl": "https://www.tuv.com/",
+      "tags": [
+        "tuv",
+        "itv",
+        "inspeccion",
+        "paper"
+      ]
+    },
+    {
+      "isDemo": true,
+      "id": "paper-dpf-regeneration-science",
+      "type": "issue",
+      "brands": [
+        "*"
+      ],
+      "fuels": [
+        "diesel"
+      ],
+      "yearFrom": 2009,
+      "yearTo": 2025,
+      "title": "FAP: física de la regeneración y por qué falla en ciudad",
+      "content": "La regeneración oxida hollín a >550°C con post-inyección. Trayectos <15 min impiden completar el ciclo: hollín → sobrecarga → daño del filtro o dilución de aceite. Solución de uso: trayecto mensual a régimen; de taller: regeneración forzada o limpieza; no vaciar el filtro.",
+      "severity": "medium",
+      "source": "Literatura técnica post-tratamiento diésel (manuales Bosch/Delphi + papers SAE de DPF)",
+      "tags": [
+        "fap",
+        "dpf",
+        "regeneracion",
+        "paper",
+        "sae"
+      ]
+    },
+    {
+      "isDemo": true,
+      "id": "paper-liion-degradation-ev",
+      "type": "issue",
+      "brands": [
+        "*"
+      ],
+      "fuels": [
+        "electric",
+        "plugin_hybrid"
+      ],
+      "title": "Degradación Li-ion: temperatura, SoC y DC fast charge",
+      "content": "La literatura de baterías muestra que calor, SoC alto prolongado y DC fast charge frecuentes aceleran pérdida de capacidad. Para compraventa: pedir SOH, historial de cargas, refrigeración líquida vs aire, y garantía restante. Una degradación 2-3%/año es habitual; >20% total merece negociación.",
+      "severity": "medium",
+      "source": "Síntesis papers degradación Li-ion automoción (SAE/IEEE) + guías ACEA EV",
+      "tags": [
+        "ev",
+        "bateria",
+        "soh",
+        "paper"
+      ]
+    },
+    {
+      "isDemo": true,
+      "id": "paper-timing-chain-wear",
+      "type": "issue",
+      "brands": [
+        "*"
+      ],
+      "title": "Desgaste de cadena: aceite, intervalo y tensores hidráulicos",
+      "content": "Estudios y TSBs coinciden: intervalos de aceite largos + baja viscosidad + tensores hidráulicos = elongación prematura. Detección: ruido frío, correlación levas-cigüeñal. Mitigación: aceite correcto, intervalos realistas, kit completo (cadena, guías, tensores, VVT si aplica).",
+      "severity": "high",
+      "source": "TSBs multi-marca + literatura desgaste distribución",
+      "tags": [
+        "cadena",
+        "aceite",
+        "tensor",
+        "paper"
+      ]
+    },
+    {
+      "isDemo": true,
+      "id": "recall-method-vin-check",
+      "type": "recall",
+      "brands": [
+        "*"
+      ],
+      "title": "Cómo verificar recalls oficiales por bastidor",
+      "content": "Antes de comprar: consultar Safety Gate (UE), web del fabricante por VIN, y en España el historial de la marca. Un recall no aplicado es riesgo de seguridad y argumento de negociación. CarQuestions no consulta VIN en tiempo real: hazlo en fuentes oficiales.",
+      "severity": "high",
+      "source": "Safety Gate UE / portales de recalls de fabricantes",
+      "sourceUrl": "https://ec.europa.eu/safety-gate",
+      "tags": [
+        "recall",
+        "vin",
+        "seguridad"
+      ]
+    }
+  ]
+}

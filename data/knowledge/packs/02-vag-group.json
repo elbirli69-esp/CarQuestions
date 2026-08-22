@@ -1,0 +1,271 @@
+{
+  "version": 1,
+  "id": "vag-group",
+  "title": "Grupo VAG técnico",
+  "updatedAt": "2026-08-22T03:09:29.599Z",
+  "methodology": "Resúmenes curados a partir de patrones recurrentes en foros técnicos (BMWFAQ, VAG/Cupra, ClubToyota, PureTech/BlueHDi communities), manuales de mantenimiento, recalls públicos (Safety Gate/NHTSA) e informes de fiabilidad (ADAC/TÜV). No son diagnósticos de un bastidor concreto.",
+  "chunks": [
+    {
+      "isDemo": true,
+      "id": "vag-ea888-gen3-oil-pcv",
+      "type": "issue",
+      "brands": [
+        "volkswagen",
+        "vw",
+        "seat",
+        "skoda",
+        "audi",
+        "cupra"
+      ],
+      "fuels": [
+        "petrol"
+      ],
+      "yearFrom": 2012,
+      "yearTo": 2019,
+      "motorCodes": [
+        "EA888",
+        "CHHB",
+        "CJXB",
+        "DJHA"
+      ],
+      "models": [
+        "golf",
+        "passat",
+        "leon",
+        "octavia",
+        "a3",
+        "a4",
+        "tt",
+        "tiguán",
+        "tiguan"
+      ],
+      "title": "EA888 Gen3: consumo de aceite y PCV/separador",
+      "content": "El EA888 Gen3 (1.8/2.0 TSI) acumula quejas de consumo de aceite y fallos del separador PCV/placa de presión. Síntomas: bajada de nivel, silbido, códigos. Soluciones: actualizar PCV/tapa, control de consumo, en casos graves segmentos. Verificar campañas y facturas de tapa de balancines/PCV.",
+      "severity": "medium",
+      "source": "Foros VAG-COM / GolfMK7 / AudiSport + TSBs EA888",
+      "sourceUrl": "https://www.golfmk7.com/",
+      "tags": [
+        "ea888",
+        "tsi",
+        "aceite",
+        "pcv"
+      ],
+      "symptoms": [
+        "Consumo de aceite",
+        "Silbido en frío",
+        "Códigos PCV"
+      ],
+      "askSeller": [
+        "¿Consumo de aceite documentado?",
+        "¿Cambio de PCV/tapa?"
+      ],
+      "inspectSteps": [
+        "Nivel de aceite",
+        "Escuchar PCV",
+        "Histórico de rellenos"
+      ],
+      "estimatedCostEur": {
+        "min": 250,
+        "max": 2800
+      },
+      "reliabilityScore": 72
+    },
+    {
+      "isDemo": true,
+      "id": "vag-dq250-dq381-service",
+      "type": "maintenance",
+      "brands": [
+        "volkswagen",
+        "vw",
+        "seat",
+        "skoda",
+        "audi",
+        "cupra"
+      ],
+      "yearFrom": 2013,
+      "yearTo": 2024,
+      "title": "DSG DQ250/DQ381: servicio de aceite y filtro",
+      "content": "Las DSG de baño de aceite (DQ250/DQ381) necesitan cambio de aceite y filtro; no son 'para toda la vida'. Intervalo típico 60.000 km. Tirones o cambios bruscos tras omitir el servicio son frecuentes. Pedir factura con especificación VW correcta.",
+      "maintenanceInterval": "Aceite+filtro DSG ~60.000 km",
+      "source": "Manuales VW/Audi DSG + talleres especializados DSG",
+      "tags": [
+        "dsg",
+        "dq250",
+        "dq381",
+        "aceite"
+      ],
+      "askSeller": [
+        "¿Último servicio DSG con factura?"
+      ],
+      "inspectSteps": [
+        "Prueba de cambios en caliente",
+        "Códigos mechatronic"
+      ],
+      "estimatedCostEur": {
+        "min": 280,
+        "max": 450
+      },
+      "reliabilityScore": 78
+    },
+    {
+      "isDemo": true,
+      "id": "vag-dq200-dry-clutch",
+      "type": "issue",
+      "brands": [
+        "volkswagen",
+        "vw",
+        "seat",
+        "skoda",
+        "audi",
+        "cupra"
+      ],
+      "yearFrom": 2010,
+      "yearTo": 2019,
+      "models": [
+        "golf",
+        "polo",
+        "leon",
+        "ibiza",
+        "octavia",
+        "fabia",
+        "a3"
+      ],
+      "title": "DSG DQ200 (seco): embragues y mechatronic",
+      "content": "La DQ200 de 7 marchas en seco tuvo lotes problemáticos: tirones, pérdida de marchas, mechatronic. Hubo campañas. Solución: actualización software, mechatronic o embragues. Evitar si el historial no documenta reparaciones; probar en atasco y cuesta.",
+      "severity": "high",
+      "source": "Campañas VW/SEAT/Škoda DQ200 + foros VAG",
+      "tags": [
+        "dq200",
+        "dsg",
+        "mechatronic"
+      ],
+      "symptoms": [
+        "Tirones a baja velocidad",
+        "Pérdida de marchas",
+        "Modo emergencia caja"
+      ],
+      "askSeller": [
+        "¿Campañas DQ200 aplicadas?",
+        "¿Mechatronic/embragues sustituidos?"
+      ],
+      "inspectSteps": [
+        "Prueba urbana lenta",
+        "Lectura fallos caja",
+        "Historial de campañas por VIN"
+      ],
+      "estimatedCostEur": {
+        "min": 800,
+        "max": 2500
+      },
+      "reliabilityScore": 68
+    },
+    {
+      "isDemo": true,
+      "id": "vag-tdi-injector-rail",
+      "type": "issue",
+      "brands": [
+        "volkswagen",
+        "vw",
+        "seat",
+        "skoda",
+        "audi",
+        "cupra"
+      ],
+      "fuels": [
+        "diesel"
+      ],
+      "yearFrom": 2008,
+      "yearTo": 2018,
+      "title": "TDI: inyectores y bomba de alta presión",
+      "content": "En TDI con muchos km aparecen inyectores con mal retorno, ruidos de tick y falta de potencia. La bomba HPFP puede contaminar el rail si falla. Solución: medición de retorno, sustitución codificada, limpieza de rail si hay limaduras. Pedir historial de inyectores.",
+      "severity": "medium",
+      "source": "Foros TDIClub / VAG diésel + protocolos Bosch common-rail",
+      "tags": [
+        "tdi",
+        "inyector",
+        "hpfp"
+      ],
+      "symptoms": [
+        "Tick de inyector",
+        "Arranque difícil en caliente",
+        "Humos irregulares"
+      ],
+      "estimatedCostEur": {
+        "min": 350,
+        "max": 1800
+      },
+      "reliabilityScore": 74
+    },
+    {
+      "isDemo": true,
+      "id": "vag-haldex-awd-service",
+      "type": "maintenance",
+      "brands": [
+        "volkswagen",
+        "vw",
+        "seat",
+        "skoda",
+        "audi",
+        "cupra"
+      ],
+      "models": [
+        "golf",
+        "tiguan",
+        "ateca",
+        "octavia",
+        "superb",
+        "s3",
+        "tt"
+      ],
+      "yearFrom": 2012,
+      "yearTo": 2024,
+      "title": "Haldex AWD: cambio de aceite del acoplamiento",
+      "content": "El Haldex necesita servicio de aceite (y a menudo filtro) cada ~30-60.000 km según generación. Sin servicio: ruidos, falta de tracción, bomba fallida. Preguntar en 4Motion/4Drive/quattro Haldex.",
+      "maintenanceInterval": "Aceite Haldex ~30.000-60.000 km según gen.",
+      "source": "Manuales Haldex Gen 4/5 + foros AWD VAG",
+      "tags": [
+        "haldex",
+        "4motion",
+        "awd"
+      ],
+      "estimatedCostEur": {
+        "min": 120,
+        "max": 350
+      }
+    },
+    {
+      "isDemo": true,
+      "id": "audi-timing-chain-banks",
+      "type": "issue",
+      "brands": [
+        "audi",
+        "volkswagen",
+        "vw"
+      ],
+      "fuels": [
+        "petrol"
+      ],
+      "yearFrom": 2008,
+      "yearTo": 2016,
+      "motorCodes": [
+        "CAEB",
+        "CDN",
+        "CREC"
+      ],
+      "title": "Cadenas laterales Audi/VW 2.0 TFSI generaciones previas",
+      "content": "Algunos 2.0 TFSI previos a Gen3 sufrieron estiramiento de cadena y tensores. Ruido en frío y códigos de correlación. Solución kit cadena completo; verificar si ya se hizo.",
+      "severity": "high",
+      "source": "AudiSport / VW Vortex + TSBs cadena TFSI",
+      "tags": [
+        "cadena",
+        "tfsi",
+        "audi"
+      ],
+      "estimatedCostEur": {
+        "min": 900,
+        "max": 2500
+      },
+      "reliabilityScore": 70
+    }
+  ]
+}

@@ -1,0 +1,597 @@
+{
+  "version": 1,
+  "id": "symptom-playbooks",
+  "title": "Playbooks síntoma→solución",
+  "updatedAt": "2026-08-22T03:09:29.598Z",
+  "methodology": "Resúmenes curados a partir de patrones recurrentes en foros técnicos (BMWFAQ, VAG/Cupra, ClubToyota, PureTech/BlueHDi communities), manuales de mantenimiento, recalls públicos (Safety Gate/NHTSA) e informes de fiabilidad (ADAC/TÜV). No son diagnósticos de un bastidor concreto.",
+  "chunks": [
+    {
+      "isDemo": true,
+      "id": "playbook-cold-rattle-timing",
+      "type": "issue",
+      "brands": [
+        "*"
+      ],
+      "title": "Traqueteo metálico al arrancar en frío → distribución",
+      "content": "Un traqueteo metálico de 2-5 segundos al arrancar en frío suele apuntar a cadena/tensores/guías o, en correa húmeda, a holgura anómala. Causa: desgaste por intervalos de aceite largos o aceite incorrecto. Solución típica: diagnóstico de sincronización (desfase árboles), inspección de tensores y, si procede, kit completo de distribución. No confundir con inyector o turbo.",
+      "severity": "high",
+      "appliesWhen": "Ruido metálico breve solo en frío",
+      "source": "Patrón transversal foros técnicos + guías de taller independientes",
+      "tags": [
+        "ruido",
+        "cadena",
+        "correa",
+        "distribucion",
+        "frio",
+        "sintoma"
+      ],
+      "symptoms": [
+        "Traqueteo 2-5 s al arrancar en frío que desaparece al calentar",
+        "Códigos de desfase de árboles de levas",
+        "Pérdida de potencia si el desfase avanza"
+      ],
+      "askSeller": [
+        "¿Se ha cambiado cadena/correa/tensores? ¿Factura y km?",
+        "¿Hay ruido metálico en frío que desaparezca en caliente?"
+      ],
+      "inspectSteps": [
+        "Arranque en frío con capó abierto",
+        "Lectura OBD de sincronización de levas",
+        "Revisar historial de aceite (intervalo y viscosidad)"
+      ],
+      "estimatedCostEur": {
+        "min": 600,
+        "max": 2800
+      },
+      "typicalKmFrom": 100000,
+      "typicalKmTo": 220000
+    },
+    {
+      "isDemo": true,
+      "id": "playbook-dpf-clog-urban",
+      "type": "issue",
+      "brands": [
+        "*"
+      ],
+      "fuels": [
+        "diesel"
+      ],
+      "yearFrom": 2009,
+      "yearTo": 2025,
+      "title": "Aviso FAP/DPF y pérdida de potencia en uso urbano",
+      "content": "En diésel Euro 5/6 con trayectos cortos, el FAP no regenera bien y se colmata. Síntomas: aviso DPF, modo degradado, consumo alto, olor a azufre. Causas: ciudad exclusiva, EGR sucia, sensores de presión defectuosos. Soluciones: regeneración forzada documentada, limpieza profesional, o sustitución si está dañado; nunca aceptar FAP vaciado/reprogramado (ITV/emisiones).",
+      "severity": "medium",
+      "appliesWhen": "Diésel urbano o con regeneraciones fallidas",
+      "source": "Patrones recurrentes foros diésel + checklists precompra Euro 5/6",
+      "tags": [
+        "fap",
+        "dpf",
+        "urbano",
+        "regeneracion",
+        "sintoma"
+      ],
+      "symptoms": [
+        "Testigo FAP/DPF o modo limp-home",
+        "Consumo elevado y olor a azufre",
+        "Regeneraciones frecuentes o interrumpidas"
+      ],
+      "askSeller": [
+        "¿Historial de regeneraciones forzadas o limpiezas de FAP?",
+        "¿Uso principal ciudad o carretera?"
+      ],
+      "inspectSteps": [
+        "Leer presión diferencial del FAP en vivo",
+        "Comprobar que no hay borrados de software antipolución",
+        "Probar ruta de 20-30 min a régimen para ver regeneración"
+      ],
+      "estimatedCostEur": {
+        "min": 250,
+        "max": 2200
+      },
+      "typicalKmFrom": 80000,
+      "typicalKmTo": 200000
+    },
+    {
+      "isDemo": true,
+      "id": "playbook-egr-carbon",
+      "type": "issue",
+      "brands": [
+        "*"
+      ],
+      "fuels": [
+        "diesel",
+        "petrol"
+      ],
+      "yearFrom": 2005,
+      "yearTo": 2024,
+      "title": "Tirones / ralentí irregular por EGR carbonizada",
+      "content": "La válvula EGR carbonizada provoca tirones, humo, ralentí inestable y códigos P0401-P0404. Causa: gases recirculados + trayectos cortos. Solución: limpieza ultrasónica o sustitución de EGR/cooler; revisar también admisión. En gasolina GDI el carbonizado de admisión es un problema paralelo (admite limpieza por nueces/química).",
+      "severity": "medium",
+      "source": "Diagnóstico habitual talleres + foros de mecánica diésel/GDI",
+      "tags": [
+        "egr",
+        "carbonilla",
+        "tirones",
+        "ralenti"
+      ],
+      "symptoms": [
+        "Tirones a baja carga",
+        "Ralentí irregular",
+        "Códigos EGR / flujo insuficiente"
+      ],
+      "askSeller": [
+        "¿Se ha limpiado o sustituido la EGR? ¿Factura?"
+      ],
+      "inspectSteps": [
+        "Escáner: posición EGR y flujo",
+        "Inspección visual cooler EGR si accesible"
+      ],
+      "estimatedCostEur": {
+        "min": 180,
+        "max": 900
+      }
+    },
+    {
+      "isDemo": true,
+      "id": "playbook-dmf-vibration",
+      "type": "issue",
+      "brands": [
+        "*"
+      ],
+      "fuels": [
+        "diesel",
+        "petrol"
+      ],
+      "yearFrom": 2005,
+      "yearTo": 2022,
+      "title": "Vibración al ralentí / arranque en cuesta → volante bimasa",
+      "content": "Vibraciones al ralentí con A/C, resonancia al soltar el embrague o ruido de 'cascabel' al apagar suelen indicar DMF (volante bimasa) fatigado. Causa: km altos, ciudad, estilo agresivo. Solución: kit embrague+bimasa+rodamiento; evitar solo el disco. Coste alto; negociar precio si hay síntomas claros.",
+      "severity": "medium",
+      "source": "Patrón foros VAG/BMW/PSA y talleres de transmisión",
+      "tags": [
+        "bimasa",
+        "dmf",
+        "embrague",
+        "vibracion"
+      ],
+      "symptoms": [
+        "Vibración al ralentí con marcha en punto muerto",
+        "Ruido al apagar el motor",
+        "Tirones en arrancadas"
+      ],
+      "askSeller": [
+        "¿Cuándo se cambió embrague/bimasa?",
+        "¿Hay vibración al ralentí con A/C?"
+      ],
+      "inspectSteps": [
+        "Prueba en cuesta y ralentí con A/C",
+        "Inspección taller: holgura angular del DMF si procede"
+      ],
+      "estimatedCostEur": {
+        "min": 700,
+        "max": 1600
+      },
+      "typicalKmFrom": 120000,
+      "typicalKmTo": 250000
+    },
+    {
+      "isDemo": true,
+      "id": "playbook-auto-gearbox-shudder",
+      "type": "issue",
+      "brands": [
+        "*"
+      ],
+      "title": "Tirones / patinaje en automático → aceite y mechatronic",
+      "content": "Tirones al subir marchas, patinaje o 'shudder' en caliente apuntan a aceite degradado, filtro obstruido o mechatronic/TC fallando. Muchas cajas 'sealed for life' no lo son. Solución: cambio de aceite+filtro con procedimiento correcto; si persiste, diagnosis de embragues/mechatronic. Pedir factura de servicio de caja.",
+      "severity": "high",
+      "source": "Buenas prácticas talleres de transmisión ZF/Aisin/Getrag + foros DSG/EAT",
+      "tags": [
+        "automatico",
+        "aceite",
+        "mechatronic",
+        "patinaje"
+      ],
+      "symptoms": [
+        "Tirones al cambiar",
+        "Patinaje en fuerte aceleración",
+        "Códigos de transmisión"
+      ],
+      "askSeller": [
+        "¿Cambio de aceite/filtro de caja? ¿Km y especificación?"
+      ],
+      "inspectSteps": [
+        "Prueba en caliente con cambios 1-6",
+        "Lectura de temperaturas y códigos de caja",
+        "Comprobar color/olor del aceite si hay varilla/tapón"
+      ],
+      "estimatedCostEur": {
+        "min": 250,
+        "max": 3500
+      },
+      "maintenanceInterval": "Servicio de caja habitual 60.000-100.000 km según fabricante"
+    },
+    {
+      "isDemo": true,
+      "id": "playbook-coolant-loss-no-leak",
+      "type": "issue",
+      "brands": [
+        "*"
+      ],
+      "title": "Pérdida de refrigerante sin fuga visible",
+      "content": "Bajar refrigerante sin charco puede ser: fuga interna (junta de culata), radiador de calorímetro, bomba de agua por evaporación, o (en EcoBoost/algunos TSI) intrusion a cilindros. Síntomas: humo blanco, emulsión en aceite, burbujas en vaso. Solución: prueba de presión, análisis CO2 en circuito, endoscopia; no comprar sin diagnóstico.",
+      "severity": "high",
+      "source": "Protocolos de diagnosis refrigeración + casos EcoBoost/EA888 en foros",
+      "tags": [
+        "refrigerante",
+        "culata",
+        "fuga",
+        "sobrecalentamiento"
+      ],
+      "symptoms": [
+        "Nivel de refrigerante que baja sin mancha",
+        "Humo blanco al arrancar",
+        "Mayonesa en tapón de aceite"
+      ],
+      "askSeller": [
+        "¿Ha perdido refrigerante? ¿Se ha abierto el motor?"
+      ],
+      "inspectSteps": [
+        "Prueba de presión del circuito",
+        "Test de combustión en vaso de expansión",
+        "Inspección de aceite y bujías/endoscopio"
+      ],
+      "estimatedCostEur": {
+        "min": 400,
+        "max": 4500
+      }
+    },
+    {
+      "isDemo": true,
+      "id": "playbook-oil-consumption",
+      "type": "issue",
+      "brands": [
+        "*"
+      ],
+      "fuels": [
+        "petrol",
+        "diesel"
+      ],
+      "title": "Consumo de aceite elevado: causas y umbrales",
+      "content": "Consumo >0,5 l/1000 km en gasolina turbo moderna o diésel con muchos km merece investigación: segmentos, PCV/separador, turbo, guías de válvula o software. Soluciones van de actualización de software/PCV a rectificado. Pedir consumo documentado y facturas de relleno.",
+      "severity": "medium",
+      "source": "Umbrales habituales fabricantes + foros EA888/N20/PureTech",
+      "tags": [
+        "aceite",
+        "consumo",
+        "pcv",
+        "turbo"
+      ],
+      "symptoms": [
+        "Bajada de nivel entre revisiones",
+        "Humo azul en deceleración",
+        "Olor a quemado"
+      ],
+      "askSeller": [
+        "¿Cuántos litros añade entre revisiones?",
+        "¿Hay campaña de consumo de aceite?"
+      ],
+      "inspectSteps": [
+        "Comprobar nivel en frío/caliente",
+        "Prueba de carretera y humos",
+        "Códigos PCV/turbo"
+      ],
+      "estimatedCostEur": {
+        "min": 200,
+        "max": 3500
+      }
+    },
+    {
+      "isDemo": true,
+      "id": "playbook-adblue-scr-faults",
+      "type": "issue",
+      "brands": [
+        "*"
+      ],
+      "fuels": [
+        "diesel"
+      ],
+      "yearFrom": 2014,
+      "yearTo": 2025,
+      "title": "Fallos AdBlue/SCR: cristalización y limitadores",
+      "content": "Avisos AdBlue, calidad incorrecta o inminente no-arranque suelen deberse a cristalización en inyector SCR, bomba, depósito o sensor NOx. Soluciones: calidad AdBlue ISO 22241, limpieza/sustitución de componentes SCR, actualización software. Evitar aditivos milagro; comprobar que no hay emuladores.",
+      "severity": "medium",
+      "source": "Casuística BlueHDi/OM/BMW SCR + manuales urea",
+      "tags": [
+        "adblue",
+        "scr",
+        "nox",
+        "urea"
+      ],
+      "symptoms": [
+        "Aviso AdBlue calidad/nivel",
+        "Cuenta atrás de km hasta no arrancar",
+        "Códigos NOx/SCR"
+      ],
+      "askSeller": [
+        "¿Problemas de AdBlue? ¿Reparaciones SCR con factura?"
+      ],
+      "inspectSteps": [
+        "Inspección de cristalización en líneas",
+        "Lectura sensores NOx",
+        "Verificar nivel y fecha AdBlue"
+      ],
+      "estimatedCostEur": {
+        "min": 150,
+        "max": 1800
+      }
+    },
+    {
+      "isDemo": true,
+      "id": "playbook-turbo-whine-smoke",
+      "type": "issue",
+      "brands": [
+        "*"
+      ],
+      "fuels": [
+        "diesel",
+        "petrol"
+      ],
+      "title": "Silbido de turbo / humo azul-gris bajo carga",
+      "content": "Silbido creciente, pérdida de presión de soplado o humo bajo carga apuntan a turbo desgastado, wastegate/actuator o fugas en manguitos. Solución: medir boost, revisar holgura axial/radial, cambiar turbo con kit de aceite/tubos; nunca solo el cartucho sin limpiar el circuito.",
+      "severity": "high",
+      "source": "Diagnóstico turbo talleres + foros TDI/TFSI/dCi",
+      "tags": [
+        "turbo",
+        "humo",
+        "boost",
+        "wastegate"
+      ],
+      "symptoms": [
+        "Silbido agudo al acelerar",
+        "Humo bajo carga",
+        "Falta de potencia en alto régimen"
+      ],
+      "askSeller": [
+        "¿Se ha cambiado el turbo? ¿Por qué motivo?"
+      ],
+      "inspectSteps": [
+        "Escuchar silbido en carga",
+        "Inspección manguitos y aceite en intercooler",
+        "Datos de boost OBD"
+      ],
+      "estimatedCostEur": {
+        "min": 600,
+        "max": 2200
+      }
+    },
+    {
+      "isDemo": true,
+      "id": "playbook-hybrid-battery-soh",
+      "type": "issue",
+      "brands": [
+        "*"
+      ],
+      "fuels": [
+        "hybrid",
+        "plugin_hybrid",
+        "electric"
+      ],
+      "title": "Pérdida de autonomía / SOH bajo en híbridos y EV",
+      "content": "Autonomía real muy por debajo de la homologada, ventiladores de batería ruidosos o códigos HV apuntan a degradación de módulo. Pedir informe SOH, historial de cargas rápidas (EV) y garantía restante. Soluciones: reacondicionado de módulos (híbridos Toyota/Honda) o pack completo; coste elevado en EV.",
+      "severity": "high",
+      "source": "Guías compraventa EV/híbrido + comunidades Prius/Leaf/Zoe/Tesla",
+      "tags": [
+        "bateria",
+        "soh",
+        "hibrido",
+        "ev",
+        "autonomia"
+      ],
+      "symptoms": [
+        "Autonomía muy baja",
+        "Modo EV limitado",
+        "Avisos sistema híbrido/HV"
+      ],
+      "askSeller": [
+        "¿Informe SOH o capacidad restante?",
+        "¿Garantía de batería vigente?"
+      ],
+      "inspectSteps": [
+        "Lectura SOH con herramienta adecuada",
+        "Prueba de autonomía en ruta mixta",
+        "Inspección refrigeración de batería"
+      ],
+      "estimatedCostEur": {
+        "min": 800,
+        "max": 12000
+      }
+    },
+    {
+      "isDemo": true,
+      "id": "playbook-ac-weak-cooling",
+      "type": "maintenance",
+      "brands": [
+        "*"
+      ],
+      "title": "Aire acondicionado flojo: gas, condensador, compresor",
+      "content": "Frío insuficiente suele ser carga de gas baja (fuga), condensador obstruido o compresor débil. Solución: prueba de estanqueidad, recarga con aceite correcto, tintado UV. En precompra, probar A/C 10 minutos en parado y en marcha.",
+      "source": "Checklist climatización talleres",
+      "tags": [
+        "aire",
+        "climatizador",
+        "compresor"
+      ],
+      "maintenanceInterval": "Revisión A/C cada 2 años o si enfría mal",
+      "symptoms": [
+        "Aire tibio",
+        "Compresor no embraga",
+        "Olor a humedad"
+      ],
+      "askSeller": [
+        "¿Cuándo se recargó el A/C?",
+        "¿Hay fugas conocidas?"
+      ],
+      "inspectSteps": [
+        "Medir temperaturas bocas de aire",
+        "Inspección visual condensador",
+        "Buscar fugas con UV"
+      ],
+      "estimatedCostEur": {
+        "min": 80,
+        "max": 900
+      }
+    },
+    {
+      "isDemo": true,
+      "id": "playbook-suspension-knocks",
+      "type": "inspection",
+      "brands": [
+        "*"
+      ],
+      "title": "Golpes en suspensión: bieletas, silentblocks, amortiguadores",
+      "content": "Golpes en badenes o dirección floja: bieletas estabilizadoras, silentblocks de trapecio o amortiguadores vencidos. Revisar en elevador, prueba de balancín y desgaste irregular de neumáticos. Coste bajo-medio pero habitual en coches >120.000 km.",
+      "source": "Checklist precompra suspensión",
+      "tags": [
+        "suspension",
+        "bieletas",
+        "amortiguadores"
+      ],
+      "symptoms": [
+        "Cloc-cloc en badenes",
+        "Dirección imprecisa",
+        "Neumáticos irregulares"
+      ],
+      "askSeller": [
+        "¿Se han cambiado amortiguadores/bieletas?"
+      ],
+      "inspectSteps": [
+        "Inspección en elevador",
+        "Prueba de carretera con badenes",
+        "Medir holguras"
+      ],
+      "estimatedCostEur": {
+        "min": 80,
+        "max": 700
+      }
+    },
+    {
+      "isDemo": true,
+      "id": "playbook-injector-misfire",
+      "type": "issue",
+      "brands": [
+        "*"
+      ],
+      "fuels": [
+        "diesel",
+        "petrol"
+      ],
+      "title": "Fallo de encendido / cilindrada irregular → inyectores",
+      "content": "Temblor, codes P030x, humo o consumo irregular pueden ser inyector(es) sucios o fallando, bobinas (gasolina) o compresión. En common-rail diésel: balance de cilindros y retorno de inyectores. Solución: limpieza, regeneración o sustitución codificada; no mezclar marcas sin recodificar.",
+      "severity": "medium",
+      "source": "Protocolos diagnosis common-rail + foros TDI/HDi/dCi",
+      "tags": [
+        "inyector",
+        "misfire",
+        "common rail"
+      ],
+      "symptoms": [
+        "Temblor al ralentí",
+        "Códigos misfire",
+        "Humo irregular"
+      ],
+      "askSeller": [
+        "¿Se han cambiado inyectores/bobinas? ¿Codificados?"
+      ],
+      "inspectSteps": [
+        "Balance de cilindros OBD",
+        "Prueba de retorno diésel",
+        "Inspección bobinas/bujías gasolina"
+      ],
+      "estimatedCostEur": {
+        "min": 200,
+        "max": 1600
+      }
+    },
+    {
+      "isDemo": true,
+      "id": "playbook-prebuy-general",
+      "type": "inspection",
+      "brands": [
+        "*"
+      ],
+      "title": "Checklist precompra universal (mecánica + electrónica)",
+      "content": "Orden recomendado: 1) historial/facturas y kilometraje coherente, 2) arranque en frío, 3) fugas aceite/refrigerante, 4) prueba 20-30 min mixta, 5) OBD sin códigos tapados, 6) frenos/neumáticos/suspensión, 7) electrónica (ventanas, sensores, A/C), 8) ITV y recalls por bastidor. Llevar a taller de confianza antes de pagar.",
+      "source": "Checklist agregada foros compraventa + guías de inspección independientes",
+      "tags": [
+        "precompra",
+        "checklist",
+        "inspeccion",
+        "obd"
+      ],
+      "askSeller": [
+        "¿Puedo llevarlo a mi taller antes de pagar?",
+        "¿Hay códigos borrados recientemente?",
+        "¿Libro de mantenimiento completo?"
+      ],
+      "inspectSteps": [
+        "Arranque en frío y escucha",
+        "Ruta mixta 20-30 minutos",
+        "Lectura OBD completa",
+        "Inspección elevador: fugas, silentblocks, frenos"
+      ]
+    },
+    {
+      "isDemo": true,
+      "id": "playbook-wet-belt-risk",
+      "type": "issue",
+      "brands": [
+        "peugeot",
+        "citroen",
+        "citroën",
+        "ds",
+        "opel",
+        "vauxhall",
+        "ford",
+        "volkswagen",
+        "vw"
+      ],
+      "fuels": [
+        "petrol"
+      ],
+      "yearFrom": 2012,
+      "yearTo": 2023,
+      "title": "Correa en baño de aceite (wet belt): riesgo y prevención",
+      "content": "Algunos PureTech/EcoBoost y otros llevan correa de distribución en baño de aceite. El aceite degradado hincha/rompe la correa y obstruye la bomba de aceite → fallo de motor. Prevención: aceite correcto y cambios cortos (10-15.000 km/1 año), inspección endoscópica de correa, kit preventivo. Preguntar siempre el código de motor.",
+      "severity": "high",
+      "source": "Casuística PureTech/EcoBoost foros + boletines técnicos públicos",
+      "tags": [
+        "wet belt",
+        "correa",
+        "aceite",
+        "puretech",
+        "ecoboost"
+      ],
+      "symptoms": [
+        "Ruido de distribución",
+        "Baja presión de aceite",
+        "Virutas/restos en carter"
+      ],
+      "askSeller": [
+        "¿Código de motor exacto?",
+        "¿Intervalo real de aceite y especificación?",
+        "¿Inspección/cambio de correa húmeda?"
+      ],
+      "inspectSteps": [
+        "Confirmar si es wet belt",
+        "Endoscopia de correa",
+        "Revisar facturas de aceite"
+      ],
+      "estimatedCostEur": {
+        "min": 800,
+        "max": 3500
+      },
+      "typicalKmFrom": 60000,
+      "typicalKmTo": 150000
+    }
+  ]
+}

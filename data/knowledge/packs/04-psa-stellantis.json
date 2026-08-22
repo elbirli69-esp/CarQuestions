@@ -1,0 +1,170 @@
+{
+  "version": 1,
+  "id": "psa-stellantis",
+  "title": "PSA / Stellantis gasolina-diésel",
+  "updatedAt": "2026-08-22T03:09:29.599Z",
+  "methodology": "Resúmenes curados a partir de patrones recurrentes en foros técnicos (BMWFAQ, VAG/Cupra, ClubToyota, PureTech/BlueHDi communities), manuales de mantenimiento, recalls públicos (Safety Gate/NHTSA) e informes de fiabilidad (ADAC/TÜV). No son diagnósticos de un bastidor concreto.",
+  "chunks": [
+    {
+      "isDemo": true,
+      "id": "psa-puretech-wet-belt-detail",
+      "type": "issue",
+      "brands": [
+        "peugeot",
+        "citroen",
+        "citroën",
+        "ds",
+        "opel",
+        "vauxhall"
+      ],
+      "fuels": [
+        "petrol"
+      ],
+      "yearFrom": 2014,
+      "yearTo": 2022,
+      "motorCodes": [
+        "EB2",
+        "EB2DT",
+        "PureTech"
+      ],
+      "models": [
+        "208",
+        "2008",
+        "308",
+        "3008",
+        "c3",
+        "c4",
+        "corsa",
+        "crossland"
+      ],
+      "title": "PureTech 1.2: correa en baño de aceite y bomba",
+      "content": "El 1.2 PureTech con correa húmeda es el caso más citado en foros PSA: la correa se descompone, obstruye el filtro/bomba de aceite y puede destruir el motor. Solución preventiva: cambios de aceite cortos, inspección, sustitución de correa por kit actualizado. Tras rotura: motor completo a menudo. Negociar precio o exigir inspección.",
+      "severity": "high",
+      "source": "Foros Peugeot-Citroën / PureTech owners + boletines PSA",
+      "tags": [
+        "puretech",
+        "wet belt",
+        "aceite"
+      ],
+      "symptoms": [
+        "Ruido de distribución",
+        "Presión de aceite baja",
+        "Testigo aceite"
+      ],
+      "askSeller": [
+        "¿Inspección/cambio de correa PureTech documentado?",
+        "¿Intervalo de aceite real?"
+      ],
+      "inspectSteps": [
+        "Endoscopia correa",
+        "Analizar carter/filtro por residuos",
+        "Confirmar campaña aplicada"
+      ],
+      "estimatedCostEur": {
+        "min": 900,
+        "max": 4500
+      },
+      "typicalKmFrom": 60000,
+      "typicalKmTo": 140000,
+      "reliabilityScore": 62
+    },
+    {
+      "isDemo": true,
+      "id": "psa-bluehdi-adblue-fap",
+      "type": "issue",
+      "brands": [
+        "peugeot",
+        "citroen",
+        "citroën",
+        "ds",
+        "opel",
+        "vauxhall"
+      ],
+      "fuels": [
+        "diesel"
+      ],
+      "yearFrom": 2014,
+      "yearTo": 2023,
+      "models": [
+        "308",
+        "3008",
+        "5008",
+        "c4",
+        "c5",
+        "grandland",
+        "astra"
+      ],
+      "title": "BlueHDi: AdBlue, FAP y sensor de presión",
+      "content": "BlueHDi combina FAP+SCR. Fallos habituales: calidad AdBlue, cristalización, sensores, FAP colmatado en ciudad. Puede llegar a inmovilizar. Pedir historial limpio y regeneraciones; evitar coches solo urbanos sin factura SCR.",
+      "severity": "medium",
+      "source": "Foros BlueHDi / ClubPeugeot + talleres PSA",
+      "tags": [
+        "bluehdi",
+        "adblue",
+        "fap"
+      ],
+      "estimatedCostEur": {
+        "min": 200,
+        "max": 2000
+      },
+      "reliabilityScore": 72
+    },
+    {
+      "isDemo": true,
+      "id": "psa-eat8-service",
+      "type": "maintenance",
+      "brands": [
+        "peugeot",
+        "citroen",
+        "citroën",
+        "ds",
+        "opel",
+        "vauxhall",
+        "renault",
+        "dacia"
+      ],
+      "yearFrom": 2017,
+      "yearTo": 2025,
+      "title": "EAT8 / Aisin: servicio y adaptación",
+      "content": "La EAT8 (Aisin) es generalmente sólida si se respeta el aceite correcto y adaptaciones tras servicio. Tirones leves tras cambio de aceite se corrigen con aprendizaje. Pedir especificación exacta del fluido.",
+      "maintenanceInterval": "Según manual; muchos especialistas a 80-100.000 km",
+      "source": "Manuales PSA EAT8 + foros 3008/508",
+      "tags": [
+        "eat8",
+        "aisin",
+        "automatico"
+      ],
+      "reliabilityScore": 82
+    },
+    {
+      "isDemo": true,
+      "id": "opel-1-2-turbo-puretech-shared",
+      "type": "issue",
+      "brands": [
+        "opel",
+        "vauxhall"
+      ],
+      "fuels": [
+        "petrol"
+      ],
+      "yearFrom": 2019,
+      "yearTo": 2023,
+      "models": [
+        "corsa",
+        "mokka",
+        "crossland",
+        "grandland"
+      ],
+      "title": "Opel 1.2 turbo post-PSA: mismos riesgos PureTech",
+      "content": "Tras la integración PSA, varios Opel 1.2 turbo comparten arquitectura PureTech. Aplicar las mismas precauciones de correa húmeda e intervalos de aceite. Verificar código motor en ficha técnica.",
+      "severity": "high",
+      "source": "Foros Opel / PureTech cross-brand",
+      "tags": [
+        "opel",
+        "puretech",
+        "1.2"
+      ],
+      "reliabilityScore": 64
+    }
+  ]
+}

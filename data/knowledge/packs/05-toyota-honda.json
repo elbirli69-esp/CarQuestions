@@ -1,0 +1,126 @@
+{
+  "version": 1,
+  "id": "toyota-honda",
+  "title": "Toyota / Honda híbridos y GDI",
+  "updatedAt": "2026-08-22T03:09:29.599Z",
+  "methodology": "Resúmenes curados a partir de patrones recurrentes en foros técnicos (BMWFAQ, VAG/Cupra, ClubToyota, PureTech/BlueHDi communities), manuales de mantenimiento, recalls públicos (Safety Gate/NHTSA) e informes de fiabilidad (ADAC/TÜV). No son diagnósticos de un bastidor concreto.",
+  "chunks": [
+    {
+      "isDemo": true,
+      "id": "toyota-hybrid-inverter-coolant",
+      "type": "maintenance",
+      "brands": [
+        "toyota",
+        "lexus"
+      ],
+      "fuels": [
+        "hybrid",
+        "plugin_hybrid"
+      ],
+      "yearFrom": 2010,
+      "yearTo": 2025,
+      "title": "Híbridos Toyota: líquido del inversor y batería",
+      "content": "Además del refrigerante de motor, el circuito del inversor debe mantenerse. Nivel bajo o contaminación puede dañar el inverter. Revisar también el ventilador de la batería HV (polvo en Prius/Auris/Corolla). Fiabilidad alta si el mantenimiento HV está al día.",
+      "maintenanceInterval": "Revisar refrigerante inverter según manual; limpiar ventilador HV en ITV/revisiones",
+      "source": "ClubToyota / PriusChat + manuales Toyota Hybrid",
+      "tags": [
+        "hibrido",
+        "inverter",
+        "hvb"
+      ],
+      "reliabilityScore": 90
+    },
+    {
+      "isDemo": true,
+      "id": "toyota-hybrid-battery-refurb",
+      "type": "issue",
+      "brands": [
+        "toyota",
+        "lexus"
+      ],
+      "fuels": [
+        "hybrid"
+      ],
+      "yearFrom": 2004,
+      "yearTo": 2016,
+      "models": [
+        "prius",
+        "auris",
+        "yaris",
+        "ct 200h"
+      ],
+      "title": "Batería HV NiMH envejecida: síntomas y reacondicionado",
+      "content": "En híbridos NiMH antiguos: autonomía EV corta, motor térmico más presente, códigos de bloque. Solución habitual: reacondicionado de módulos o pack de intercambio. Coste inferior a EV modernos. Pedir SOH o prueba de ruta.",
+      "severity": "medium",
+      "source": "PriusChat / ClubToyota battery threads",
+      "tags": [
+        "hvb",
+        "nimh",
+        "prius"
+      ],
+      "estimatedCostEur": {
+        "min": 800,
+        "max": 2500
+      },
+      "reliabilityScore": 85
+    },
+    {
+      "isDemo": true,
+      "id": "honda-earthdreams-oil-dilution",
+      "type": "issue",
+      "brands": [
+        "honda"
+      ],
+      "fuels": [
+        "petrol",
+        "hybrid"
+      ],
+      "yearFrom": 2015,
+      "yearTo": 2022,
+      "models": [
+        "civic",
+        "cr-v",
+        "hr-v",
+        "accord"
+      ],
+      "title": "Honda 1.5T Earth Dreams: dilución de aceite en frío",
+      "content": "El 1.5 turbo Earth Dreams en climas fríos/uso corto puede diluir aceite con gasolina (nivel sube, olor a gasolina). Actualizaciones de software y cambios de aceite más frecuentes mitigan. Verificar boletines y hábito de uso.",
+      "severity": "medium",
+      "source": "Honda-Tech / Civic Forum + TSBs dilución 1.5T",
+      "tags": [
+        "honda",
+        "dilucion",
+        "1.5t"
+      ],
+      "estimatedCostEur": {
+        "min": 100,
+        "max": 800
+      },
+      "reliabilityScore": 78
+    },
+    {
+      "isDemo": true,
+      "id": "honda-cvt-maintenance",
+      "type": "maintenance",
+      "brands": [
+        "honda",
+        "nissan",
+        "mitsubishi"
+      ],
+      "yearFrom": 2012,
+      "yearTo": 2024,
+      "title": "CVT: fluido específico y síntomas de desgaste",
+      "content": "Las CVT exigen fluido específico y cambios periódicos pese a 'lifetime'. Tirones, ruidos de motor de goma o patinaje indican desgaste de correa/poleas. Servicio preventivo barato frente a sustitución completa.",
+      "maintenanceInterval": "Fluido CVT ~40.000-80.000 km según fabricante",
+      "source": "Foros Honda/Nissan CVT + guías de transmisión",
+      "tags": [
+        "cvt",
+        "fluido"
+      ],
+      "estimatedCostEur": {
+        "min": 180,
+        "max": 400
+      }
+    }
+  ]
+}

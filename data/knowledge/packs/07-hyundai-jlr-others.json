@@ -1,0 +1,245 @@
+{
+  "version": 1,
+  "id": "hyundai-jlr-others",
+  "title": "Hyundai-Kia / JLR / otros",
+  "updatedAt": "2026-08-22T03:09:29.599Z",
+  "methodology": "Resúmenes curados a partir de patrones recurrentes en foros técnicos (BMWFAQ, VAG/Cupra, ClubToyota, PureTech/BlueHDi communities), manuales de mantenimiento, recalls públicos (Safety Gate/NHTSA) e informes de fiabilidad (ADAC/TÜV). No son diagnósticos de un bastidor concreto.",
+  "chunks": [
+    {
+      "isDemo": true,
+      "id": "hyundai-kia-theta2-engine",
+      "type": "issue",
+      "brands": [
+        "hyundai",
+        "kia"
+      ],
+      "fuels": [
+        "petrol"
+      ],
+      "yearFrom": 2011,
+      "yearTo": 2019,
+      "motorCodes": [
+        "Theta II",
+        "G4KH",
+        "G4KJ"
+      ],
+      "models": [
+        "sonata",
+        "optima",
+        "sportage",
+        "tucson",
+        "santa fe"
+      ],
+      "title": "Theta II: desgaste de muñones y recalls",
+      "content": "El Theta II tuvo problemas de lubricación/muñones en algunos mercados con recalls y extensiones de garantía. Buscar historial de motor sustituido, ruidos de golpeteo y campañas aplicadas al VIN.",
+      "severity": "high",
+      "source": "Recalls NHTSA/Safety Gate + foros Hyundai/Kia",
+      "tags": [
+        "theta",
+        "recall",
+        "motor"
+      ],
+      "estimatedCostEur": {
+        "min": 2000,
+        "max": 7000
+      },
+      "reliabilityScore": 65
+    },
+    {
+      "isDemo": true,
+      "id": "hyundai-kia-dct-7",
+      "type": "issue",
+      "brands": [
+        "hyundai",
+        "kia"
+      ],
+      "yearFrom": 2015,
+      "yearTo": 2022,
+      "title": "DCT 7 marchas Hyundai/Kia: software y embragues",
+      "content": "La DCT de 7 relaciones recibió actualizaciones de software por tirones y sensaciones de patinaje. Comprobar actualizaciones y historial; probar salida en cuesta y modo manual.",
+      "severity": "medium",
+      "source": "Foros Kia/Hyundai DCT + boletines de software",
+      "tags": [
+        "dct",
+        "hyundai",
+        "kia"
+      ],
+      "estimatedCostEur": {
+        "min": 0,
+        "max": 2000
+      },
+      "reliabilityScore": 74
+    },
+    {
+      "isDemo": true,
+      "id": "landrover-ingenium-timing-belt",
+      "type": "issue",
+      "brands": [
+        "land rover",
+        "jaguar"
+      ],
+      "fuels": [
+        "diesel",
+        "petrol"
+      ],
+      "yearFrom": 2015,
+      "yearTo": 2022,
+      "motorCodes": [
+        "Ingenium"
+      ],
+      "title": "Ingenium: correa húmeda / cadena y consumo de aceite",
+      "content": "Los Ingenium acumularon quejas de consumo de aceite, problemas de distribución (según versión correa/cadena) y fiabilidad variable. Exigir historial Jaguar Land Rover completo y presupuesto de posibles intervenciones grandes.",
+      "severity": "high",
+      "source": "Forum JLR / Ingenium ownership reports",
+      "tags": [
+        "ingenium",
+        "land rover",
+        "jaguar"
+      ],
+      "estimatedCostEur": {
+        "min": 800,
+        "max": 4000
+      },
+      "reliabilityScore": 64
+    },
+    {
+      "isDemo": true,
+      "id": "volvo-drive-e-oil",
+      "type": "maintenance",
+      "brands": [
+        "volvo"
+      ],
+      "yearFrom": 2014,
+      "yearTo": 2023,
+      "motorCodes": [
+        "Drive-E",
+        "VEA"
+      ],
+      "title": "Volvo Drive-E: aceite correcto y correa auxiliar",
+      "content": "Motores Drive-E (VEA) son sensibles a la especificación de aceite y en algunas versiones a la correa de accesorios en baño de aceite. Respetar viscosidad Volvo y revisiones; preguntar por campañas de correa auxiliar.",
+      "maintenanceInterval": "Aceite según Long Life Volvo; no alargar en uso severo",
+      "source": "Volvo Forums / VIDA service notes públicas",
+      "tags": [
+        "volvo",
+        "drive-e",
+        "aceite"
+      ],
+      "reliabilityScore": 80
+    },
+    {
+      "isDemo": true,
+      "id": "mazda-skyactiv-carbon",
+      "type": "issue",
+      "brands": [
+        "mazda"
+      ],
+      "fuels": [
+        "petrol"
+      ],
+      "yearFrom": 2012,
+      "yearTo": 2021,
+      "title": "Skyactiv-G: carbonilla y mantenimiento de bujías/bobinas",
+      "content": "Skyactiv-G puede acumular carbonilla en admisión (inyección directa) y fallos de bobinas/bujías. Limpieza periódica y bujías a intervalo corto mejoran el comportamiento. Diésel Skyactiv: vigilar FAP en ciudad.",
+      "severity": "low",
+      "source": "Mazda3 Revolution / Skyactiv forums",
+      "tags": [
+        "skyactiv",
+        "carbonilla"
+      ],
+      "estimatedCostEur": {
+        "min": 150,
+        "max": 600
+      },
+      "reliabilityScore": 84
+    },
+    {
+      "isDemo": true,
+      "id": "nissan-vr38-qr25-timing",
+      "type": "issue",
+      "brands": [
+        "nissan"
+      ],
+      "yearFrom": 2007,
+      "yearTo": 2018,
+      "models": [
+        "qashqai",
+        "x-trail",
+        "juke",
+        "altima",
+        "pathfinder"
+      ],
+      "title": "Nissan: CVT Jatco y mantenimiento crítico",
+      "content": "Muchos Nissan con CVT Jatco sufren sobrecalentamiento y fallo si se omite el fluido o se remolca mal. Servicio de fluido+filtro y radiador CVT son preventivos clave. Sintomas: patinaje, overheat warning.",
+      "severity": "high",
+      "source": "Nicoclub / Qashqai owners CVT threads",
+      "tags": [
+        "nissan",
+        "cvt",
+        "jatco"
+      ],
+      "estimatedCostEur": {
+        "min": 200,
+        "max": 4500
+      },
+      "reliabilityScore": 68
+    },
+    {
+      "isDemo": true,
+      "id": "fiat-multijet-dpf",
+      "type": "issue",
+      "brands": [
+        "fiat",
+        "abarth",
+        "alfa romeo",
+        "jeep"
+      ],
+      "fuels": [
+        "diesel"
+      ],
+      "yearFrom": 2010,
+      "yearTo": 2020,
+      "title": "Multijet: FAP, EGR y sensor diferencial",
+      "content": "Los Multijet comparten problemática FAP/EGR típica del diésel urbano italiano/español. Sensores de presión diferenciales fallan y generan avisos falsos. Diagnosis antes de cambiar FAP completo.",
+      "severity": "medium",
+      "source": "ForoFiat / AlfaOwner Multijet",
+      "tags": [
+        "multijet",
+        "fap",
+        "egr"
+      ],
+      "estimatedCostEur": {
+        "min": 150,
+        "max": 1400
+      },
+      "reliabilityScore": 74
+    },
+    {
+      "isDemo": true,
+      "id": "jeep-gearbox-928",
+      "type": "issue",
+      "brands": [
+        "jeep",
+        "alfa romeo"
+      ],
+      "yearFrom": 2014,
+      "yearTo": 2021,
+      "models": [
+        "renegade",
+        "compass",
+        "giulietta",
+        "stelvio",
+        "giulia"
+      ],
+      "title": "Cajas ZF/Alfa-Jeep: tirones y software",
+      "content": "Algunas combinaciones Jeep/Alfa con automáticos mostraron tirones corregibles por software y aceite. Verificar actualizaciones de centralita de caja y estado del fluido.",
+      "severity": "low",
+      "source": "Alfa Romeo Giulia Forum / Jeep Compass forums",
+      "tags": [
+        "jeep",
+        "alfa",
+        "automatico"
+      ],
+      "reliabilityScore": 76
+    }
+  ]
+}

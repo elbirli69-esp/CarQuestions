@@ -1,6 +1,11 @@
 import type { KnowledgeChunk } from "@/types/knowledge";
 import type { RetrievedDocument, RetrievalQuery, VehicleDocument } from "@/types/rag";
 import type { Vehicle } from "@/types/vehicle";
+import {
+  classifyQuestionIntent,
+  expandAutomotiveQuery,
+  intentRetrievalBoost,
+} from "@/lib/rag/query/expand";
 import { getKnowledgeVectorStore } from "@/lib/rag/vector/store";
 import { tokenize } from "@/lib/utils/math";
 
@@ -16,7 +21,7 @@ export class InMemoryKeywordIndex {
   }
 
   async query(input: RetrievalQuery): Promise<RetrievedDocument[]> {
-    const terms = tokenize(input.text);
+    const terms = tokenize(expandAutomotiveQuery(input.text));
     if (terms.length === 0) return [];
 
     return this.documents
@@ -46,9 +51,13 @@ export async function retrieveDocuments(
   input: RetrievalQuery,
   dynamicDocuments: VehicleDocument[] = [],
 ): Promise<RetrievedDocument[]> {
-  const limit = input.limit ?? 6;
-  const knowledgeHits = getKnowledgeVectorStore().query({ ...input, limit: Math.max(limit, 8) });
-  const dynamicHits = await createDocumentIndex(dynamicDocuments).query({ ...input, limit });
+  const limit = input.limit ?? 8;
+  const intent = classifyQuestionIntent(input.text);
+  const expandedText = `${expandAutomotiveQuery(input.text)} ${intentRetrievalBoost(intent)}`;
+  const query = { ...input, text: expandedText, limit: Math.max(limit, 10) };
+
+  const knowledgeHits = getKnowledgeVectorStore().query(query);
+  const dynamicHits = await createDocumentIndex(dynamicDocuments).query(query);
 
   const merged = new Map<string, RetrievedDocument>();
   for (const hit of [...knowledgeHits, ...dynamicHits]) {
@@ -61,7 +70,7 @@ export async function retrieveDocuments(
   return [...merged.values()].sort((a, b) => b.score - a.score).slice(0, limit);
 }
 
-export function retrieveKnowledgeForVehicle(vehicle: Vehicle, limit = 12): KnowledgeChunk[] {
+export function retrieveKnowledgeForVehicle(vehicle: Vehicle, limit = 16): KnowledgeChunk[] {
   const queryText = [
     vehicle.brand,
     vehicle.model,
@@ -69,14 +78,14 @@ export function retrieveKnowledgeForVehicle(vehicle: Vehicle, limit = 12): Knowl
     String(vehicle.year),
     vehicle.fuel,
     vehicle.transmission,
-    "fiabilidad mantenimiento fallos averías",
+    "fiabilidad mantenimiento fallos averías sintomas soluciones foros tecnicos",
   ]
     .filter(Boolean)
     .join(" ");
 
   return getKnowledgeVectorStore()
     .queryChunks({
-      text: queryText,
+      text: expandAutomotiveQuery(queryText),
       vehicle: {
         brand: vehicle.brand,
         model: vehicle.model,

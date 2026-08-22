@@ -2,6 +2,7 @@ import type { KnowledgeChunk, KnowledgeVectorIndex } from "@/types/knowledge";
 import type { RetrievedDocument, RetrievalQuery } from "@/types/rag";
 import { loadKnowledgeChunks, loadKnowledgeVectorIndex } from "@/lib/rag/knowledge/load";
 import { chunkToDocument } from "@/lib/rag/knowledge/to-documents";
+import { expandAutomotiveQuery } from "@/lib/rag/query/expand";
 import {
   buildTfidfVector,
   chunkSearchText,
@@ -45,9 +46,11 @@ export class KnowledgeVectorStore {
 
   query(input: RetrievalQuery): RetrievedDocument[] {
     const limit = input.limit ?? 6;
-    const queryText = [input.text, input.vehicle?.brand, input.vehicle?.model, String(input.vehicle?.year ?? "")]
-      .filter(Boolean)
-      .join(" ");
+    const queryText = expandAutomotiveQuery(
+      [input.text, input.vehicle?.brand, input.vehicle?.model, String(input.vehicle?.year ?? "")]
+        .filter(Boolean)
+        .join(" "),
+    );
     const queryVector = buildTfidfVector(queryText, this.index.idf);
     const vectorByChunkId = new Map(this.index.entries.map((entry) => [entry.chunkId, entry.vector]));
 
@@ -57,11 +60,37 @@ export class KnowledgeVectorStore {
         const vector = vectorByChunkId.get(chunk.id) ?? buildTfidfVector(chunkSearchText(chunk), this.index.idf);
         const semanticScore = cosineSimilarity(queryVector, vector);
         const brand = input.vehicle?.brand?.toLowerCase() ?? "";
+        const isUniversal = chunk.brands.some((item) => item.trim() === "*");
+        const intentHints = (input.text ?? "").toLowerCase();
+        const wantsIssues = /aver|fallo|problem|sintoma|ruido|fiab|cadena|fap|egr|turbo|caja|dsg|oxido|regen|freno/.test(
+          intentHints,
+        );
+        const wantsMaint = /manten|aceite|intervalo|revision|servicio/.test(intentHints);
+        const wantsInspect = /inspecc|precompra|revisar|checklist|obd/.test(intentHints);
+        const typeBoost =
+          (wantsIssues && (chunk.type === "issue" || chunk.type === "recall") ? 0.06 : 0) +
+          (wantsMaint && chunk.type === "maintenance" ? 0.06 : 0) +
+          (wantsInspect && chunk.type === "inspection" ? 0.06 : 0);
+
+        const fuel = input.vehicle?.fuel;
+        const fuelBoost =
+          fuel && chunk.fuels && chunk.fuels.length > 0
+            ? chunk.fuels.includes(fuel as never)
+              ? 0.05
+              : -0.04
+            : 0;
+
         const metadataBoost =
           (chunk.type === "issue" || chunk.type === "recall" ? 0.05 : 0) +
-          (brand && chunk.brands.some((item) => item.toLowerCase().includes(brand) || brand.includes(item.toLowerCase()))
-            ? 0.08
-            : 0);
+          (brand &&
+          !isUniversal &&
+          chunk.brands.some((item) => item.toLowerCase().includes(brand) || brand.includes(item.toLowerCase()))
+            ? 0.1
+            : 0) +
+          (isUniversal ? 0.02 : 0) +
+          (chunk.symptoms && chunk.symptoms.length > 0 ? 0.03 : 0) +
+          typeBoost +
+          fuelBoost;
         return {
           chunk,
           score: semanticScore + metadataBoost,

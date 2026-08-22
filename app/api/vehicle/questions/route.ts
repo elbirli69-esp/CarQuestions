@@ -36,7 +36,7 @@ export async function POST(request: Request) {
           fuel: analysis.vehicle.fuel,
           version: analysis.vehicle.version,
         },
-        limit: 8,
+        limit: 10,
       },
       documents,
     );
@@ -60,6 +60,8 @@ export async function POST(request: Request) {
         source: item.document.source,
         score: item.score,
         isDemo: item.document.isDemo,
+        chunkType: item.document.metadata?.chunkType ?? null,
+        severity: item.document.metadata?.severity ?? null,
       })),
     });
   } catch (error) {
