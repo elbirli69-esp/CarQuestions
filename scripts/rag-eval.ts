@@ -109,6 +109,36 @@ const CASES: Case[] = [
     vehicle: { brand: "Audi", model: "A5", year: 2013, fuel: "petrol" },
     expectIdIncludes: ["dl501", "stronic", "mechatronic", "s-tronic"],
   },
+  {
+    name: "Subaru culata",
+    text: "junta culata refrigerante mayonesa boxer",
+    vehicle: { brand: "Subaru", model: "Forester", year: 2010, fuel: "petrol" },
+    expectIdIncludes: ["subaru", "culata", "gasket", "boxer", "head"],
+  },
+  {
+    name: "LCV FAP reparto",
+    text: "furgoneta reparto urbano fap regeneracion",
+    vehicle: { brand: "Ford", model: "Transit", year: 2018, fuel: "diesel" },
+    expectIdIncludes: ["lcv", "fap", "dpf", "transit", "reparto"],
+  },
+  {
+    name: "Porsche IMS",
+    text: "ims rodamiento boxster 911 precompra",
+    vehicle: { brand: "Porsche", model: "Boxster", year: 2005, fuel: "petrol" },
+    expectIdIncludes: ["ims", "porsche", "m96"],
+  },
+  {
+    name: "Airmatic altura",
+    text: "airmatic esquina baja compresor suspension neumatica",
+    vehicle: { brand: "Mercedes-Benz", model: "E-Class", year: 2014, fuel: "diesel" },
+    expectIdIncludes: ["airmatic", "air", "fuelle", "suspension"],
+  },
+  {
+    name: "PureTech 2023",
+    text: "puretech 2023 inspeccion correa bano aceite",
+    vehicle: { brand: "Peugeot", model: "208", year: 2023, fuel: "petrol" },
+    expectIdIncludes: ["puretech", "wet", "correa", "belt"],
+  },
 ];
 
 function matchesExpectation(id: string, expectIdIncludes: string[]): boolean {

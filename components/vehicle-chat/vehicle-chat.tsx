@@ -15,6 +15,8 @@ interface RetrievedRef {
   source: string;
   score: number;
   isDemo: boolean;
+  chunkType?: string | null;
+  severity?: string | null;
 }
 
 export function VehicleChat({
@@ -120,10 +122,19 @@ export function VehicleChat({
             <p className="text-xs font-medium text-muted-foreground">Fuentes RAG usadas en la última respuesta</p>
             <ul className="mt-2 space-y-1.5 text-xs text-muted-foreground">
               {lastRetrieved.slice(0, 5).map((item) => (
-                <li key={item.id}>
+                <li key={item.id} className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
                   <span className="font-medium text-foreground">{(item.score * 100).toFixed(0)}%</span>
-                  {" · "}
-                  {item.source}
+                  {item.chunkType ? (
+                    <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-foreground">
+                      {item.chunkType}
+                    </span>
+                  ) : null}
+                  {item.severity === "high" ? (
+                    <span className="rounded bg-red-500/15 px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-red-700 dark:text-red-300">
+                      alto
+                    </span>
+                  ) : null}
+                  <span>{item.source}</span>
                 </li>
               ))}
             </ul>

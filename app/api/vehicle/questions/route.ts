@@ -60,6 +60,8 @@ export async function POST(request: Request) {
         source: item.document.source,
         score: item.score,
         isDemo: item.document.isDemo,
+        chunkType: item.document.metadata?.chunkType ?? null,
+        severity: item.document.metadata?.severity ?? null,
       })),
     });
   } catch (error) {
