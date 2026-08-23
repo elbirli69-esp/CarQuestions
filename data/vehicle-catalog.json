@@ -1,0 +1,1620 @@
+{
+  "generatedAt": "2026-08-23T08:20:03.356Z",
+  "source": "coches.net",
+  "brands": [
+    {
+      "slug": "abarth",
+      "name": "Abarth",
+      "models": [
+        {
+          "slug": "500",
+          "name": "500"
+        },
+        {
+          "slug": "500c",
+          "name": "500c"
+        },
+        {
+          "slug": "600",
+          "name": "600"
+        }
+      ]
+    },
+    {
+      "slug": "aiways",
+      "name": "Aiways",
+      "models": [
+        {
+          "slug": "u5",
+          "name": "U5"
+        }
+      ]
+    },
+    {
+      "slug": "aixam",
+      "name": "Aixam",
+      "models": [
+        {
+          "slug": "crossover",
+          "name": "Crossover"
+        },
+        {
+          "slug": "easy",
+          "name": "Easy"
+        }
+      ]
+    },
+    {
+      "slug": "alpine",
+      "name": "Alpine",
+      "models": [
+        {
+          "slug": "a110",
+          "name": "A110"
+        },
+        {
+          "slug": "a290",
+          "name": "A290"
+        },
+        {
+          "slug": "a390",
+          "name": "A390"
+        }
+      ]
+    },
+    {
+      "slug": "aro",
+      "name": "ARO",
+      "models": [
+        {
+          "slug": "10",
+          "name": "10"
+        }
+      ]
+    },
+    {
+      "slug": "asia",
+      "name": "Asia",
+      "models": [
+        {
+          "slug": "rocsta",
+          "name": "Rocsta"
+        }
+      ]
+    },
+    {
+      "slug": "audi",
+      "name": "Audi",
+      "models": [
+        {
+          "slug": "100",
+          "name": "100"
+        },
+        {
+          "slug": "80",
+          "name": "80"
+        },
+        {
+          "slug": "90",
+          "name": "90"
+        },
+        {
+          "slug": "a1",
+          "name": "A1"
+        },
+        {
+          "slug": "a2",
+          "name": "A2"
+        },
+        {
+          "slug": "a3",
+          "name": "A3"
+        },
+        {
+          "slug": "a4",
+          "name": "A4"
+        },
+        {
+          "slug": "a5",
+          "name": "A5"
+        },
+        {
+          "slug": "a6",
+          "name": "A6"
+        },
+        {
+          "slug": "a7",
+          "name": "A7"
+        },
+        {
+          "slug": "a8",
+          "name": "A8"
+        },
+        {
+          "slug": "cabriolet",
+          "name": "Cabriolet"
+        },
+        {
+          "slug": "etron",
+          "name": "Etron"
+        },
+        {
+          "slug": "q2",
+          "name": "Q2"
+        },
+        {
+          "slug": "q3",
+          "name": "Q3"
+        },
+        {
+          "slug": "q5",
+          "name": "Q5"
+        },
+        {
+          "slug": "q7",
+          "name": "Q7"
+        },
+        {
+          "slug": "q8",
+          "name": "Q8"
+        },
+        {
+          "slug": "r8",
+          "name": "R8"
+        },
+        {
+          "slug": "rs2",
+          "name": "RS2"
+        },
+        {
+          "slug": "rs3",
+          "name": "RS3"
+        },
+        {
+          "slug": "rs4",
+          "name": "RS4"
+        },
+        {
+          "slug": "rs6",
+          "name": "RS6"
+        },
+        {
+          "slug": "rs7",
+          "name": "RS7"
+        },
+        {
+          "slug": "s1",
+          "name": "S1"
+        },
+        {
+          "slug": "s2",
+          "name": "S2"
+        },
+        {
+          "slug": "s3",
+          "name": "S3"
+        },
+        {
+          "slug": "s4",
+          "name": "S4"
+        },
+        {
+          "slug": "s5",
+          "name": "S5"
+        },
+        {
+          "slug": "s6",
+          "name": "S6"
+        },
+        {
+          "slug": "s8",
+          "name": "S8"
+        },
+        {
+          "slug": "sq5",
+          "name": "SQ5"
+        },
+        {
+          "slug": "sq7",
+          "name": "SQ7"
+        },
+        {
+          "slug": "tt",
+          "name": "TT"
+        },
+        {
+          "slug": "tts",
+          "name": "TTS"
+        }
+      ]
+    },
+    {
+      "slug": "austin",
+      "name": "Austin",
+      "models": [
+        {
+          "slug": "metro",
+          "name": "Metro"
+        },
+        {
+          "slug": "mini",
+          "name": "Mini"
+        },
+        {
+          "slug": "montego",
+          "name": "Montego"
+        }
+      ]
+    },
+    {
+      "slug": "baic",
+      "name": "Baic",
+      "models": [
+        {
+          "slug": "x55",
+          "name": "X55"
+        }
+      ]
+    },
+    {
+      "slug": "bentley",
+      "name": "Bentley",
+      "models": [
+        {
+          "slug": "arnage",
+          "name": "Arnage"
+        },
+        {
+          "slug": "azure",
+          "name": "Azure"
+        },
+        {
+          "slug": "bentayga",
+          "name": "Bentayga"
+        },
+        {
+          "slug": "continental",
+          "name": "Continental"
+        }
+      ]
+    },
+    {
+      "slug": "bestune",
+      "name": "Bestune",
+      "models": [
+        {
+          "slug": "b70",
+          "name": "B70"
+        },
+        {
+          "slug": "t77",
+          "name": "T77"
+        },
+        {
+          "slug": "t90",
+          "name": "T90"
+        }
+      ]
+    },
+    {
+      "slug": "bmw",
+      "name": "BMW",
+      "models": [
+        {
+          "slug": "i3",
+          "name": "i3"
+        },
+        {
+          "slug": "i4",
+          "name": "i4"
+        },
+        {
+          "slug": "i5",
+          "name": "i5"
+        },
+        {
+          "slug": "i7",
+          "name": "i7"
+        },
+        {
+          "slug": "i8",
+          "name": "i8"
+        },
+        {
+          "slug": "ix",
+          "name": "iX"
+        },
+        {
+          "slug": "ix1",
+          "name": "iX1"
+        },
+        {
+          "slug": "ix2",
+          "name": "iX2"
+        },
+        {
+          "slug": "ix3",
+          "name": "iX3"
+        },
+        {
+          "slug": "x1",
+          "name": "X1"
+        },
+        {
+          "slug": "x2",
+          "name": "X2"
+        },
+        {
+          "slug": "x3",
+          "name": "X3"
+        },
+        {
+          "slug": "x4",
+          "name": "X4"
+        },
+        {
+          "slug": "x5",
+          "name": "X5"
+        },
+        {
+          "slug": "x6",
+          "name": "X6"
+        },
+        {
+          "slug": "x7",
+          "name": "X7"
+        },
+        {
+          "slug": "xm",
+          "name": "XM"
+        },
+        {
+          "slug": "z1",
+          "name": "Z1"
+        },
+        {
+          "slug": "z3",
+          "name": "Z3"
+        },
+        {
+          "slug": "z4",
+          "name": "Z4"
+        }
+      ]
+    },
+    {
+      "slug": "byd",
+      "name": "BYD",
+      "models": [
+        {
+          "slug": "dolphin",
+          "name": "Dolphin"
+        },
+        {
+          "slug": "seal",
+          "name": "Seal"
+        },
+        {
+          "slug": "tang",
+          "name": "Tang"
+        }
+      ]
+    },
+    {
+      "slug": "cadillac",
+      "name": "Cadillac",
+      "models": [
+        {
+          "slug": "bls",
+          "name": "BLS"
+        },
+        {
+          "slug": "cts",
+          "name": "CTS"
+        },
+        {
+          "slug": "escalade",
+          "name": "Escalade"
+        },
+        {
+          "slug": "seville",
+          "name": "Seville"
+        },
+        {
+          "slug": "srx",
+          "name": "SRX"
+        },
+        {
+          "slug": "sts",
+          "name": "STS"
+        },
+        {
+          "slug": "xlr",
+          "name": "XLR"
+        }
+      ]
+    },
+    {
+      "slug": "chevrolet",
+      "name": "Chevrolet",
+      "models": [
+        {
+          "slug": "astro",
+          "name": "Astro"
+        },
+        {
+          "slug": "aveo",
+          "name": "Aveo"
+        },
+        {
+          "slug": "blazer",
+          "name": "Blazer"
+        },
+        {
+          "slug": "camaro",
+          "name": "Camaro"
+        },
+        {
+          "slug": "captiva",
+          "name": "Captiva"
+        },
+        {
+          "slug": "corvette",
+          "name": "Corvette"
+        },
+        {
+          "slug": "cruze",
+          "name": "Cruze"
+        },
+        {
+          "slug": "epica",
+          "name": "Epica"
+        },
+        {
+          "slug": "evanda",
+          "name": "Evanda"
+        },
+        {
+          "slug": "hhr",
+          "name": "HHR"
+        },
+        {
+          "slug": "kalos",
+          "name": "Kalos"
+        },
+        {
+          "slug": "lacetti",
+          "name": "Lacetti"
+        },
+        {
+          "slug": "malibu",
+          "name": "Malibu"
+        },
+        {
+          "slug": "matiz",
+          "name": "Matiz"
+        },
+        {
+          "slug": "nubira",
+          "name": "Nubira"
+        },
+        {
+          "slug": "orlando",
+          "name": "Orlando"
+        },
+        {
+          "slug": "spark",
+          "name": "Spark"
+        },
+        {
+          "slug": "tacuma",
+          "name": "Tacuma"
+        },
+        {
+          "slug": "tahoe",
+          "name": "Tahoe"
+        },
+        {
+          "slug": "trailblazer",
+          "name": "Trailblazer"
+        },
+        {
+          "slug": "trax",
+          "name": "Trax"
+        },
+        {
+          "slug": "volt",
+          "name": "Volt"
+        }
+      ]
+    },
+    {
+      "slug": "chrysler",
+      "name": "Chrysler",
+      "models": [
+        {
+          "slug": "300c",
+          "name": "300c"
+        },
+        {
+          "slug": "300m",
+          "name": "300m"
+        },
+        {
+          "slug": "crossfire",
+          "name": "Crossfire"
+        },
+        {
+          "slug": "neon",
+          "name": "Neon"
+        },
+        {
+          "slug": "saratoga",
+          "name": "Saratoga"
+        },
+        {
+          "slug": "sebring",
+          "name": "Sebring"
+        },
+        {
+          "slug": "stratus",
+          "name": "Stratus"
+        },
+        {
+          "slug": "vision",
+          "name": "Vision"
+        },
+        {
+          "slug": "voyager",
+          "name": "Voyager"
+        }
+      ]
+    },
+    {
+      "slug": "citroen",
+      "name": "Citroën",
+      "models": [
+        {
+          "slug": "2cv",
+          "name": "2CV"
+        },
+        {
+          "slug": "ami",
+          "name": "AMI"
+        },
+        {
+          "slug": "ax",
+          "name": "AX"
+        },
+        {
+          "slug": "berlingo",
+          "name": "Berlingo"
+        },
+        {
+          "slug": "bx",
+          "name": "BX"
+        },
+        {
+          "slug": "c1",
+          "name": "C1"
+        },
+        {
+          "slug": "c15",
+          "name": "C15"
+        },
+        {
+          "slug": "c2",
+          "name": "C2"
+        },
+        {
+          "slug": "c25",
+          "name": "C25"
+        },
+        {
+          "slug": "c3",
+          "name": "C3"
+        },
+        {
+          "slug": "c4",
+          "name": "C4"
+        },
+        {
+          "slug": "c5",
+          "name": "C5"
+        },
+        {
+          "slug": "c6",
+          "name": "C6"
+        },
+        {
+          "slug": "c8",
+          "name": "C8"
+        },
+        {
+          "slug": "ccrosser",
+          "name": "Ccrosser"
+        },
+        {
+          "slug": "celysee",
+          "name": "Celysee"
+        },
+        {
+          "slug": "cx",
+          "name": "CX"
+        },
+        {
+          "slug": "czero",
+          "name": "Czero"
+        },
+        {
+          "slug": "ds3",
+          "name": "DS3"
+        },
+        {
+          "slug": "ds4",
+          "name": "DS4"
+        },
+        {
+          "slug": "ds5",
+          "name": "DS5"
+        },
+        {
+          "slug": "eberlingo",
+          "name": "Eberlingo"
+        },
+        {
+          "slug": "ec3",
+          "name": "EC3"
+        },
+        {
+          "slug": "ec4",
+          "name": "EC4"
+        },
+        {
+          "slug": "ejumpy",
+          "name": "Ejumpy"
+        },
+        {
+          "slug": "emehari",
+          "name": "Emehari"
+        },
+        {
+          "slug": "espacetourer",
+          "name": "Espacetourer"
+        },
+        {
+          "slug": "evasion",
+          "name": "Evasion"
+        },
+        {
+          "slug": "gsa",
+          "name": "GSA"
+        },
+        {
+          "slug": "holidays",
+          "name": "Holidays"
+        },
+        {
+          "slug": "jumper",
+          "name": "Jumper"
+        },
+        {
+          "slug": "jumpy",
+          "name": "Jumpy"
+        },
+        {
+          "slug": "lna",
+          "name": "LNA"
+        },
+        {
+          "slug": "nemo",
+          "name": "Nemo"
+        },
+        {
+          "slug": "saxo",
+          "name": "Saxo"
+        },
+        {
+          "slug": "spacetourer",
+          "name": "Spacetourer"
+        },
+        {
+          "slug": "visa",
+          "name": "Visa"
+        },
+        {
+          "slug": "xantia",
+          "name": "Xantia"
+        },
+        {
+          "slug": "xm",
+          "name": "XM"
+        },
+        {
+          "slug": "xsara",
+          "name": "Xsara"
+        },
+        {
+          "slug": "zx",
+          "name": "ZX"
+        }
+      ]
+    },
+    {
+      "slug": "corvette",
+      "name": "Corvette",
+      "models": [
+        {
+          "slug": "corvette",
+          "name": "Corvette"
+        }
+      ]
+    },
+    {
+      "slug": "cupra",
+      "name": "Cupra",
+      "models": [
+        {
+          "slug": "ateca",
+          "name": "Ateca"
+        },
+        {
+          "slug": "born",
+          "name": "Born"
+        },
+        {
+          "slug": "formentor",
+          "name": "Formentor"
+        },
+        {
+          "slug": "raval",
+          "name": "Raval"
+        },
+        {
+          "slug": "tavascan",
+          "name": "Tavascan"
+        },
+        {
+          "slug": "terramar",
+          "name": "Terramar"
+        }
+      ]
+    },
+    {
+      "slug": "dacia",
+      "name": "Dacia",
+      "models": [
+        {
+          "slug": "bigster",
+          "name": "Bigster"
+        },
+        {
+          "slug": "dokker",
+          "name": "Dokker"
+        },
+        {
+          "slug": "duster",
+          "name": "Duster"
+        },
+        {
+          "slug": "jogger",
+          "name": "Jogger"
+        },
+        {
+          "slug": "lodgy",
+          "name": "Lodgy"
+        },
+        {
+          "slug": "logan",
+          "name": "Logan"
+        },
+        {
+          "slug": "sandero",
+          "name": "Sandero"
+        },
+        {
+          "slug": "spring",
+          "name": "Spring"
+        }
+      ]
+    },
+    {
+      "slug": "daewoo",
+      "name": "Daewoo",
+      "models": [
+        {
+          "slug": "aranos",
+          "name": "Aranos"
+        },
+        {
+          "slug": "evanda",
+          "name": "Evanda"
+        },
+        {
+          "slug": "kalos",
+          "name": "Kalos"
+        },
+        {
+          "slug": "lacetti",
+          "name": "Lacetti"
+        },
+        {
+          "slug": "lanos",
+          "name": "Lanos"
+        },
+        {
+          "slug": "leganza",
+          "name": "Leganza"
+        },
+        {
+          "slug": "matiz",
+          "name": "Matiz"
+        },
+        {
+          "slug": "nexia",
+          "name": "Nexia"
+        },
+        {
+          "slug": "nubira",
+          "name": "Nubira"
+        }
+      ]
+    },
+    {
+      "slug": "daihatsu",
+      "name": "Daihatsu",
+      "models": [
+        {
+          "slug": "feroza",
+          "name": "Feroza"
+        },
+        {
+          "slug": "sirion",
+          "name": "Sirion"
+        },
+        {
+          "slug": "terios",
+          "name": "Terios"
+        }
+      ]
+    },
+    {
+      "slug": "dfsk",
+      "name": "Dfsk",
+      "models": [
+        {
+          "slug": "500",
+          "name": "500"
+        },
+        {
+          "slug": "580",
+          "name": "580"
+        },
+        {
+          "slug": "600",
+          "name": "600"
+        },
+        {
+          "slug": "e5",
+          "name": "E5"
+        },
+        {
+          "slug": "f5",
+          "name": "F5"
+        },
+        {
+          "slug": "ix5",
+          "name": "iX5"
+        }
+      ]
+    },
+    {
+      "slug": "dodge",
+      "name": "Dodge",
+      "models": [
+        {
+          "slug": "avenger",
+          "name": "Avenger"
+        },
+        {
+          "slug": "caliber",
+          "name": "Caliber"
+        },
+        {
+          "slug": "challenger",
+          "name": "Challenger"
+        },
+        {
+          "slug": "charger",
+          "name": "Charger"
+        },
+        {
+          "slug": "durango",
+          "name": "Durango"
+        },
+        {
+          "slug": "journey",
+          "name": "Journey"
+        },
+        {
+          "slug": "nitro",
+          "name": "Nitro"
+        }
+      ]
+    },
+    {
+      "slug": "dongfeng",
+      "name": "Dongfeng",
+      "models": [
+        {
+          "slug": "box",
+          "name": "BOX"
+        }
+      ]
+    },
+    {
+      "slug": "ebro",
+      "name": "Ebro",
+      "models": [
+        {
+          "slug": "s400",
+          "name": "S400"
+        },
+        {
+          "slug": "s700",
+          "name": "S700"
+        },
+        {
+          "slug": "s800",
+          "name": "S800"
+        },
+        {
+          "slug": "s900",
+          "name": "S900"
+        }
+      ]
+    },
+    {
+      "slug": "evo",
+      "name": "EVO",
+      "models": [
+        {
+          "slug": "cuatro",
+          "name": "Cuatro"
+        }
+      ]
+    },
+    {
+      "slug": "ferrari",
+      "name": "Ferrari",
+      "models": [
+        {
+          "slug": "12cilindri",
+          "name": "12cilindri"
+        },
+        {
+          "slug": "296",
+          "name": "296"
+        },
+        {
+          "slug": "348",
+          "name": "348"
+        },
+        {
+          "slug": "355",
+          "name": "355"
+        },
+        {
+          "slug": "360",
+          "name": "360"
+        },
+        {
+          "slug": "456m",
+          "name": "456m"
+        },
+        {
+          "slug": "458",
+          "name": "458"
+        },
+        {
+          "slug": "488",
+          "name": "488"
+        },
+        {
+          "slug": "599",
+          "name": "599"
+        },
+        {
+          "slug": "612",
+          "name": "612"
+        },
+        {
+          "slug": "812",
+          "name": "812"
+        },
+        {
+          "slug": "849",
+          "name": "849"
+        },
+        {
+          "slug": "amalfi",
+          "name": "Amalfi"
+        },
+        {
+          "slug": "california",
+          "name": "California"
+        },
+        {
+          "slug": "f12",
+          "name": "F12"
+        },
+        {
+          "slug": "f355",
+          "name": "F355"
+        },
+        {
+          "slug": "f430",
+          "name": "F430"
+        },
+        {
+          "slug": "ff",
+          "name": "FF"
+        },
+        {
+          "slug": "gtc4",
+          "name": "Gtc4"
+        },
+        {
+          "slug": "mondial",
+          "name": "Mondial"
+        },
+        {
+          "slug": "portofino",
+          "name": "Portofino"
+        },
+        {
+          "slug": "purosangue",
+          "name": "Purosangue"
+        },
+        {
+          "slug": "roma",
+          "name": "Roma"
+        },
+        {
+          "slug": "sf90",
+          "name": "Sf90"
+        }
+      ]
+    },
+    {
+      "slug": "fiat",
+      "name": "Fiat",
+      "models": [
+        {
+          "slug": "500",
+          "name": "500"
+        },
+        {
+          "slug": "500c",
+          "name": "500c"
+        },
+        {
+          "slug": "500l",
+          "name": "500l"
+        },
+        {
+          "slug": "500x",
+          "name": "500x"
+        },
+        {
+          "slug": "600",
+          "name": "600"
+        },
+        {
+          "slug": "barchetta",
+          "name": "Barchetta"
+        },
+        {
+          "slug": "brava",
+          "name": "Brava"
+        },
+        {
+          "slug": "bravo",
+          "name": "Bravo"
+        },
+        {
+          "slug": "cinquecento",
+          "name": "Cinquecento"
+        },
+        {
+          "slug": "croma",
+          "name": "Croma"
+        },
+        {
+          "slug": "doblo",
+          "name": "Doblo"
+        },
+        {
+          "slug": "ducato",
+          "name": "Ducato"
+        },
+        {
+          "slug": "edoblo",
+          "name": "Edoblo"
+        },
+        {
+          "slug": "eulysse",
+          "name": "Eulysse"
+        },
+        {
+          "slug": "fiorino",
+          "name": "Fiorino"
+        },
+        {
+          "slug": "freemont",
+          "name": "Freemont"
+        },
+        {
+          "slug": "fullback",
+          "name": "Fullback"
+        },
+        {
+          "slug": "idea",
+          "name": "Idea"
+        },
+        {
+          "slug": "linea",
+          "name": "Linea"
+        },
+        {
+          "slug": "marea",
+          "name": "Marea"
+        },
+        {
+          "slug": "multipla",
+          "name": "Multipla"
+        },
+        {
+          "slug": "panda",
+          "name": "Panda"
+        },
+        {
+          "slug": "pandina",
+          "name": "Pandina"
+        },
+        {
+          "slug": "punto",
+          "name": "Punto"
+        },
+        {
+          "slug": "qubo",
+          "name": "Qubo"
+        },
+        {
+          "slug": "sedici",
+          "name": "Sedici"
+        },
+        {
+          "slug": "seicento",
+          "name": "Seicento"
+        },
+        {
+          "slug": "stilo",
+          "name": "Stilo"
+        },
+        {
+          "slug": "strada",
+          "name": "Strada"
+        },
+        {
+          "slug": "talento",
+          "name": "Talento"
+        },
+        {
+          "slug": "tempra",
+          "name": "Tempra"
+        },
+        {
+          "slug": "tipo",
+          "name": "Tipo"
+        },
+        {
+          "slug": "topolino",
+          "name": "Topolino"
+        },
+        {
+          "slug": "ulysse",
+          "name": "Ulysse"
+        },
+        {
+          "slug": "uno",
+          "name": "UNO"
+        }
+      ]
+    },
+    {
+      "slug": "ford",
+      "name": "Ford",
+      "models": [
+        {
+          "slug": "bmax",
+          "name": "Bmax"
+        },
+        {
+          "slug": "bronco",
+          "name": "Bronco"
+        },
+        {
+          "slug": "capri",
+          "name": "Capri"
+        },
+        {
+          "slug": "cmax",
+          "name": "Cmax"
+        },
+        {
+          "slug": "connect",
+          "name": "Connect"
+        },
+        {
+          "slug": "cougar",
+          "name": "Cougar"
+        },
+        {
+          "slug": "courier",
+          "name": "Courier"
+        },
+        {
+          "slug": "ecosport",
+          "name": "Ecosport"
+        },
+        {
+          "slug": "edge",
+          "name": "Edge"
+        },
+        {
+          "slug": "escort",
+          "name": "Escort"
+        },
+        {
+          "slug": "explorer",
+          "name": "Explorer"
+        },
+        {
+          "slug": "fiesta",
+          "name": "Fiesta"
+        },
+        {
+          "slug": "focus",
+          "name": "Focus"
+        },
+        {
+          "slug": "fusion",
+          "name": "Fusion"
+        },
+        {
+          "slug": "galaxy",
+          "name": "Galaxy"
+        },
+        {
+          "slug": "ka",
+          "name": "KA"
+        },
+        {
+          "slug": "kaplus",
+          "name": "Kaplus"
+        },
+        {
+          "slug": "kuga",
+          "name": "Kuga"
+        },
+        {
+          "slug": "maverick",
+          "name": "Maverick"
+        },
+        {
+          "slug": "mondeo",
+          "name": "Mondeo"
+        },
+        {
+          "slug": "mustang",
+          "name": "Mustang"
+        },
+        {
+          "slug": "orion",
+          "name": "Orion"
+        },
+        {
+          "slug": "probe",
+          "name": "Probe"
+        },
+        {
+          "slug": "puma",
+          "name": "Puma"
+        },
+        {
+          "slug": "ranger",
+          "name": "Ranger"
+        },
+        {
+          "slug": "scorpio",
+          "name": "Scorpio"
+        },
+        {
+          "slug": "sierra",
+          "name": "Sierra"
+        },
+        {
+          "slug": "smax",
+          "name": "Smax"
+        },
+        {
+          "slug": "streetka",
+          "name": "Streetka"
+        },
+        {
+          "slug": "transit",
+          "name": "Transit"
+        }
+      ]
+    },
+    {
+      "slug": "galloper",
+      "name": "Galloper",
+      "models": [
+        {
+          "slug": "exceed",
+          "name": "Exceed"
+        },
+        {
+          "slug": "santamo",
+          "name": "Santamo"
+        }
+      ]
+    },
+    {
+      "slug": "geely",
+      "name": "Geely",
+      "models": [
+        {
+          "slug": "e5",
+          "name": "E5"
+        }
+      ]
+    },
+    {
+      "slug": "hummer",
+      "name": "Hummer",
+      "models": [
+        {
+          "slug": "h2",
+          "name": "H2"
+        },
+        {
+          "slug": "h3",
+          "name": "H3"
+        },
+        {
+          "slug": "h3t",
+          "name": "H3T"
+        }
+      ]
+    },
+    {
+      "slug": "ich-x",
+      "name": "ICH-X",
+      "models": [
+        {
+          "slug": "k2",
+          "name": "K2"
+        },
+        {
+          "slug": "k3",
+          "name": "K3"
+        }
+      ]
+    },
+    {
+      "slug": "ineos",
+      "name": "Ineos",
+      "models": [
+        {
+          "slug": "grenadier",
+          "name": "Grenadier"
+        }
+      ]
+    },
+    {
+      "slug": "infiniti",
+      "name": "Infiniti",
+      "models": [
+        {
+          "slug": "ex",
+          "name": "EX"
+        },
+        {
+          "slug": "fx",
+          "name": "FX"
+        },
+        {
+          "slug": "g",
+          "name": "G"
+        },
+        {
+          "slug": "m",
+          "name": "M"
+        },
+        {
+          "slug": "q30",
+          "name": "Q30"
+        },
+        {
+          "slug": "q50",
+          "name": "Q50"
+        },
+        {
+          "slug": "q60",
+          "name": "Q60"
+        },
+        {
+          "slug": "q70",
+          "name": "Q70"
+        },
+        {
+          "slug": "qx30",
+          "name": "Qx30"
+        },
+        {
+          "slug": "qx50",
+          "name": "Qx50"
+        },
+        {
+          "slug": "qx70",
+          "name": "Qx70"
+        }
+      ]
+    },
+    {
+      "slug": "iveco",
+      "name": "Iveco",
+      "models": [
+        {
+          "slug": "daily",
+          "name": "Daily"
+        },
+        {
+          "slug": "massif",
+          "name": "Massif"
+        }
+      ]
+    },
+    {
+      "slug": "jaecoo",
+      "name": "Jaecoo",
+      "models": [
+        {
+          "slug": "5",
+          "name": "5"
+        },
+        {
+          "slug": "7",
+          "name": "7"
+        },
+        {
+          "slug": "8",
+          "name": "8"
+        }
+      ]
+    },
+    {
+      "slug": "jeep",
+      "name": "Jeep",
+      "models": [
+        {
+          "slug": "avenger",
+          "name": "Avenger"
+        },
+        {
+          "slug": "cherokee",
+          "name": "Cherokee"
+        },
+        {
+          "slug": "commander",
+          "name": "Commander"
+        },
+        {
+          "slug": "compass",
+          "name": "Compass"
+        },
+        {
+          "slug": "gladiator",
+          "name": "Gladiator"
+        },
+        {
+          "slug": "patriot",
+          "name": "Patriot"
+        },
+        {
+          "slug": "renegade",
+          "name": "Renegade"
+        },
+        {
+          "slug": "wrangler",
+          "name": "Wrangler"
+        }
+      ]
+    },
+    {
+      "slug": "ligier",
+      "name": "Ligier",
+      "models": [
+        {
+          "slug": "js50",
+          "name": "Js50"
+        },
+        {
+          "slug": "myli",
+          "name": "Myli"
+        }
+      ]
+    },
+    {
+      "slug": "mg",
+      "name": "MG",
+      "models": [
+        {
+          "slug": "cyberster",
+          "name": "Cyberster"
+        },
+        {
+          "slug": "ehs",
+          "name": "EHS"
+        },
+        {
+          "slug": "hs",
+          "name": "HS"
+        },
+        {
+          "slug": "mg3",
+          "name": "MG3"
+        },
+        {
+          "slug": "mg4",
+          "name": "MG4"
+        },
+        {
+          "slug": "mg5",
+          "name": "MG5"
+        },
+        {
+          "slug": "mgf",
+          "name": "MGF"
+        },
+        {
+          "slug": "mgs9",
+          "name": "Mgs9"
+        },
+        {
+          "slug": "tf",
+          "name": "TF"
+        },
+        {
+          "slug": "zr",
+          "name": "ZR"
+        },
+        {
+          "slug": "zs",
+          "name": "ZS"
+        },
+        {
+          "slug": "zt",
+          "name": "ZT"
+        },
+        {
+          "slug": "ztt",
+          "name": "ZTT"
+        }
+      ]
+    }
+  ]
+}

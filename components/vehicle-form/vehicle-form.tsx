@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { LoaderCircleIcon } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -8,21 +8,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { CatalogSelect } from "@/components/vehicle-form/catalog-select";
 import { Field } from "@/components/vehicle-form/field";
 import {
   BODY_LABELS,
-  BRAND_SUGGESTIONS,
   CONDITION_LABELS,
   FUEL_LABELS,
   TRANSMISSION_LABELS,
 } from "@/lib/vehicles/labels";
+import type { VehicleCatalog } from "@/lib/vehicles/catalog-types";
 import { BODY_TYPES, CONDITION_LEVELS, FUEL_TYPES, TRANSMISSION_TYPES, type VehicleInput } from "@/types/vehicle";
 import type { ListingExtractResult } from "@/types/source";
 
 const emptyForm = {
   listingUrl: "",
-  brand: "",
-  model: "",
+  brandSlug: "",
+  modelSlug: "",
   version: "",
   year: "",
   mileage: "",
@@ -62,6 +63,51 @@ export function VehicleForm({
   const [error, setError] = useState<string | null>(null);
   const [urlStatus, setUrlStatus] = useState<string | null>(null);
   const [extractingUrl, setExtractingUrl] = useState(false);
+  const [catalog, setCatalog] = useState<VehicleCatalog | null>(null);
+  const [catalogError, setCatalogError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadCatalog(): Promise<void> {
+      try {
+        const response = await fetch("/api/vehicles/catalog");
+        if (!response.ok) throw new Error("No se pudo cargar el catálogo de marcas.");
+        const data = (await response.json()) as VehicleCatalog;
+        if (!cancelled) setCatalog(data);
+      } catch (err) {
+        if (!cancelled) {
+          setCatalogError(err instanceof Error ? err.message : "Error al cargar marcas.");
+        }
+      }
+    }
+    void loadCatalog();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const selectedBrand = useMemo(
+    () => catalog?.brands.find((brand) => brand.slug === form.brandSlug),
+    [catalog, form.brandSlug],
+  );
+
+  const brandOptions = useMemo(
+    () =>
+      (catalog?.brands ?? []).map((brand) => ({
+        value: brand.slug,
+        label: brand.name,
+      })),
+    [catalog],
+  );
+
+  const modelOptions = useMemo(
+    () =>
+      (selectedBrand?.models ?? []).map((model) => ({
+        value: model.slug,
+        label: model.name,
+      })),
+    [selectedBrand],
+  );
 
   const years = useMemo(() => {
     const max = new Date().getFullYear() + 1;
@@ -75,10 +121,30 @@ export function VehicleForm({
   function applyExtractedVehicle(result: ListingExtractResult) {
     const vehicle = result.vehicle;
     if (!vehicle) return;
+
+    let brandSlug = form.brandSlug;
+    let modelSlug = form.modelSlug;
+    if (catalog && vehicle.brand && vehicle.model) {
+      const brand = catalog.brands.find(
+        (b) =>
+          b.name.toLowerCase() === vehicle.brand!.toLowerCase() ||
+          b.slug === vehicle.brand!.toLowerCase().replace(/\s+/g, "-"),
+      );
+      if (brand) {
+        brandSlug = brand.slug;
+        const model = brand.models.find(
+          (m) =>
+            m.name.toLowerCase() === vehicle.model!.toLowerCase() ||
+            m.slug === vehicle.model!.toLowerCase().replace(/\s+/g, "-"),
+        );
+        if (model) modelSlug = model.slug;
+      }
+    }
+
     setForm((current) => ({
       ...current,
-      brand: vehicle.brand?.trim() || current.brand,
-      model: vehicle.model?.trim() || current.model,
+      brandSlug,
+      modelSlug,
       version: vehicle.version?.trim() || current.version,
       year: vehicle.year != null ? String(vehicle.year) : current.year,
       mileage: vehicle.mileage != null ? String(vehicle.mileage) : current.mileage,
@@ -126,13 +192,22 @@ export function VehicleForm({
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
-    if (!form.brand.trim() || !form.model.trim() || !form.year || !form.mileage || !form.fuel) {
+    if (!form.brandSlug || !form.modelSlug || !form.year || !form.mileage || !form.fuel) {
       setError("Marca, modelo, año de matriculación, kilómetros y combustible son obligatorios.");
       return;
     }
+    if (!selectedBrand) {
+      setError("Selecciona una marca del catálogo.");
+      return;
+    }
+    const selectedModel = selectedBrand.models.find((model) => model.slug === form.modelSlug);
+    if (!selectedModel) {
+      setError("Selecciona un modelo del catálogo.");
+      return;
+    }
     const vehicle: VehicleInput = {
-      brand: form.brand.trim(),
-      model: form.model.trim(),
+      brand: selectedBrand.name,
+      model: selectedModel.name,
       version: form.version.trim() || undefined,
       year: Number(form.year),
       mileage: Number(form.mileage),
@@ -209,32 +284,39 @@ export function VehicleForm({
             </div>
           </Field>
           {urlStatus ? <p className="mt-1.5 text-xs text-muted-foreground">{urlStatus}</p> : null}
+          {catalogError ? (
+            <p className="mt-1.5 text-xs text-destructive">{catalogError}</p>
+          ) : catalog ? (
+            <p className="mt-1.5 text-xs text-muted-foreground">
+              {catalog.brands.length} marcas y{" "}
+              {catalog.brands.reduce((sum, brand) => sum + brand.models.length, 0)} modelos (coches.net).
+            </p>
+          ) : null}
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field label="Marca" htmlFor="brand">
-            <Input
+            <CatalogSelect
               id="brand"
               required
-              list="brand-suggestions"
-              placeholder="BMW"
-              value={form.brand}
-              onChange={(event) => update("brand", event.target.value)}
-              autoComplete="off"
+              disabled={!catalog || Boolean(catalogError)}
+              placeholder={catalog ? "Buscar marca…" : "Cargando marcas…"}
+              options={brandOptions}
+              value={form.brandSlug}
+              onValueChange={(slug) => {
+                setForm((current) => ({ ...current, brandSlug: slug, modelSlug: "" }));
+              }}
             />
-            <datalist id="brand-suggestions">
-              {BRAND_SUGGESTIONS.map((brand) => (
-                <option key={brand} value={brand} />
-              ))}
-            </datalist>
           </Field>
           <Field label="Modelo" htmlFor="model">
-            <Input
+            <CatalogSelect
               id="model"
               required
-              placeholder="X1"
-              value={form.model}
-              onChange={(event) => update("model", event.target.value)}
+              disabled={!form.brandSlug || modelOptions.length === 0}
+              placeholder={form.brandSlug ? "Buscar modelo…" : "Primero elige marca"}
+              options={modelOptions}
+              value={form.modelSlug}
+              onValueChange={(slug) => update("modelSlug", slug)}
             />
           </Field>
           <Field
