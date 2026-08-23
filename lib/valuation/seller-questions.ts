@@ -13,6 +13,8 @@ function allowedForFuel(text: string, vehicle: Vehicle): boolean {
   if (vehicle.fuel === "diesel" && /bomba de calor|heat pump|octovalve/i.test(text)) return false;
   if (vehicle.fuel === "petrol" && HV_HINT.test(text)) return false;
   if (isElectricFuel(vehicle.fuel) && PETROL_HINT.test(text) && !/software|freno/i.test(text)) return false;
+  const isSdrive = /\bsdrive/i.test(vehicle.version ?? "") && !/\bxdrive/i.test(vehicle.version ?? "");
+  if (isSdrive && /xdrive|transferencia|haldex/i.test(text)) return false;
   return true;
 }
 

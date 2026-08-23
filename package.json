@@ -12,6 +12,7 @@
     "rag:eval": "tsx scripts/rag-eval.ts",
     "rag:coverage": "tsx scripts/rag-coverage.ts",
     "smoke:store": "tsx scripts/smoke-analysis-store.ts",
+    "smoke:mvp": "tsx scripts/smoke-mvp-coherence.ts",
     "scraping:benchmark": "tsx scripts/scraping-benchmark.ts",
     "scraping:fixtures": "tsx scripts/capture-coches-fixtures.ts",
     "test": "node --import tsx --test lib/**/__tests__/*.test.ts",

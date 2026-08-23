@@ -11,7 +11,7 @@ export const HELP_STEPS: HelpStep[] = [
   {
     id: "welcome",
     title: "Así funciona CarQuestions",
-    body: "Te ayuda a decidir si un coche de segunda mano tiene buen precio, qué fallos suele tener el modelo y qué preguntar al vendedor antes de comprarlo.",
+    body: "Te ayuda a decidir si un coche de segunda mano merece la visita: si el precio tiene sentido, qué riesgos hay, qué falta saber y qué preguntar. Si no hay evidencia, lo dice.",
   },
   {
     id: "form",
@@ -31,7 +31,7 @@ export const HELP_STEPS: HelpStep[] = [
     bullets: [
       "Veredicto: barato, de mercado o caro",
       "Intervalo orientativo (bajo–alto)",
-      "Si no hay anuncios, verás una referencia aproximada y baja confianza",
+      "Si no hay anuncios, verás «sin mercado comparable», no un precio inventado",
     ],
   },
   {

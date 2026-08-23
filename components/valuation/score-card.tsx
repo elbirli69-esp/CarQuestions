@@ -18,7 +18,7 @@ export function ScoreCard({ scores }: { scores: VehicleScorecard }) {
             <div className="flex items-center justify-between gap-3 text-sm">
               <span className="font-medium">{dimension.label}</span>
               <span className="text-muted-foreground">
-                {dimension.score == null ? "Sin datos" : `${dimension.score}/100`}
+                {dimension.score == null ? "Sin datos suficientes" : `${dimension.score}/100`}
               </span>
             </div>
             <div className="h-1.5 overflow-hidden rounded-full bg-muted">
@@ -37,6 +37,9 @@ export function ScoreCard({ scores }: { scores: VehicleScorecard }) {
               />
             </div>
             <p className="text-xs text-muted-foreground">{dimension.reason}</p>
+            {dimension.evidence ? (
+              <p className="text-[11px] text-muted-foreground/80">Evidencia: {dimension.evidence}</p>
+            ) : null}
           </div>
         ))}
       </CardContent>

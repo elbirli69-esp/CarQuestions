@@ -15,7 +15,7 @@ const COPY: Record<DataMode, { title: string; description: string }> = {
   knowledge: {
     title: "Sin anuncios de mercado",
     description:
-      "No se pudieron obtener comparables de coches.net. El precio es una referencia orientativa por segmento. Fiabilidad y mantenimiento sí vienen de datos curados.",
+      "No hay comparables reales. No fingimos un precio de mercado. El conocimiento técnico solo aparece si hay evidencia de este modelo; si no, lo decimos.",
   },
   demo: {
     title: "Modo demostración",

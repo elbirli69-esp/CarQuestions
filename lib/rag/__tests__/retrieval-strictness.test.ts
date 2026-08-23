@@ -54,6 +54,7 @@ describe("RAG estricto", () => {
     assert.doesNotMatch(text, /octovalve|heat pump|bomba de calor/i);
     if (knowledge.reliability.available) {
       assert.ok(knowledge.reliability.knownIssues.every((issue) => issue.evidenceLevel === "A" || issue.evidenceLevel === "B"));
+      assert.doesNotMatch(text, /xdrive|caja de transferencia/i);
     }
   });
 

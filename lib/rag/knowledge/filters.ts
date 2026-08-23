@@ -8,6 +8,19 @@ const ICE_ONLY =
 const EV_ONLY =
   /\b(soh|bater[ií]a hv|hv battery|heat pump|bomba de calor|octovalve|brake-by-wire|preacondicion|preconditioning|pack estructural|carga dc)\b/i;
 
+export function chunkCompatibleWithDrivetrain(
+  chunk: KnowledgeChunk,
+  version?: string,
+  model?: string,
+): boolean {
+  const haystack = `${chunk.title} ${chunk.content} ${chunk.tags?.join(" ") ?? ""} ${chunk.models?.join(" ") ?? ""}`;
+  const versionText = `${version ?? ""} ${model ?? ""}`;
+  const isSdrive = /\bsdrive/i.test(versionText) && !/\bxdrive/i.test(versionText);
+  const isXdriveChunk = /\bxdrive|caja de transferencia|transfer case|atc\b/i.test(haystack);
+  if (isSdrive && isXdriveChunk) return false;
+  return true;
+}
+
 export function chunkCompatibleWithFuel(chunk: KnowledgeChunk, fuel?: FuelType): boolean {
   if (!fuel) return true;
   if (chunk.fuels && chunk.fuels.length > 0) return chunk.fuels.includes(fuel);
@@ -66,6 +79,7 @@ export function chunkMatchesVehicle(
   if (!chunkMatchesBrand(chunk, vehicle.brand)) return false;
   if (!chunkMatchesModel(chunk, vehicle.model, vehicle.version ?? "")) return false;
   if (!chunkCompatibleWithFuel(chunk, vehicle.fuel)) return false;
+  if (!chunkCompatibleWithDrivetrain(chunk, vehicle.version, vehicle.model)) return false;
 
   if (chunk.yearFrom && vehicle.year && vehicle.year < chunk.yearFrom) return false;
   if (chunk.yearTo && vehicle.year && vehicle.year > chunk.yearTo) return false;

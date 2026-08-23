@@ -1,5 +1,6 @@
 import type { KnowledgeChunk } from "@/types/knowledge";
 import {
+  chunkCompatibleWithDrivetrain,
   chunkCompatibleWithFuel,
   chunkMatchesBrand,
   chunkMatchesModel,
@@ -110,6 +111,7 @@ export function matchesVehicleFilters(
   }
 
   if (!chunkCompatibleWithFuel(chunk, vehicle.fuel as never)) return false;
+  if (!chunkCompatibleWithDrivetrain(chunk, vehicle.version, vehicle.model)) return false;
 
   if (chunk.yearFrom && vehicle.year && vehicle.year < chunk.yearFrom) return false;
   if (chunk.yearTo && vehicle.year && vehicle.year > chunk.yearTo) return false;
