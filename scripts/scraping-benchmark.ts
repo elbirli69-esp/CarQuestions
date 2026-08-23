@@ -9,6 +9,16 @@ import fs from "node:fs";
 import path from "node:path";
 import { cochesNetProvider } from "@/lib/sources/coches-net/provider";
 
+/**
+ * Pausa entre casos. Sin ella el propio benchmark dispara el antibot del portal
+ * y los últimos casos salen a cero, que se confunde con una regresión.
+ */
+const CASE_DELAY_MS = Number(process.env.BENCHMARK_DELAY_MS ?? 8000);
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 const CASES = [
   { id: "A", brand: "BMW", model: "X1", year: 2019, mileage: 75000, fuel: "diesel" as const },
   { id: "B", brand: "Volkswagen", model: "Golf", year: 2018, mileage: 90000, fuel: "petrol" as const },
@@ -33,6 +43,14 @@ interface CaseResult {
   avgSimilarity: number;
   adsRawNote?: string;
   extractFilled?: string[];
+  /** Motivo por el que el caso salió vacío (antibot, sin comparables…). */
+  failureNote?: string;
+  /** Páginas del portal pedidas para este caso. */
+  pagesFetched?: number;
+  /** Anuncios con fotos, disponibles solo vía JSON de hidratación. */
+  withPhotos?: number;
+  /** `initial_props` o `cards`. */
+  parsedFrom?: string;
 }
 
 async function runBenchmark(): Promise<{ at: string; cases: CaseResult[] }> {
@@ -55,7 +73,16 @@ async function runBenchmark(): Promise<{ at: string; cases: CaseResult[] }> {
         : 0;
 
     const strictness = listings[0]?.rawData?.matchStrictness as string | undefined;
+    const parsedFrom = listings[0]?.rawData?.parsedFrom as string | undefined;
     const rawNote = result.notes.find((n) => n.includes("brutos")) ?? result.notes[0];
+    const pagesNote = result.notes.find((n) => n.startsWith("Anuncios brutos leídos"));
+    const pagesMatch = pagesNote?.match(/en (\d+) p[áa]gina/);
+    const withPhotos = listings.filter((l) => (l.images?.length ?? 0) > 0).length;
+
+    const failureNote =
+      listings.length === 0
+        ? result.notes.find((n) => n.includes("no disponible") || n.includes("No hay comparables"))
+        : undefined;
 
     cases.push({
       id: c.id,
@@ -63,11 +90,17 @@ async function runBenchmark(): Promise<{ at: string; cases: CaseResult[] }> {
       matchStrictness: strictness,
       avgSimilarity: Math.round(avgSimilarity * 1000) / 1000,
       adsRawNote: rawNote,
+      failureNote,
+      pagesFetched: pagesMatch ? Number(pagesMatch[1]) : undefined,
+      withPhotos,
+      parsedFrom,
     });
 
     console.log(
-      `${c.id}: listings=${listings.length} strict=${strictness ?? "n/a"} avgSim=${avgSimilarity.toFixed(2)}`,
+      `${c.id}: listings=${listings.length} strict=${strictness ?? "n/a"} avgSim=${avgSimilarity.toFixed(2)} pages=${pagesMatch?.[1] ?? "?"} photos=${withPhotos} from=${parsedFrom ?? "n/a"}${failureNote ? ` FALLO: ${failureNote}` : ""}`,
     );
+
+    await sleep(CASE_DELAY_MS);
   }
 
   const urlsPath = path.join(process.cwd(), "lib/sources/coches-net/__fixtures__/urls.json");
@@ -87,7 +120,8 @@ async function runBenchmark(): Promise<{ at: string; cases: CaseResult[] }> {
           avgSimilarity: 0,
           extractFilled: filled,
         });
-        console.log(`extract-${i + 1}: ${filled.join(", ") || "parcial"}`);
+        console.log(`extract-${i + 1}: ${filled.join(", ") || "parcial"} — ${extract.message ?? ""}`);
+        await sleep(CASE_DELAY_MS);
       } catch (e) {
         console.log(`extract-${i + 1}: error`, e instanceof Error ? e.message : e);
         cases.push({
@@ -110,13 +144,17 @@ function compareFiles(aPath: string, bPath: string): void {
   for (const ca of a.cases) {
     const cb = b.cases.find((x) => x.id === ca.id);
     if (!cb) continue;
-    if (ca.listings > 0 && cb.listings > 0) {
-      const delta = cb.listings - ca.listings;
-      const simDelta = cb.avgSimilarity - ca.avgSimilarity;
+    if (ca.extractFilled || cb.extractFilled) {
       console.log(
-        `${ca.id}: listings ${ca.listings} → ${cb.listings} (${delta >= 0 ? "+" : ""}${delta}) | avgSim ${ca.avgSimilarity} → ${cb.avgSimilarity} (${simDelta >= 0 ? "+" : ""}${simDelta.toFixed(3)})`,
+        `${ca.id}: extract ${ca.extractFilled?.length ?? 0} campos → ${cb.extractFilled?.length ?? 0}`,
       );
+      continue;
     }
+    const delta = cb.listings - ca.listings;
+    const simDelta = cb.avgSimilarity - ca.avgSimilarity;
+    console.log(
+      `${ca.id}: listings ${ca.listings} → ${cb.listings} (${delta >= 0 ? "+" : ""}${delta}) | avgSim ${ca.avgSimilarity} → ${cb.avgSimilarity} (${simDelta >= 0 ? "+" : ""}${simDelta.toFixed(3)}) | pags ${ca.pagesFetched ?? "?"} → ${cb.pagesFetched ?? "?"} | fotos ${ca.withPhotos ?? 0} → ${cb.withPhotos ?? 0}`,
+    );
   }
 }
 

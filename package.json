@@ -13,6 +13,8 @@
     "rag:coverage": "tsx scripts/rag-coverage.ts",
     "smoke:store": "tsx scripts/smoke-analysis-store.ts",
     "scraping:benchmark": "tsx scripts/scraping-benchmark.ts",
+    "scraping:yield": "tsx scripts/scraping-yield.ts",
+    "scraping:fixture": "tsx scripts/build-initial-props-fixture.ts",
     "scraping:fixtures": "tsx scripts/capture-coches-fixtures.ts",
     "test:scraping": "node --import tsx --test lib/sources/coches-net/__tests__/*.test.ts",
     "smoke:scraping": "tsx scripts/smoke-scraping-live.ts",
