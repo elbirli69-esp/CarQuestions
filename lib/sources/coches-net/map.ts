@@ -103,6 +103,24 @@ export function mapCochesNetAd(
 ): VehicleListing | null {
   if (!ad.price || ad.price <= 0) return null;
 
+  const titleKey = normalizeKey(ad.title);
+  const brandKey = normalizeKey(query.brand);
+  const modelKey = normalizeKey(query.model);
+  // Reject ads whose title clearly does not mention the requested brand/model
+  if (brandKey && titleKey && !titleKey.includes(brandKey) && !brandKey.split(" ").every((t) => titleKey.includes(t))) {
+    // Allow if model is present and brand is a short alias mismatch (e.g. VW vs Volkswagen)
+    if (!(modelKey && titleKey.includes(modelKey))) {
+      return null;
+    }
+  }
+  if (modelKey && modelKey.length >= 2 && titleKey && !titleKey.includes(modelKey)) {
+    // Soft fail only when model token is distinctive
+    const modelTokens = modelKey.split(" ").filter((t) => t.length >= 2);
+    if (modelTokens.length > 0 && !modelTokens.every((t) => titleKey.includes(t))) {
+      return null;
+    }
+  }
+
   return {
     id: createVehicleId(["coches.net", ad.id]),
     source: "coches.net",
@@ -129,6 +147,7 @@ export function mapCochesNetAd(
       cochesNetId: ad.id,
       matchStrictness,
       descriptionSnippet: ad.descriptionSnippet,
+      titleVerified: true,
     },
   };
 }

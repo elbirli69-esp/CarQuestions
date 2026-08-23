@@ -1,61 +1,138 @@
 import type { ListingAnalysis, PriceVerdict } from "@/types/valuation";
 import type { Vehicle } from "@/types/vehicle";
+import { indicatesAccident } from "@/lib/valuation/engine";
 
-function priceLabel(verdict: PriceVerdict, originObserved: boolean): string {
-  if (!originObserved) return "Sin mercado";
+function priceLabel(verdict: PriceVerdict, originObserved: boolean, insufficient: boolean): string {
+  if (!originObserved || insufficient) return "Sin mercado";
   if (verdict === "muy_barato" || verdict === "barato") return "Bueno";
   if (verdict === "precio_de_mercado" || verdict === "sin_precio") return "Normal";
   return "Alto";
 }
 
+const QUALITY_CHECKS: Array<{
+  id: string;
+  label: string;
+  weight: number;
+  ok: (v: Vehicle) => boolean;
+}> = [
+  { id: "price", label: "Precio", weight: 12, ok: (v) => v.advertisedPrice != null && v.advertisedPrice > 0 },
+  { id: "mileage", label: "Kilometraje", weight: 10, ok: (v) => v.mileage >= 0 },
+  { id: "history", label: "Historial de mantenimiento", weight: 12, ok: (v) => Boolean(v.maintenanceHistory?.trim()) },
+  { id: "owners", label: "Propietarios", weight: 8, ok: (v) => v.owners != null && v.owners > 0 },
+  { id: "itv", label: "ITV", weight: 10, ok: (v) => Boolean(v.itv?.trim()) },
+  {
+    id: "accidents",
+    label: "Accidentes",
+    weight: 12,
+    ok: (v) => Boolean(v.accidents?.trim()),
+  },
+  { id: "vin", label: "VIN / URL de anuncio", weight: 8, ok: (v) => Boolean(v.listingUrl?.trim()) },
+  {
+    id: "photos",
+    label: "Fotos (vía anuncio)",
+    weight: 6,
+    ok: (v) => Boolean(v.listingUrl?.trim()),
+  },
+  {
+    id: "description",
+    label: "Descripción",
+    weight: 8,
+    ok: (v) => Boolean(v.description?.trim() && v.description.trim().length > 40),
+  },
+  {
+    id: "equipment",
+    label: "Equipamiento",
+    weight: 8,
+    ok: (v) => Boolean(v.equipment?.trim()),
+  },
+  {
+    id: "service",
+    label: "Libro / mantenimiento",
+    weight: 6,
+    ok: (v) => v.serviceBook === true || Boolean(v.maintenanceHistory?.trim()),
+  },
+];
+
 export function analyzeListing(
   vehicle: Vehicle,
   verdict: PriceVerdict,
-  options?: { marketObserved?: boolean },
+  options?: { marketObserved?: boolean; insufficientMarket?: boolean; listingScraped?: boolean },
 ): ListingAnalysis {
   const marketObserved = options?.marketObserved ?? false;
+  const insufficient = options?.insufficientMarket ?? false;
   const likes: string[] = [];
   const concerns: string[] = [];
+  const missingFields: string[] = [];
   const inspectBeforeBuying = [
     "Probar el coche en caliente y en frío, incluyendo autovía si es posible.",
-    "Revisar bajos, neumaticos, frenos y posibles fugas.",
+    "Revisar bajos, neumáticos, frenos y posibles fugas.",
     "Contrastar el kilometraje con el estado interior y las facturas.",
   ];
 
+  let quality = 0;
+  let maxQuality = 0;
+  for (const check of QUALITY_CHECKS) {
+    maxQuality += check.weight;
+    if (check.ok(vehicle)) {
+      quality += check.weight;
+    } else {
+      missingFields.push(check.label);
+      concerns.push(`Falta: ${check.label}.`);
+    }
+  }
+  const qualityScore = Math.round((quality / maxQuality) * 100);
+
   if (vehicle.serviceBook) likes.push("Indica que hay libro de mantenimiento.");
-  if (vehicle.equipment) likes.push("Se ha detallado equipamiento, lo que facilita comparar con otros anuncios.");
-  if (marketObserved && (verdict === "barato" || verdict === "muy_barato")) {
+  if (vehicle.equipment) likes.push("Se ha detallado equipamiento.");
+  if (marketObserved && !insufficient && (verdict === "barato" || verdict === "muy_barato")) {
     likes.push("El precio anunciado queda por debajo de la estimación con anuncios reales.");
   }
-
-  if (!vehicle.maintenanceHistory) concerns.push("No hay historial de mantenimiento descrito.");
-  if (!vehicle.accidents) concerns.push("No se ha indicado si ha tenido accidentes.");
-  if (!vehicle.owners) concerns.push("No consta el número de propietarios.");
-  if (!vehicle.itv) concerns.push("No se ha indicado el estado de la ITV.");
-
-  if (vehicle.listingUrl) {
-    likes.push("Hay URL de anuncio: se usó para rellenar o contrastar datos del formulario.");
+  if (vehicle.accidents && !indicatesAccident(vehicle.accidents)) {
+    likes.push("Se declara ausencia de accidentes (hay que verificarlo).");
+    // Remove false "Falta: Accidentes" concern if they filled it with a negation
+    const idx = concerns.findIndex((c) => c.includes("Accidentes"));
+    if (idx >= 0) concerns.splice(idx, 1);
+    const mIdx = missingFields.indexOf("Accidentes");
+    if (mIdx >= 0) missingFields.splice(mIdx, 1);
+  } else if (vehicle.accidents && indicatesAccident(vehicle.accidents)) {
+    concerns.push("Se ha indicado un accidente o reparación: exige documentación.");
   }
 
-  const filled = [vehicle.description, vehicle.equipment, vehicle.maintenanceHistory, vehicle.accidents].filter(Boolean).length;
-  const description = filled >= 3 ? "Completa" : filled >= 1 ? "Normal" : "Escasa";
-  const equipment = vehicle.equipment && vehicle.equipment.length > 40 ? "Alto" : vehicle.equipment ? "Medio" : "Desconocido";
-  const risk = concerns.length >= 3 ? "alto" : concerns.length === 2 ? "medio" : vehicle.accidents ? "medio" : "bajo";
+  if (vehicle.listingUrl) {
+    if (options?.listingScraped) {
+      likes.push("URL de anuncio scrapeada: se contrastaron datos de la ficha.");
+    } else {
+      likes.push("Hay URL de anuncio (útil para contrastar; el scrape puede fallar por antibot).");
+    }
+  }
+
+  const filledDesc = [vehicle.description, vehicle.equipment, vehicle.maintenanceHistory, vehicle.accidents].filter(
+    Boolean,
+  ).length;
+  const description = filledDesc >= 3 ? "Completa" : filledDesc >= 1 ? "Normal" : "Escasa";
+  const equipment =
+    vehicle.equipment && vehicle.equipment.length > 40 ? "Alto" : vehicle.equipment ? "Medio" : "Desconocido";
+
+  const risk: ListingAnalysis["risk"] =
+    missingFields.length >= 5
+      ? "alto"
+      : missingFields.length >= 3
+        ? "medio"
+        : indicatesAccident(vehicle.accidents ?? "")
+          ? "medio"
+          : missingFields.length === 0
+            ? "bajo"
+            : "medio";
 
   const limitations: string[] = [
-    "Este análisis combina el formulario con la valoración. No sustituye ver el coche ni un informe de bastidor.",
+    "La calidad del anuncio mide completitud de información, no el estado real del coche.",
+    "No sustituye inspección mecánica ni informe de bastidor.",
   ];
-  if (vehicle.listingUrl) {
-    limitations.push(
-      "La URL de coches.net puede rellenar marca/modelo/año/precio si el anuncio aparece en listados; la ficha individual a menudo no es scrapeable al completo.",
-    );
-  } else {
-    limitations.push("No hay URL de anuncio: el análisis se basa solo en lo que has escrito en el formulario.");
-  }
 
   return {
     available: true,
-    price: priceLabel(verdict, marketObserved),
+    qualityScore,
+    price: priceLabel(verdict, marketObserved, insufficient),
     vehicle: "Pendiente de inspección",
     description,
     equipment,
@@ -68,6 +145,7 @@ export function analyzeListing(
         : "Pedir fotos adicionales, número de bastidor y facturas antes de desplazarte.",
     ],
     inspectBeforeBuying,
+    missingFields,
     limitations,
   };
 }

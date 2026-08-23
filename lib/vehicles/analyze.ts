@@ -1,6 +1,7 @@
 import type { VehicleContext } from "@/types/ai";
 import type { AnalyzeResponse } from "@/types/valuation";
 import type { VehicleInput } from "@/types/vehicle";
+import { analysisLog } from "@/lib/observability/analysis-log";
 import { fetchListingDetail } from "@/lib/sources/coches-net/fetch-listing-detail";
 import { searchAllComparables, toSourceCitations } from "@/lib/sources/registry";
 import { saveAnalysis } from "@/lib/store/vehicle-store";
@@ -9,50 +10,98 @@ import { analyzeListing } from "@/lib/valuation/listing-analysis";
 import { valueVehicle } from "@/lib/valuation/engine";
 import { scoreVehicle } from "@/lib/valuation/scores";
 import { buildSellerQuestions } from "@/lib/valuation/seller-questions";
+import { validateVehicleConsistency } from "@/lib/vehicles/consistency";
+import { buildInspectionChecklist } from "@/lib/vehicles/inspection-checklist";
 import { lookupKnowledge } from "@/lib/vehicles/knowledge-base";
+import { detectMissingData } from "@/lib/vehicles/missing-data";
+import { buildPurchaseVerdict } from "@/lib/vehicles/purchase-verdict";
 import { vehicleInputSchema } from "@/lib/vehicles/schema";
+import { isAllowedCochesNetListingUrl } from "@/lib/vehicles/url-policy";
 
 function resolveDataMode(options: {
   hasLiveListings: boolean;
   hasKnowledge: boolean;
+  knowledgeIsDemo: boolean;
 }): AnalyzeResponse["dataMode"] {
-  if (options.hasLiveListings && options.hasKnowledge) return "mixed";
+  if (options.hasLiveListings && options.hasKnowledge && !options.knowledgeIsDemo) return "mixed";
+  if (options.hasLiveListings && options.knowledgeIsDemo) return "mixed";
   if (options.hasLiveListings) return "live";
+  if (options.hasKnowledge && options.knowledgeIsDemo) return "demo";
   if (options.hasKnowledge) return "knowledge";
-  return "knowledge";
+  return "demo";
 }
 
 export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeResponse> {
   let vehicle = vehicleInputSchema.parse(input);
   const listingDetailNotes: string[] = [];
+  let listingScraped = false;
+
+  analysisLog.vehicleExtraction({
+    brand: vehicle.brand,
+    model: vehicle.model,
+    version: vehicle.version,
+    year: vehicle.year,
+    fuel: vehicle.fuel,
+    hasListingUrl: Boolean(vehicle.listingUrl),
+  });
+
+  const consistency = validateVehicleConsistency(vehicle);
+  analysisLog.vehicleValidation({
+    status: consistency.status,
+    issues: consistency.issues.map((i) => i.code),
+    blockModelKnowledge: consistency.blockModelKnowledge,
+  });
 
   if (vehicle.listingUrl) {
-    const detail = await fetchListingDetail(vehicle.listingUrl);
-    if (detail) {
-      vehicle = {
-        ...vehicle,
-        advertisedPrice: detail.price ?? vehicle.advertisedPrice,
-        mileage: detail.mileage ?? vehicle.mileage,
-        power: detail.power ?? vehicle.power,
-        year: detail.year ?? vehicle.year,
-        fuel: detail.fuel ?? vehicle.fuel,
-        transmission: detail.transmission ?? vehicle.transmission,
-        location: detail.location ?? vehicle.location,
-        equipment:
-          vehicle.equipment ??
-          (detail.equipment?.length ? detail.equipment.join(", ") : undefined),
-      };
-      listingDetailNotes.push("Ficha del anuncio scrapeada correctamente.");
-      if (detail.description) listingDetailNotes.push(`Descripción: ${detail.description.length} caracteres.`);
-      if (detail.equipment?.length) {
-        listingDetailNotes.push(`Equipamiento detectado: ${detail.equipment.slice(0, 8).join(", ")}.`);
-      }
-    } else {
+    if (!isAllowedCochesNetListingUrl(vehicle.listingUrl)) {
       listingDetailNotes.push(
-        "No se pudo scrapear la ficha individual (antibot o página vacía). Se usará búsqueda por resultados.",
+        "URL de anuncio rechazada: solo se aceptan fichas https de coches.net.",
       );
+    } else {
+      const detail = await fetchListingDetail(vehicle.listingUrl);
+      if (detail) {
+        listingScraped = true;
+        vehicle = {
+          ...vehicle,
+          advertisedPrice: detail.price ?? vehicle.advertisedPrice,
+          mileage: detail.mileage ?? vehicle.mileage,
+          power: detail.power ?? vehicle.power,
+          year: detail.year ?? vehicle.year,
+          fuel: detail.fuel ?? vehicle.fuel,
+          transmission: detail.transmission ?? vehicle.transmission,
+          location: detail.location ?? vehicle.location,
+          description: vehicle.description ?? detail.description,
+          equipment:
+            vehicle.equipment ??
+            (detail.equipment?.length ? detail.equipment.join(", ") : undefined),
+        };
+        listingDetailNotes.push("Ficha del anuncio scrapeada correctamente.");
+        if (detail.description) {
+          listingDetailNotes.push(`Descripción: ${detail.description.length} caracteres.`);
+        }
+        if (detail.equipment?.length) {
+          listingDetailNotes.push(
+            `Equipamiento detectado: ${detail.equipment.slice(0, 8).join(", ")}.`,
+          );
+        }
+      } else {
+        listingDetailNotes.push(
+          "No se pudo scrapear la ficha individual (antibot o página vacía). Se usará búsqueda por resultados.",
+        );
+      }
     }
   }
+
+  // Re-validate after listing merge (fuel/year may change)
+  const consistencyAfter = validateVehicleConsistency(vehicle);
+  const effectiveConsistency =
+    consistencyAfter.status === "invalid" || consistency.status === "invalid"
+      ? consistencyAfter.status === "invalid"
+        ? consistencyAfter
+        : consistency
+      : consistencyAfter.status === "suspicious"
+        ? consistencyAfter
+        : consistency;
 
   const id = createVehicleId([
     vehicle.brand,
@@ -76,49 +125,156 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
     location: vehicle.location,
   };
 
-  const search = await searchAllComparables(query);
-  const liveListings = search.listings.filter((listing) => !listing.isDemo && !listing.isCompetitor);
-  const comparables = liveListings;
-  const knowledge = lookupKnowledge(vehicle);
+  let comparables: AnalyzeResponse["comparables"] = [];
+  let searchNotes: string[] = [];
+  let search: Awaited<ReturnType<typeof searchAllComparables>> = {
+    listings: [],
+    documents: [],
+    isDemo: false,
+    fetchedAt: new Date().toISOString(),
+    notes: [],
+    connected: false,
+  };
+
+  if (effectiveConsistency.blockMarketSearch) {
+    searchNotes = [
+      "Búsqueda de mercado omitida: la identidad del vehículo es incoherente (p. ej. versión de otra marca).",
+    ];
+    analysisLog.marketSearch({ skipped: true, reason: "inconsistent_identity" });
+  } else {
+    search = await searchAllComparables(query).catch((error: unknown) => {
+      analysisLog.fallback({
+        reason: "market_search_failed",
+        message: error instanceof Error ? error.message : "unknown",
+      });
+      return {
+        listings: [],
+        documents: [],
+        isDemo: false,
+        fetchedAt: new Date().toISOString(),
+        notes: ["Búsqueda de mercado no disponible."],
+        connected: false,
+      };
+    });
+    searchNotes = search.notes;
+    comparables = search.listings.filter((listing) => !listing.isDemo && !listing.isCompetitor);
+    analysisLog.marketSearch({
+      skipped: false,
+      requested: query,
+    });
+    analysisLog.marketResults({
+      count: comparables.length,
+      sources: Array.from(new Set(comparables.map((l) => l.source))),
+    });
+  }
+
+  const knowledge = effectiveConsistency.blockModelKnowledge
+    ? {
+        reliability: {
+          available: false,
+          score: null,
+          notes: [
+            "No se consulta conocimiento técnico del modelo mientras los datos del vehículo sean incoherentes.",
+            effectiveConsistency.summary,
+          ],
+          knownIssues: [],
+          isDemo: false,
+          source: "Bloqueado por validación de coherencia",
+        },
+        maintenance: {
+          available: false,
+          notes: [
+            "Mantenimiento específico del modelo bloqueado hasta corregir marca/modelo/versión/combustible.",
+          ],
+          upcoming: [],
+          isDemo: false,
+          source: "Bloqueado por validación de coherencia",
+        },
+        knowledgeChunks: [],
+      }
+    : lookupKnowledge(vehicle);
+
+  analysisLog.ragRetrieval({
+    blocked: effectiveConsistency.blockModelKnowledge,
+    chunkCount: knowledge.knowledgeChunks.length,
+    reliabilityAvailable: knowledge.reliability.available,
+    issues: knowledge.reliability.knownIssues.length,
+  });
+  analysisLog.ragConfidence({
+    isDemo: knowledge.reliability.isDemo,
+    score: knowledge.reliability.score,
+  });
+
   const valuation = valueVehicle(vehicle, comparables);
+  const listingAnalysis = analyzeListing(vehicle, valuation.verdict, {
+    marketObserved: valuation.origin === "observed",
+    insufficientMarket: valuation.insufficientMarketData,
+    listingScraped,
+  });
   const scores = scoreVehicle({
     vehicle,
     valuation,
     reliability: knowledge.reliability,
     listings: comparables,
-  });
-  const listingAnalysis = analyzeListing(vehicle, valuation.verdict, {
-    marketObserved: valuation.origin === "observed",
+    listingQualityScore: listingAnalysis.qualityScore,
+    consistencyInvalid: effectiveConsistency.status === "invalid",
   });
   const sellerQuestions = buildSellerQuestions(
     vehicle,
     knowledge.reliability.knownIssues,
     knowledge.knowledgeChunks,
+    { blockModelSpecific: effectiveConsistency.blockModelKnowledge },
   );
+  const missingData = detectMissingData(vehicle);
+  const inspectionChecklist = buildInspectionChecklist(vehicle);
+  const purchaseVerdict = buildPurchaseVerdict({
+    vehicle,
+    valuation,
+    scores,
+    consistencyStatus: effectiveConsistency.status,
+    hasModelKnowledge: knowledge.reliability.available,
+    listingRisk: listingAnalysis.risk,
+  });
 
   const hasKnowledge = knowledge.reliability.available || knowledge.maintenance.available;
   const dataMode = resolveDataMode({
     hasLiveListings: comparables.length > 0,
     hasKnowledge,
+    knowledgeIsDemo: knowledge.reliability.isDemo || knowledge.maintenance.isDemo,
   });
 
-  const limitations = [...valuation.limitations, ...listingAnalysis.limitations];
-  if (comparables.length === 0) {
+  const limitations = [
+    ...effectiveConsistency.issues.filter((i) => i.severity === "error").map((i) => i.message),
+    ...valuation.limitations,
+    ...listingAnalysis.limitations,
+  ];
+  if (effectiveConsistency.status === "invalid") {
+    limitations.unshift(
+      "IDENTIDAD INVÁLIDA: corrige marca/modelo/versión/combustible antes de usar precio o conocimiento técnico.",
+    );
+  }
+  if (comparables.length === 0 && !effectiveConsistency.blockMarketSearch) {
     limitations.push(
-      "No se obtuvieron anuncios de coches.net. El precio de mercado es una estimación orientativa por segmento, no una mediana de anuncios reales.",
+      "No se obtuvieron anuncios comparables suficientes. No se publica un precio de mercado inventado.",
     );
   }
   if (comparables.some((listing) => listing.source === "coches.net")) {
     limitations.push(
-      "Los comparables proceden de anuncios públicos de coches.net (mercado España). El valor estimado es la mediana de esos anuncios filtrados por modelo y año próximo.",
+      "Los comparables proceden de anuncios públicos de coches.net (mercado España).",
     );
   }
-  if (search.notes.length > 0 && comparables.length === 0) {
-    limitations.push(...search.notes.slice(0, 3));
+  if (searchNotes.length > 0 && comparables.length === 0) {
+    limitations.push(...searchNotes.slice(0, 3));
   }
   if (hasKnowledge) {
     limitations.push(
-      "La fiabilidad y el mantenimiento proceden de una base de conocimiento curada (RAG). No sustituyen inspección mecánica ni informes oficiales de este bastidor.",
+      knowledge.reliability.isDemo
+        ? "El corpus técnico incluye entradas demo/pendientes de revisión. No sustituyen inspección ni informes oficiales."
+        : "La fiabilidad procede de conocimiento del modelo (RAG). No sustituye inspección de este bastidor.",
+    );
+  } else if (!effectiveConsistency.blockModelKnowledge) {
+    limitations.push(
+      "No tenemos evidencia suficiente para afirmar problemas conocidos específicos de este modelo.",
     );
   }
 
@@ -135,13 +291,17 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
       .slice(0, 24),
     alternatives: [],
     sources: toSourceCitations(comparables, search),
-    searchNotes: search.notes,
+    searchNotes,
     listingDetailNotes: listingDetailNotes.length > 0 ? listingDetailNotes : undefined,
     listingAnalysis,
     sellerQuestions,
     reliability: knowledge.reliability,
     maintenance: knowledge.maintenance,
     limitations: Array.from(new Set(limitations)),
+    consistency: effectiveConsistency,
+    purchaseVerdict,
+    missingData,
+    inspectionChecklist,
   };
 
   await saveAnalysis(analysis);

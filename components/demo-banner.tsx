@@ -3,23 +3,24 @@ import type { DataMode } from "@/types/valuation";
 
 const COPY: Record<DataMode, { title: string; description: string }> = {
   live: {
-    title: "Datos de mercado observados",
+    title: "Mercado observado",
     description:
-      "La valoración usa anuncios reales de coches.net (España). La fiabilidad y el mantenimiento vienen de la base de conocimiento curada.",
+      "La valoración usa anuncios reales de coches.net. El conocimiento técnico solo aparece si hay evidencia específica del modelo.",
   },
   mixed: {
-    title: "Mercado observado + conocimiento curado",
+    title: "Mercado + conocimiento",
     description:
-      "Combinamos anuncios reales de coches.net con la base de conocimiento sobre fiabilidad y mantenimiento.",
+      "Combinamos anuncios reales con conocimiento del modelo. Si el corpus está en demo, se etiqueta como tal.",
   },
   knowledge: {
-    title: "Sin anuncios de mercado",
+    title: "Sin mercado comparable",
     description:
-      "No se pudieron obtener comparables de coches.net. El precio es una referencia orientativa por segmento. Fiabilidad y mantenimiento sí vienen de datos curados.",
+      "No hay anuncios suficientes para un precio de mercado. No inventamos una mediana. Puede haber conocimiento técnico del modelo si existe evidencia.",
   },
   demo: {
-    title: "Modo demostración",
-    description: "Algunos datos siguen siendo simulados. Conecta portales reales para mayor fiabilidad.",
+    title: "Datos limitados / demo",
+    description:
+      "Parte del conocimiento o del mercado no está verificado. Preferimos decir «no lo sabemos» a fingir precisión.",
   },
 };
 

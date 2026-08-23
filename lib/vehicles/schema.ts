@@ -18,7 +18,26 @@ const optionalUrl = z
   .trim()
   .optional()
   .transform((value) => (value ? value : undefined))
-  .pipe(z.string().url().optional());
+  .pipe(z.string().url().optional())
+  .superRefine((value, ctx) => {
+    if (!value) return;
+    try {
+      const url = new URL(value);
+      if (url.protocol !== "https:") {
+        ctx.addIssue({ code: "custom", message: "La URL del anuncio debe ser https." });
+        return;
+      }
+      const host = url.hostname.toLowerCase();
+      if (host !== "www.coches.net" && host !== "coches.net") {
+        ctx.addIssue({
+          code: "custom",
+          message: "Por ahora solo se aceptan URLs de anuncios de coches.net.",
+        });
+      }
+    } catch {
+      ctx.addIssue({ code: "custom", message: "URL de anuncio no válida." });
+    }
+  });
 
 export const vehicleInputSchema = z.object({
   brand: z.string().trim().min(1, "Indica la marca").max(80),

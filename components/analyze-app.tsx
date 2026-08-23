@@ -9,6 +9,10 @@ import { ComparableList } from "@/components/comparable-cars/comparable-list";
 import { ListingAnalysisCard } from "@/components/listing-analysis/listing-analysis-card";
 import { SellerQuestions } from "@/components/seller-questions/seller-questions";
 import { SourcesPanel } from "@/components/sources/sources-panel";
+import { ConsistencyAlert } from "@/components/valuation/consistency-alert";
+import { InspectionChecklistCard } from "@/components/valuation/inspection-checklist-card";
+import { MissingDataCard } from "@/components/valuation/missing-data-card";
+import { PurchaseVerdictCard } from "@/components/valuation/purchase-verdict-card";
 import { ScoreCard } from "@/components/valuation/score-card";
 import { ValuationCard } from "@/components/valuation/valuation-card";
 import { VehicleChat } from "@/components/vehicle-chat/vehicle-chat";
@@ -53,6 +57,7 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
 
   const hasMarketData = analysis ? analysis.valuation.comparableCount > 0 : false;
   const hasAlternatives = analysis ? analysis.alternatives.length > 0 : false;
+  const identityBroken = analysis?.consistency?.status === "invalid";
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-8 sm:py-12">
@@ -75,10 +80,11 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
           </div>
         </div>
         <h1 className="font-heading max-w-xl text-3xl leading-tight font-medium tracking-tight sm:text-4xl">
-          ¿Cuánto vale realmente este coche?
+          CarQuestions
         </h1>
         <p className="max-w-xl text-base leading-7 text-muted-foreground">
-          Rellena lo básico y obtén referencia de precio, fiabilidad del modelo y preguntas para el vendedor.
+          Copiloto para comprar de segunda mano: cuánto pagar, qué riesgo tiene, qué preguntar y qué
+          comprobar antes de decidir.
         </p>
       </header>
 
@@ -103,7 +109,12 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
 
       {analysis ? (
         <div ref={resultsRef} className="flex flex-col gap-6">
-          <ValuationCard valuation={analysis.valuation} />
+          {analysis.consistency ? <ConsistencyAlert report={analysis.consistency} /> : null}
+          {analysis.purchaseVerdict ? (
+            <PurchaseVerdictCard verdict={analysis.purchaseVerdict} valuation={analysis.valuation} />
+          ) : null}
+          {!identityBroken ? <ValuationCard valuation={analysis.valuation} /> : null}
+          {analysis.missingData ? <MissingDataCard report={analysis.missingData} /> : null}
           <SourcesPanel
             sources={analysis.sources}
             listings={analysis.comparables}
@@ -112,9 +123,9 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
             updatedAt={analysis.valuation.dataUpdatedAt}
             searchNotes={[...(analysis.searchNotes ?? []), ...(analysis.listingDetailNotes ?? [])]}
             matchStrictness={analysis.valuation.matchStrictness}
-            emptyMessage="coches.net no devolvió comparables útiles para este coche. El precio mostrado es solo una referencia de segmento."
+            emptyMessage="Sin anuncios comparables suficientes. No se inventa un precio de mercado."
           />
-          {hasMarketData ? (
+          {hasMarketData && !identityBroken ? (
             <ComparableList
               title="Coches similares"
               description={`${analysis.comparables.length} anuncios comparables observados del mismo modelo.`}
@@ -128,6 +139,9 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
             maintenance={analysis.maintenance}
           />
           <SellerQuestions questions={analysis.sellerQuestions} />
+          {analysis.inspectionChecklist ? (
+            <InspectionChecklistCard checklist={analysis.inspectionChecklist} />
+          ) : null}
           {hasAlternatives ? (
             <ComparableList
               title="Alternativas del segmento"

@@ -1,11 +1,36 @@
 import type { KnowledgeChunk } from "@/types/knowledge";
 import type { KnownIssue, MaintenanceSummary, ReliabilitySummary } from "@/types/valuation";
 import type { Vehicle } from "@/types/vehicle";
-import { chunkMatchesVehicle } from "@/lib/rag/knowledge/filters";
+import {
+  chunkAppliesToAllBrands,
+  chunkIsModelSpecific,
+  chunkMatchesVehicle,
+} from "@/lib/rag/knowledge/filters";
+import { classifyChunkEvidenceLevel } from "@/lib/vehicles/evidence";
 import { average, clamp } from "@/lib/utils/math";
+
+function anyDemo(chunks: KnowledgeChunk[]): boolean {
+  return chunks.some((chunk) => chunk.isDemo);
+}
+
+function sourceLabel(chunks: KnowledgeChunk[]): string {
+  if (chunks.length === 0) return "Base de conocimiento";
+  if (anyDemo(chunks)) return "Base de conocimiento (pendiente de revisión / demo)";
+  return "Base de conocimiento curada";
+}
 
 export function chunkToKnownIssue(chunk: KnowledgeChunk): KnownIssue | null {
   if (chunk.type !== "issue" && chunk.type !== "recall") return null;
+  const evidenceLevel = classifyChunkEvidenceLevel({
+    brands: chunk.brands,
+    models: chunk.models,
+    motorCodes: chunk.motorCodes,
+  });
+  // Universal / segment chunks must never be presented as "known model issue"
+  if (evidenceLevel === "C" || chunkAppliesToAllBrands(chunk) || !chunkIsModelSpecific(chunk)) {
+    return null;
+  }
+
   const extra = [
     chunk.symptoms?.length ? `Síntomas habituales: ${chunk.symptoms.join("; ")}.` : null,
     chunk.askSeller?.length ? `Preguntar al vendedor: ${chunk.askSeller.join("; ")}.` : null,
@@ -20,19 +45,27 @@ export function chunkToKnownIssue(chunk: KnowledgeChunk): KnownIssue | null {
     severity: chunk.severity ?? "medium",
     appliesWhen: chunk.appliesWhen ?? chunk.title,
     source: chunk.source,
-    isDemo: false,
+    isDemo: chunk.isDemo,
+    evidenceLevel,
+    sourceClass: chunk.isDemo ? "community" : "technical",
+    confidence: chunk.isDemo ? "low" : "medium",
   };
 }
 
 export function chunksToReliability(chunks: KnowledgeChunk[], vehicle: Vehicle): ReliabilitySummary {
-  const relevant = chunks.filter((chunk) => chunkMatchesVehicle(chunk, vehicle));
+  // Only brand+model specific chunks contribute to "model reliability"
+  const modelSpecific = chunks.filter(
+    (chunk) =>
+      chunkIsModelSpecific(chunk) &&
+      chunkMatchesVehicle(chunk, vehicle, { allowUniversal: false }),
+  );
 
-  const issues = relevant
+  const issues = modelSpecific
     .filter((chunk) => chunk.type === "issue" || chunk.type === "recall")
     .map(chunkToKnownIssue)
     .filter((issue): issue is KnownIssue => issue != null);
 
-  const scoreValues = relevant
+  const scoreValues = modelSpecific
     .map((chunk) => chunk.reliabilityScore)
     .filter((value): value is number => typeof value === "number");
 
@@ -41,54 +74,76 @@ export function chunksToReliability(chunks: KnowledgeChunk[], vehicle: Vehicle):
       available: false,
       score: null,
       notes: [
-        `No hay ficha de fiabilidad suficientemente específica para ${vehicle.brand} ${vehicle.model} ${vehicle.year} en la base de conocimiento.`,
+        `No tenemos evidencia suficiente para afirmar problemas conocidos específicos de ${vehicle.brand} ${vehicle.model} ${vehicle.year}.`,
       ],
       knownIssues: [],
       isDemo: false,
-      source: "Base de conocimiento curada",
+      source: "Base de conocimiento",
     };
   }
 
-  const maintenanceNotes = relevant
-    .filter((chunk) => chunk.type === "maintenance")
-    .map((chunk) => `${chunk.title}: ${chunk.content}`);
-
+  const demo = anyDemo(modelSpecific);
   const score =
     scoreValues.length > 0
       ? Math.round(clamp(average(scoreValues) ?? 70, 40, 95))
-      : issues.some((issue) => issue.severity === "high")
-        ? 68
-        : 75;
+      : null; // Do not invent 68/75 from issue presence alone
+
+  const notes: string[] = [];
+  if (demo) {
+    notes.push(
+      "Parte del corpus técnico está marcada como demo / pendiente de revisión; no lo trates como informe oficial.",
+    );
+  }
+  if (score == null) {
+    notes.push(
+      `Hay menciones específicas del modelo, pero no un score de fiabilidad calibrado. Se listan patrones con evidencia de nivel A/B.`,
+    );
+  } else {
+    notes.push(`Score orientativo a partir de fichas del modelo (no de este bastidor).`);
+  }
 
   return {
     available: true,
     score,
-    notes:
-      maintenanceNotes.length > 0
-        ? maintenanceNotes.slice(0, 3)
-        : [`Ficha curada para ${vehicle.brand} ${vehicle.model} (base de conocimiento RAG).`],
+    notes,
     knownIssues: issues.slice(0, 8),
-    isDemo: false,
-    source: "Base de conocimiento curada",
+    isDemo: demo,
+    source: sourceLabel(modelSpecific),
   };
 }
 
 export function chunksToMaintenance(chunks: KnowledgeChunk[], vehicle?: Vehicle): MaintenanceSummary {
-  const relevant = vehicle ? chunks.filter((chunk) => chunkMatchesVehicle(chunk, vehicle)) : chunks;
+  const relevant = (vehicle
+    ? chunks.filter((chunk) =>
+        chunkIsModelSpecific(chunk) &&
+        chunkMatchesVehicle(chunk, vehicle, { allowUniversal: false }),
+      )
+    : chunks.filter(chunkIsModelSpecific)
+  );
+
   const maintenance = relevant.filter((chunk) => chunk.type === "maintenance");
   const inspections = relevant.filter((chunk) => chunk.type === "inspection");
 
   if (maintenance.length === 0 && inspections.length === 0) {
     return {
       available: false,
-      notes: ["Sin ficha de mantenimiento específica en la base de conocimiento."],
+      notes: [
+        "Sin ficha de mantenimiento específica del modelo en la base de conocimiento. No inventamos intervalos ni costes.",
+      ],
       upcoming: [],
       isDemo: false,
-      source: "Base de conocimiento curada",
+      source: "Base de conocimiento",
     };
   }
 
-  const yearlyCosts = maintenance
+  const demo = anyDemo([...maintenance, ...inspections]);
+  // Repair cost maxima are NOT yearly maintenance — only expose if interval suggests recurring service
+  const yearlyHints = maintenance.filter((chunk) =>
+    /anual|año|12\s*mes|cada\s*año/i.test(
+      `${chunk.maintenanceInterval ?? ""} ${chunk.title} ${chunk.content}`,
+    ),
+  );
+  const yearlyCosts = yearlyHints
     .map((chunk) => chunk.estimatedCostEur?.max ?? chunk.estimatedCostEur?.min)
     .filter((value): value is number => typeof value === "number");
 
@@ -103,7 +158,24 @@ export function chunksToMaintenance(chunks: KnowledgeChunk[], vehicle?: Vehicle)
     ].slice(0, 6),
     estimatedYearlyCost:
       yearlyCosts.length > 0 ? Math.round(average(yearlyCosts) ?? 0) : undefined,
-    isDemo: false,
-    source: "Base de conocimiento curada",
+    isDemo: demo,
+    source: sourceLabel([...maintenance, ...inspections]),
+  };
+}
+
+/** Segment-level guidance (level C) — for inspection tips only, never as model issues. */
+export function chunksToSegmentGuidance(
+  chunks: KnowledgeChunk[],
+  vehicle: Vehicle,
+): { notes: string[]; isDemo: boolean } {
+  const universal = chunks.filter(
+    (chunk) =>
+      chunkAppliesToAllBrands(chunk) &&
+      chunkMatchesVehicle(chunk, vehicle, { allowUniversal: true }) &&
+      (chunk.type === "inspection" || chunk.type === "maintenance"),
+  );
+  return {
+    notes: universal.slice(0, 4).map((c) => `[Segmento] ${c.title}: ${c.content}`),
+    isDemo: anyDemo(universal),
   };
 }

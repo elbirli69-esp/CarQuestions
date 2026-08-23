@@ -76,8 +76,16 @@ export function buildAlternativeComparison(context: VehicleContext): {
     };
   }
 
-  const subjectPrice = vehicle.advertisedPrice ?? marketData.estimatedPrice;
+  const subjectPrice = vehicle.advertisedPrice ?? marketData.estimatedPrice ?? undefined;
   const subjectEstimate = marketData.estimatedPrice;
+  if (subjectEstimate == null) {
+    return {
+      entries: [],
+      recommendation:
+        "Sin estimación de mercado del vehículo analizado no se pueden puntuar alternativas de forma honesta.",
+      lines: [],
+    };
+  }
   const subjectScoring = scoreOption(subjectPrice, subjectEstimate, vehicle.mileage, vehicle.year);
 
   const subject: ComparisonEntry = {
@@ -88,7 +96,8 @@ export function buildAlternativeComparison(context: VehicleContext): {
     mileage: vehicle.mileage,
     price: vehicle.advertisedPrice,
     estimatedValue: subjectEstimate,
-    priceDelta: vehicle.advertisedPrice ? vehicle.advertisedPrice - subjectEstimate : undefined,
+    priceDelta:
+      vehicle.advertisedPrice != null ? vehicle.advertisedPrice - subjectEstimate : undefined,
     score: subjectScoring.score,
     notes: [
       marketData.verdictLabel ? `Valoración: ${marketData.verdictLabel}` : "Sin veredicto de precio",

@@ -17,27 +17,42 @@ export function scoreVehicle(options: {
   valuation: ValuationResult;
   reliability: ReliabilitySummary;
   listings: VehicleListing[];
+  listingQualityScore?: number;
+  consistencyInvalid?: boolean;
 }): VehicleScorecard {
   const { vehicle, valuation, reliability, listings } = options;
-  const hasObservedMarket = listings.length >= 5 && valuation.origin === "observed";
+  if (options.consistencyInvalid) {
+    return {
+      dimensions: [
+        {
+          id: "consistency",
+          label: "Coherencia de datos",
+          score: null,
+          reason: "Combinación marca/modelo/versión/combustible inválida. No se calcula score.",
+          origin: "observed",
+          insufficientData: true,
+        },
+      ],
+      overall: null,
+      overallLabel: null,
+      summary: "Sin datos suficientes: corrige la ficha del vehículo antes de puntuar la compra.",
+    };
+  }
+
+  const hasObservedMarket =
+    listings.length >= 5 && valuation.origin === "observed" && !valuation.insufficientMarketData;
   const dimensions: ScoreDimension[] = [];
 
-  if (valuation.percentDifference == null) {
+  if (valuation.percentDifference == null || valuation.estimatedPrice == null) {
     dimensions.push({
       id: "price",
       label: "Precio",
       score: null,
-      reason: "No hay precio anunciado, así que no se puntúa la relación calidad-precio.",
-      origin: "observed",
-      insufficientData: true,
-    });
-  } else if (valuation.origin === "ai_estimate") {
-    dimensions.push({
-      id: "price",
-      label: "Precio",
-      score: null,
-      reason: "Hay precio anunciado, pero sin anuncios reales conectados la comparación de mercado no es fiable.",
-      origin: "ai_estimate",
+      reason:
+        valuation.insufficientMarketData || valuation.origin !== "observed"
+          ? "Sin mercado comparable suficiente: no se puntúa el precio."
+          : "No hay precio anunciado, así que no se puntúa la relación calidad-precio.",
+      origin: valuation.origin === "observed" ? "observed" : "ai_estimate",
       insufficientData: true,
     });
   } else {
@@ -58,43 +73,75 @@ export function scoreVehicle(options: {
       id: "reliability",
       label: "Fiabilidad",
       score: null,
-      reason: "No hay una ficha de fiabilidad suficientemente específica para este vehículo.",
-      origin: "ai_estimate",
+      reason: reliability.notes[0] ??
+        "No hay evidencia suficiente de fiabilidad específica de este modelo.",
+      origin: reliability.isDemo ? "demo_model" : "ai_estimate",
       insufficientData: true,
     });
   } else {
     dimensions.push({
       id: "reliability",
       label: "Fiabilidad",
-      score: reliability.score,
-      reason: reliability.notes[0] ?? `Basado en la base de conocimiento curada para ${vehicle.brand} ${vehicle.model}.`,
-      origin: "observed",
-      insufficientData: false,
+      score: reliability.isDemo ? null : reliability.score,
+      reason: reliability.isDemo
+        ? "Hay menciones en corpus demo: no se publica score numérico como hecho."
+        : (reliability.notes[0] ?? `Basado en conocimiento del modelo ${vehicle.brand} ${vehicle.model}.`),
+      origin: reliability.isDemo ? "demo_model" : "observed",
+      insufficientData: reliability.isDemo,
     });
   }
 
-  const maintenanceScore = reliability.available ? Math.round(clamp((reliability.score ?? 70) - 6, 40, 90)) : null;
   dimensions.push({
     id: "maintenance",
-    label: "Coste de mantenimiento",
-    score: maintenanceScore,
-    reason: maintenanceScore == null
-      ? "Sin datos suficientes para estimar el coste de mantenimiento."
-      : "Estimación orientativa del segmento según la base de conocimiento curada, no facturas de este coche.",
-    origin: reliability.available ? "observed" : "ai_estimate",
-    insufficientData: maintenanceScore == null,
+    label: "Mantenimiento",
+    score: null,
+    reason:
+      "No publicamos un score de mantenimiento inventado. Usa la ficha de mantenimiento solo si hay evidencia de modelo.",
+    origin: "ai_estimate",
+    insufficientData: true,
   });
 
+  // Depreciation: only as heuristic inference, marked insufficient if no market
   const age = new Date().getFullYear() - vehicle.year;
   const kmPerYear = vehicle.mileage / Math.max(age, 1);
-  const depreciationScore = Math.round(clamp(90 - age * 3.2 - Math.max(0, kmPerYear - 18000) / 1800, 35, 92));
+  if (hasObservedMarket) {
+    const depreciationScore = Math.round(
+      clamp(90 - age * 3.2 - Math.max(0, kmPerYear - 18000) / 1800, 35, 92),
+    );
+    dimensions.push({
+      id: "depreciation",
+      label: "Depreciación",
+      score: depreciationScore,
+      reason: `Heurística orientativa: edad ${age} años y ${Math.round(kmPerYear)} km/año. No es predicción de reventa.`,
+      origin: "ai_estimate",
+      insufficientData: false,
+    });
+  } else {
+    dimensions.push({
+      id: "depreciation",
+      label: "Depreciación",
+      score: null,
+      reason: "Sin mercado observado no estimamos depreciación numérica.",
+      origin: "ai_estimate",
+      insufficientData: true,
+    });
+  }
+
   dimensions.push({
-    id: "depreciation",
-    label: "Depreciación",
-    score: depreciationScore,
-    reason: `Edad ${age} años y ${Math.round(kmPerYear)} km/año. Es una aproximación heurística, no una predicción de reventa.`,
-    origin: "ai_estimate",
-    insufficientData: false,
+    id: "purchase_risk",
+    label: "Riesgo de compra",
+    score:
+      options.listingQualityScore != null
+        ? Math.round(clamp(options.listingQualityScore, 0, 100))
+        : null,
+    reason:
+      options.listingQualityScore == null
+        ? "Sin evaluación de calidad del anuncio."
+        : options.listingQualityScore >= 70
+          ? "El anuncio aporta bastante contexto; el riesgo residual es de inspección."
+          : "Faltan datos críticos en el anuncio: el riesgo de compra sube.",
+    origin: "observed",
+    insufficientData: options.listingQualityScore == null,
   });
 
   dimensions.push({
@@ -102,36 +149,41 @@ export function scoreVehicle(options: {
     label: "Adecuación al mercado",
     score: hasObservedMarket ? Math.round(clamp(70 + listings.length * 0.4, 55, 90)) : null,
     reason: hasObservedMarket
-      ? `Se han usado ${listings.length} anuncios comparables observados del mismo entorno de mercado.`
-      : "Sin anuncios de coches.net no hay comparables reales. Reintenta más tarde o consulta el portal directamente antes de decidir.",
+      ? `Se han usado ${listings.length} anuncios comparables observados.`
+      : "Sin anuncios suficientes no hay adecuación de mercado medible.",
     origin: hasObservedMarket ? "observed" : "ai_estimate",
     insufficientData: !hasObservedMarket,
   });
 
-  const filled = [
-    vehicle.power,
-    vehicle.transmission,
-    vehicle.location,
-    vehicle.equipment,
-    vehicle.maintenanceHistory,
-    vehicle.accidents,
-    vehicle.generalCondition,
-    vehicle.itv,
-  ].filter((value) => value !== undefined && value !== "").length;
-  const listingScore = Math.round((filled / 8) * 100);
+  const listingScore =
+    options.listingQualityScore ??
+    Math.round(
+      ([
+        vehicle.power,
+        vehicle.transmission,
+        vehicle.location,
+        vehicle.equipment,
+        vehicle.maintenanceHistory,
+        vehicle.accidents,
+        vehicle.generalCondition,
+        vehicle.itv,
+      ].filter((value) => value !== undefined && value !== "").length /
+        8) *
+        100,
+    );
   dimensions.push({
     id: "listing",
-    label: "Estado del anuncio",
+    label: "Calidad del anuncio",
     score: listingScore,
     reason:
       listingScore < 50
-        ? "Faltan datos relevantes (accidentes, ITV, equipamiento, historial…). Complétalos en el formulario."
-        : "El anuncio/formulario incluye bastante contexto, aunque sigue faltando inspección real.",
+        ? "Faltan datos relevantes (accidentes, ITV, equipamiento, historial…)."
+        : "El anuncio/formulario incluye bastante contexto; sigue haciendo falta inspección real.",
     origin: "observed",
     insufficientData: listingScore < 40,
   });
 
-  const usable = dimensions.filter((dimension) => dimension.score != null);
+  const usable = dimensions.filter((dimension) => dimension.score != null && !dimension.insufficientData);
   const overall =
     usable.length >= 3
       ? Math.round(usable.reduce((sum, dimension) => sum + (dimension.score ?? 0), 0) / usable.length)

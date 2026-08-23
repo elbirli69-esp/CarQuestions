@@ -15,18 +15,29 @@ export function ListingAnalysisCard({
     <div className="flex flex-col gap-4">
       <Card>
         <CardHeader>
-          <CardTitle>Análisis del anuncio</CardTitle>
+          <CardTitle>Calidad de la información del anuncio</CardTitle>
           <CardDescription>
             {analysis.limitations[0] ??
               "Basado en el formulario y, si pegaste URL, en los datos que se pudieron leer del anuncio."}
           </CardDescription>
         </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-5">
-          <Fact label="Precio" value={analysis.price} />
-          <Fact label="Vehículo" value={analysis.vehicle} />
-          <Fact label="Descripción" value={analysis.description} />
-          <Fact label="Equipamiento" value={analysis.equipment} />
-          <Fact label="Riesgo" value={analysis.risk} />
+        <CardContent className="space-y-4">
+          <div className="flex items-end gap-3">
+            <p className="font-heading text-4xl tracking-tight">{analysis.qualityScore}</p>
+            <p className="pb-1 text-sm text-muted-foreground">/ 100</p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-5">
+            <Fact label="Precio" value={analysis.price} />
+            <Fact label="Vehículo" value={analysis.vehicle} />
+            <Fact label="Descripción" value={analysis.description} />
+            <Fact label="Equipamiento" value={analysis.equipment} />
+            <Fact label="Riesgo" value={analysis.risk} />
+          </div>
+          {analysis.missingFields.length > 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Falta: {analysis.missingFields.join(", ")}.
+            </p>
+          ) : null}
         </CardContent>
       </Card>
 
@@ -50,8 +61,8 @@ export function ListingAnalysisCard({
           <CardTitle>Conocimiento técnico del modelo</CardTitle>
           <CardDescription>
             {reliability.available
-              ? `Patrones de foros/manuales/recalls${reliability.score != null ? ` · score orientativo ${reliability.score}/100` : ""}. No es un informe de este bastidor.`
-              : "Sin ficha específica en la base de conocimiento."}
+              ? `Solo patrones con evidencia específica del modelo${reliability.score != null ? ` · score orientativo ${reliability.score}/100` : ""}${reliability.isDemo ? " · corpus demo" : ""}. No es un informe de este bastidor.`
+              : "Sin evidencia suficiente específica del modelo."}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-5 text-sm">
@@ -64,6 +75,10 @@ export function ListingAnalysisCard({
                     <Badge variant={issue.severity === "high" ? "destructive" : "secondary"}>
                       {issue.severity === "high" ? "alto" : issue.severity === "medium" ? "medio" : "bajo"}
                     </Badge>
+                    {issue.evidenceLevel ? (
+                      <Badge variant="outline">Nivel {issue.evidenceLevel}</Badge>
+                    ) : null}
+                    {issue.isDemo ? <Badge variant="outline">demo</Badge> : null}
                   </div>
                   <p className="text-muted-foreground">{issue.detail}</p>
                   <p className="text-xs text-muted-foreground">Fuente: {issue.source}</p>

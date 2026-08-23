@@ -75,8 +75,12 @@ export function marketStatsDocument(
       : 0;
 
   const content = [
-    `Precio estimado mercado: ${valuation.estimatedPrice} EUR`,
-    `Intervalo: ${valuation.low}–${valuation.high} EUR`,
+    valuation.estimatedPrice != null
+      ? `Precio estimado mercado: ${valuation.estimatedPrice} EUR`
+      : "Sin precio de mercado observado",
+    valuation.low != null && valuation.high != null
+      ? `Intervalo: ${valuation.low}–${valuation.high} EUR`
+      : null,
     `Confianza: ${valuation.confidence} %`,
     valuation.matchStrictness ? `Filtros: ${valuation.matchStrictness}` : null,
     `Comparables usados: ${valuation.comparableCount}`,
@@ -84,10 +88,11 @@ export function marketStatsDocument(
       ? `P25 ${valuation.distribution.p25} EUR, mediana ${valuation.distribution.median} EUR, P75 ${valuation.distribution.p75} EUR`
       : null,
     avgSim > 0 ? `Similitud media comparables: ${(avgSim * 100).toFixed(0)} %` : null,
-    valuation.advertisedPrice
-      ? `Precio anunciado vs mercado: ${valuation.percentDifference ?? 0} %`
+    valuation.advertisedPrice && valuation.percentDifference != null
+      ? `Precio anunciado vs mercado: ${valuation.percentDifference} %`
       : null,
     valuation.verdictLabel,
+    valuation.insufficientMarketData ? "Mercado insuficiente: no inventar precisión" : null,
   ]
     .filter(Boolean)
     .join(". ");

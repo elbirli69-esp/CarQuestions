@@ -322,11 +322,11 @@ export function VehicleForm({
           <Field
             label="Versión"
             htmlFor="version"
-            hint="Recomendado. Ej. sDrive18d, xDrive25e… Distingue motorizaciones."
+            hint="Recomendado. Ej. versión comercial o código de motor. Debe encajar con la marca."
           >
             <Input
               id="version"
-              placeholder="sDrive18d"
+              placeholder="Versión o acabado"
               value={form.version}
               onChange={(event) => update("version", event.target.value)}
             />

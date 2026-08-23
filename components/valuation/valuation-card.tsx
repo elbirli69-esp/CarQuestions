@@ -18,7 +18,7 @@ const VERDICT_STYLES: Record<string, string> = {
 const ORIGIN_LABELS: Record<ValuationResult["origin"], string> = {
   observed: "Basado en anuncios observados",
   ai_estimate: "Referencia orientativa (sin anuncios reales)",
-  demo_model: "Modelo simulado",
+  demo_model: "Sin mercado comparable",
 };
 
 function confidenceTone(confidence: number): string {
@@ -28,20 +28,27 @@ function confidenceTone(confidence: number): string {
 }
 
 export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
-  const hasDistribution = valuation.comparableCount >= 5;
+  const hasDistribution = valuation.comparableCount >= 5 && valuation.distribution.count >= 5;
   const topLimitations = valuation.limitations.slice(0, 2);
+  const hasEstimate = valuation.estimatedPrice != null;
 
   return (
     <Card className="bg-card">
       <CardHeader>
-        <CardDescription>Valoración</CardDescription>
-        <CardTitle className="text-2xl sm:text-3xl">Valor estimado</CardTitle>
+        <CardDescription>Valoración de precio</CardDescription>
+        <CardTitle className="text-2xl sm:text-3xl">
+          {hasEstimate ? "Valor estimado" : "Sin mercado comparable"}
+        </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
-            <p className="text-sm text-muted-foreground">Valor estimado</p>
-            <p className="font-heading text-4xl tracking-tight">{formatEuro(valuation.estimatedPrice)}</p>
+            <p className="text-sm text-muted-foreground">
+              {hasEstimate ? "Valor estimado" : "Mercado"}
+            </p>
+            <p className="font-heading text-4xl tracking-tight">
+              {hasEstimate ? formatEuro(valuation.estimatedPrice!) : "—"}
+            </p>
             <Badge variant="outline" className="mt-2">
               {ORIGIN_LABELS[valuation.origin]}
             </Badge>
@@ -82,6 +89,15 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
 
         <p className="text-sm leading-6 text-muted-foreground">{valuation.summary}</p>
 
+        {valuation.segmentReference ? (
+          <div className="rounded-xl border border-dashed px-4 py-3 text-sm">
+            <p className="font-medium">{valuation.segmentReference.label}</p>
+            <p className="mt-1 text-muted-foreground">
+              {formatEuro(valuation.segmentReference.amount)} — {valuation.segmentReference.disclaimer}
+            </p>
+          </div>
+        ) : null}
+
         {topLimitations.length > 0 ? (
           <AlertLike items={topLimitations} />
         ) : null}
@@ -90,13 +106,17 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
           <div className="rounded-xl bg-muted/60 px-4 py-3">
             <p className="text-xs text-muted-foreground">Intervalo orientativo</p>
             <p className="text-sm font-medium">
-              {formatEuro(valuation.low)} – {formatEuro(valuation.high)}
+              {valuation.low != null && valuation.high != null
+                ? `${formatEuro(valuation.low)} – ${formatEuro(valuation.high)}`
+                : "No disponible"}
             </p>
           </div>
           <div className="rounded-xl bg-muted/60 px-4 py-3">
             <p className="text-xs text-muted-foreground">Confianza</p>
             <p className={cn("text-sm font-medium", confidenceTone(valuation.confidence))}>
-              {valuation.confidence} %
+              {valuation.confidenceBand
+                ? `${valuation.confidenceBand.replace("_", " ")} · ${valuation.confidence} %`
+                : `${valuation.confidence} %`}
             </p>
             {valuation.confidenceDrivers && valuation.confidenceDrivers.length > 0 ? (
               <ul className="mt-2 space-y-0.5 text-xs text-muted-foreground">
@@ -132,11 +152,17 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
         </div>
 
         {hasDistribution ? (
-          <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-5">
+          <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-3 lg:grid-cols-7">
             <Stat label="Mínimo" value={formatEuro(valuation.distribution.min)} />
+            {valuation.distribution.p10 != null ? (
+              <Stat label="P10" value={formatEuro(valuation.distribution.p10)} />
+            ) : null}
             <Stat label="P25" value={formatEuro(valuation.distribution.p25)} />
             <Stat label="Mediana" value={formatEuro(valuation.distribution.median)} />
             <Stat label="P75" value={formatEuro(valuation.distribution.p75)} />
+            {valuation.distribution.p90 != null ? (
+              <Stat label="P90" value={formatEuro(valuation.distribution.p90)} />
+            ) : null}
             <Stat label="Máximo" value={formatEuro(valuation.distribution.max)} />
           </div>
         ) : (

@@ -15,6 +15,8 @@
     "scraping:benchmark": "tsx scripts/scraping-benchmark.ts",
     "scraping:fixtures": "tsx scripts/capture-coches-fixtures.ts",
     "test:scraping": "node --import tsx --test lib/sources/coches-net/__tests__/*.test.ts",
+    "test:mvp": "node --import tsx --test lib/vehicles/__tests__/*.test.ts",
+    "test": "node --import tsx --test lib/sources/coches-net/__tests__/*.test.ts lib/vehicles/__tests__/*.test.ts",
     "smoke:scraping": "tsx scripts/smoke-scraping-live.ts",
     "catalog:generate": "tsx scripts/generate-vehicle-catalog.ts",
     "catalog:fetch-cache": "bash scripts/fetch-catalog-cache.sh",
