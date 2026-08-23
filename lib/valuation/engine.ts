@@ -258,6 +258,10 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
       vehicle.itv,
     ].filter(Boolean).length / 6;
 
+  const scrapedEquipment = workingListings.some(
+    (l) => (l.equipment?.length ?? 0) > 0 || l.rawData?.detailScraped === true,
+  );
+
   let confidence =
     26 + workingListings.length * 2.4 + completeness * 12 + avgSimilarity * 26;
   if (matchStrictness === "relaxed") confidence -= 8;
@@ -267,6 +271,7 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
   if (iqrRatio > 0.25) confidence -= 6;
   if (avgSimilarity < 0.7) confidence -= 10;
   if (outliersRemoved > 0) confidence += 2; // muestra más limpia
+  if (scrapedEquipment) confidence += 3;
   confidence = Math.round(clamp(confidence, 22, 90));
 
   confidenceDrivers.push(`${workingListings.length} anuncios tras limpieza`);
@@ -281,6 +286,9 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
   confidenceDrivers.push("Mediana ponderada por similitud");
   if (outliersRemoved > 0) {
     confidenceDrivers.push(`${outliersRemoved} outlier(s) excluidos`);
+  }
+  if (scrapedEquipment) {
+    confidenceDrivers.push("Equipamiento scrapeado en comparables");
   }
   if (iqr > 0) confidenceDrivers.push(`Dispersión P25–P75: ${iqr.toLocaleString("es-ES")} €`);
 

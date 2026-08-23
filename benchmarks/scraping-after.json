@@ -1,0 +1,77 @@
+{
+  "at": "2026-08-22T23:57:40.646Z",
+  "cases": [
+    {
+      "id": "A",
+      "listings": 7,
+      "matchStrictness": "strict",
+      "avgSimilarity": 0.941,
+      "adsRawNote": "Anuncios brutos leídos: 25 en 6 página(s)."
+    },
+    {
+      "id": "B",
+      "listings": 9,
+      "matchStrictness": "strict",
+      "avgSimilarity": 0.954,
+      "adsRawNote": "Muestra de 9 anuncios (núcleo año+combustible: 12; brutos: 12)."
+    },
+    {
+      "id": "C",
+      "listings": 14,
+      "matchStrictness": "strict",
+      "avgSimilarity": 0.876,
+      "adsRawNote": "Muestra de 14 anuncios (núcleo año+combustible: 14; brutos: 14)."
+    },
+    {
+      "id": "D",
+      "listings": 14,
+      "matchStrictness": "strict",
+      "avgSimilarity": 0.87,
+      "adsRawNote": "Muestra de 14 anuncios (núcleo año+combustible: 15; brutos: 15)."
+    },
+    {
+      "id": "E",
+      "listings": 0,
+      "avgSimilarity": 0,
+      "adsRawNote": "coches.net no disponible: coches.net devolvió una página de error o vacía"
+    },
+    {
+      "id": "extract-1",
+      "listings": 0,
+      "avgSimilarity": 0,
+      "extractFilled": []
+    },
+    {
+      "id": "extract-2",
+      "listings": 0,
+      "avgSimilarity": 0,
+      "extractFilled": [
+        "precio",
+        "km",
+        "CV"
+      ]
+    },
+    {
+      "id": "extract-3",
+      "listings": 0,
+      "avgSimilarity": 0,
+      "extractFilled": [
+        "precio",
+        "km",
+        "CV"
+      ]
+    },
+    {
+      "id": "extract-4",
+      "listings": 0,
+      "avgSimilarity": 0,
+      "extractFilled": []
+    },
+    {
+      "id": "extract-5",
+      "listings": 0,
+      "avgSimilarity": 0,
+      "extractFilled": []
+    }
+  ]
+}

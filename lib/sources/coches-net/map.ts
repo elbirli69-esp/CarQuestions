@@ -119,11 +119,17 @@ export function mapCochesNetAd(
     price: ad.price,
     location: ad.location,
     sellerType: ad.sellerType,
+    publicationDate: ad.publicationDate,
+    bodyType: ad.bodyType as VehicleListing["bodyType"],
     similarity: computeSimilarity(query, ad),
     isDemo: false,
     fetchedAt,
     dataKind: "dynamic",
-    rawData: { cochesNetId: ad.id, matchStrictness },
+    rawData: {
+      cochesNetId: ad.id,
+      matchStrictness,
+      descriptionSnippet: ad.descriptionSnippet,
+    },
   };
 }
 

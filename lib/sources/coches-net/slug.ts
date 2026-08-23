@@ -1,5 +1,12 @@
 /** Normaliza marca/modelo a slugs de URL de coches.net (`/bmw/x1/segunda-mano/`). */
 
+import {
+  buildFilterPathSegments,
+  type CochesNetSearchFilters,
+  filtersFromComparableQuery,
+} from "@/lib/sources/coches-net/filters";
+import type { ComparableQuery } from "@/types/listing";
+
 const BRAND_SLUGS: Record<string, string> = {
   mercedes: "mercedes-benz",
   "mercedes benz": "mercedes-benz",
@@ -65,12 +72,26 @@ export function modelToCochesNetSlug(model: string): string {
   return MODEL_SLUGS[key] ?? MODEL_SLUGS[model.toLowerCase().trim()] ?? toCochesNetSlug(model);
 }
 
-export function buildSearchUrl(brand: string, model: string, page = 1): string {
+export function buildSearchUrl(
+  brand: string,
+  model: string,
+  page = 1,
+  filters?: CochesNetSearchFilters,
+): string {
   const brandSlug = brandToCochesNetSlug(brand);
   const modelSlug = modelToCochesNetSlug(model);
-  const base = `https://www.coches.net/${brandSlug}/${modelSlug}/segunda-mano/`;
+  const filterSegments = filters ? buildFilterPathSegments(filters) : [];
+  const pathParts = [brandSlug, modelSlug, "segunda-mano", ...filterSegments];
+  const base = `https://www.coches.net/${pathParts.join("/")}/`;
   if (page <= 1) return base;
   const url = new URL(base);
   url.searchParams.set("pg", String(page));
   return url.toString();
+}
+
+export function buildSearchUrlFromQuery(
+  query: Pick<ComparableQuery, "brand" | "model" | "year" | "fuel" | "transmission" | "location">,
+  page = 1,
+): string {
+  return buildSearchUrl(query.brand, query.model, page, filtersFromComparableQuery(query as ComparableQuery));
 }

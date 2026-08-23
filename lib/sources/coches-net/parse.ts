@@ -13,6 +13,9 @@ export interface ParsedCochesNetAd {
   location?: string;
   sellerType?: SellerType;
   version?: string;
+  publicationDate?: string;
+  bodyType?: string;
+  descriptionSnippet?: string;
 }
 
 function decodeHtml(value: string): string {
@@ -185,6 +188,7 @@ export function parseSearchHtml(
     }
 
     const version = extractVersion(title, context.brand, context.model);
+    const attrSummary = attrItems.join(" · ").slice(0, 200);
     ads.push({
       id,
       url: absoluteUrl(href),
@@ -198,6 +202,7 @@ export function parseSearchHtml(
       sellerType: parseSellerType(chunk),
       version,
       transmission: inferTransmission(title, version),
+      descriptionSnippet: `${title}. ${attrSummary}`.slice(0, 200),
     });
   }
 

@@ -67,7 +67,23 @@ export async function retrieveDocuments(
     }
   }
 
-  return [...merged.values()].sort((a, b) => b.score - a.score).slice(0, limit);
+  const intentBoost = (doc: VehicleDocument): number => {
+    const kind = doc.metadata?.docKind as string | undefined;
+    if (intent === "price" && kind === "market_stats") return 0.35;
+    if (intent === "price" && kind === "comparable") return 0.15;
+    if (intent === "equipment" && kind === "listing_detail") return 0.3;
+    if (intent === "equipment" && kind === "listing_description") return 0.25;
+    if (intent === "negotiation" && (kind === "market_stats" || kind === "comparable")) return 0.2;
+    return 0;
+  };
+
+  return [...merged.values()]
+    .map((hit) => ({
+      ...hit,
+      score: Math.min(1, hit.score + intentBoost(hit.document)),
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
 }
 
 export function retrieveKnowledgeForVehicle(vehicle: Vehicle, limit = 16): KnowledgeChunk[] {
