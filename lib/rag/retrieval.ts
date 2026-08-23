@@ -7,6 +7,7 @@ import {
   intentRetrievalBoost,
 } from "@/lib/rag/query/expand";
 import { getKnowledgeVectorStore } from "@/lib/rag/vector/store";
+import { classifyChunkEvidence, evidenceLevelRank } from "@/lib/vehicles/evidence";
 import { tokenize } from "@/lib/utils/math";
 
 export class InMemoryKeywordIndex {
@@ -99,7 +100,7 @@ export function retrieveKnowledgeForVehicle(vehicle: Vehicle, limit = 16): Knowl
     .filter(Boolean)
     .join(" ");
 
-  return getKnowledgeVectorStore()
+  const hits = getKnowledgeVectorStore()
     .queryChunks({
       text: expandAutomotiveQuery(queryText),
       vehicle: {
@@ -109,7 +110,17 @@ export function retrieveKnowledgeForVehicle(vehicle: Vehicle, limit = 16): Knowl
         fuel: vehicle.fuel,
         version: vehicle.version,
       },
-      limit,
+      limit: Math.max(limit, 24),
     })
     .filter(Boolean);
+
+  return hits
+    .map((chunk) => ({
+      chunk,
+      evidence: classifyChunkEvidence(chunk, vehicle),
+      score: evidenceLevelRank(classifyChunkEvidence(chunk, vehicle).level),
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map((item) => item.chunk);
 }

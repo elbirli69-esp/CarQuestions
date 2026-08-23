@@ -87,7 +87,7 @@ export class KnowledgeVectorStore {
           chunk.brands.some((item) => item.toLowerCase().includes(brand) || brand.includes(item.toLowerCase()))
             ? 0.1
             : 0) +
-          (isUniversal ? 0.02 : 0) +
+          (isUniversal ? -0.08 : 0) +
           (chunk.symptoms && chunk.symptoms.length > 0 ? 0.03 : 0) +
           typeBoost +
           fuelBoost;

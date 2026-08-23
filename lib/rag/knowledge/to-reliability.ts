@@ -1,11 +1,13 @@
 import type { KnowledgeChunk } from "@/types/knowledge";
-import type { KnownIssue, MaintenanceSummary, ReliabilitySummary } from "@/types/valuation";
+import type { KnownIssue, MaintenanceSummary, ReliabilitySummary, SegmentNote } from "@/types/valuation";
 import type { Vehicle } from "@/types/vehicle";
 import { chunkMatchesVehicle } from "@/lib/rag/knowledge/filters";
+import { classifyChunkEvidence, isModelSpecificEvidence } from "@/lib/vehicles/evidence";
 import { average, clamp } from "@/lib/utils/math";
 
-export function chunkToKnownIssue(chunk: KnowledgeChunk): KnownIssue | null {
+export function chunkToKnownIssue(chunk: KnowledgeChunk, vehicle: Vehicle): KnownIssue | null {
   if (chunk.type !== "issue" && chunk.type !== "recall") return null;
+  const evidence = classifyChunkEvidence(chunk, vehicle);
   const extra = [
     chunk.symptoms?.length ? `Síntomas habituales: ${chunk.symptoms.join("; ")}.` : null,
     chunk.askSeller?.length ? `Preguntar al vendedor: ${chunk.askSeller.join("; ")}.` : null,
@@ -21,19 +23,60 @@ export function chunkToKnownIssue(chunk: KnowledgeChunk): KnownIssue | null {
     appliesWhen: chunk.appliesWhen ?? chunk.title,
     source: chunk.source,
     isDemo: false,
+    evidenceLevel: evidence.level,
+    evidenceLabel: evidence.label,
   };
 }
 
-export function chunksToReliability(chunks: KnowledgeChunk[], vehicle: Vehicle): ReliabilitySummary {
+export function chunksToReliability(
+  chunks: KnowledgeChunk[],
+  vehicle: Vehicle,
+  options?: { allowModelKnowledge?: boolean },
+): ReliabilitySummary {
+  const allowModelKnowledge = options?.allowModelKnowledge ?? true;
   const relevant = chunks.filter((chunk) => chunkMatchesVehicle(chunk, vehicle));
 
-  const issues = relevant
-    .filter((chunk) => chunk.type === "issue" || chunk.type === "recall")
-    .map(chunkToKnownIssue)
+  if (!allowModelKnowledge) {
+    return {
+      available: false,
+      score: null,
+      notes: [
+        "Los datos del vehículo son incoherentes. No mostramos problemas técnicos atribuidos a este modelo hasta corregirlos.",
+      ],
+      knownIssues: [],
+      segmentNotes: [],
+      isDemo: false,
+      source: "Base de conocimiento curada",
+      hasModelSpecificEvidence: false,
+    };
+  }
+
+  const classified = relevant.map((chunk) => ({
+    chunk,
+    evidence: classifyChunkEvidence(chunk, vehicle),
+  }));
+
+  const modelSpecific = classified.filter((item) => isModelSpecificEvidence(item.evidence.level));
+  const segmentOnly = classified.filter((item) => item.evidence.level === "C");
+
+  const issues = modelSpecific
+    .filter((item) => item.chunk.type === "issue" || item.chunk.type === "recall")
+    .map((item) => chunkToKnownIssue(item.chunk, vehicle))
     .filter((issue): issue is KnownIssue => issue != null);
 
-  const scoreValues = relevant
-    .map((chunk) => chunk.reliabilityScore)
+  const segmentNotes: SegmentNote[] = segmentOnly
+    .filter((item) => item.chunk.type === "issue" || item.chunk.type === "recall" || item.chunk.type === "inspection")
+    .slice(0, 4)
+    .map((item) => ({
+      title: item.chunk.title,
+      detail: item.chunk.content,
+      evidenceLevel: item.evidence.level,
+      evidenceLabel: item.evidence.label,
+      source: item.chunk.source,
+    }));
+
+  const scoreValues = modelSpecific
+    .map((item) => item.chunk.reliabilityScore)
     .filter((value): value is number => typeof value === "number");
 
   if (issues.length === 0 && scoreValues.length === 0) {
@@ -41,17 +84,22 @@ export function chunksToReliability(chunks: KnowledgeChunk[], vehicle: Vehicle):
       available: false,
       score: null,
       notes: [
-        `No hay ficha de fiabilidad suficientemente específica para ${vehicle.brand} ${vehicle.model} ${vehicle.year} en la base de conocimiento.`,
+        `No tenemos evidencia suficiente para afirmar problemas conocidos específicos de ${vehicle.brand} ${vehicle.model} ${vehicle.year}.`,
+        segmentNotes.length > 0
+          ? "Abajo verás solo notas generales del segmento, no atribuidas a este modelo."
+          : "Consulta foros especializados o un taller antes de decidir.",
       ],
       knownIssues: [],
+      segmentNotes,
       isDemo: false,
       source: "Base de conocimiento curada",
+      hasModelSpecificEvidence: false,
     };
   }
 
-  const maintenanceNotes = relevant
-    .filter((chunk) => chunk.type === "maintenance")
-    .map((chunk) => `${chunk.title}: ${chunk.content}`);
+  const maintenanceNotes = modelSpecific
+    .filter((item) => item.chunk.type === "maintenance")
+    .map((item) => `${item.chunk.title}: ${item.chunk.content}`);
 
   const score =
     scoreValues.length > 0
@@ -66,22 +114,47 @@ export function chunksToReliability(chunks: KnowledgeChunk[], vehicle: Vehicle):
     notes:
       maintenanceNotes.length > 0
         ? maintenanceNotes.slice(0, 3)
-        : [`Ficha curada para ${vehicle.brand} ${vehicle.model} (base de conocimiento RAG).`],
+        : [`Ficha curada para ${vehicle.brand} ${vehicle.model} con evidencia de modelo o motor.`],
     knownIssues: issues.slice(0, 8),
+    segmentNotes,
     isDemo: false,
     source: "Base de conocimiento curada",
+    hasModelSpecificEvidence: issues.length > 0,
   };
 }
 
-export function chunksToMaintenance(chunks: KnowledgeChunk[], vehicle?: Vehicle): MaintenanceSummary {
+export function chunksToMaintenance(
+  chunks: KnowledgeChunk[],
+  vehicle?: Vehicle,
+  options?: { allowModelKnowledge?: boolean },
+): MaintenanceSummary {
+  if (options?.allowModelKnowledge === false) {
+    return {
+      available: false,
+      notes: ["Sin ficha de mantenimiento: corrige primero los datos incoherentes del vehículo."],
+      upcoming: [],
+      isDemo: false,
+      source: "Base de conocimiento curada",
+    };
+  }
+
   const relevant = vehicle ? chunks.filter((chunk) => chunkMatchesVehicle(chunk, vehicle)) : chunks;
-  const maintenance = relevant.filter((chunk) => chunk.type === "maintenance");
-  const inspections = relevant.filter((chunk) => chunk.type === "inspection");
+  const classified = relevant.map((chunk) => ({
+    chunk,
+    evidence: vehicle ? classifyChunkEvidence(chunk, vehicle) : { level: "C" as const },
+  }));
+
+  const maintenance = classified
+    .filter((item) => item.chunk.type === "maintenance" && isModelSpecificEvidence(item.evidence.level))
+    .map((item) => item.chunk);
+  const inspections = classified
+    .filter((item) => item.chunk.type === "inspection" && isModelSpecificEvidence(item.evidence.level))
+    .map((item) => item.chunk);
 
   if (maintenance.length === 0 && inspections.length === 0) {
     return {
       available: false,
-      notes: ["Sin ficha de mantenimiento específica en la base de conocimiento."],
+      notes: ["Sin ficha de mantenimiento específica del modelo en la base de conocimiento."],
       upcoming: [],
       isDemo: false,
       source: "Base de conocimiento curada",

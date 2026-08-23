@@ -9,6 +9,7 @@ import type {
 import type { Vehicle } from "@/types/vehicle";
 import { estimateMarketAnchor } from "@/lib/sources/demo-listings";
 import { average, clamp, percentile, roundTo, trimPriceOutliers, weightedMedian } from "@/lib/utils/math";
+import { confidenceTierFromScore } from "@/types/vehicle-validation";
 
 const VERDICT_LABELS: Record<PriceVerdict, string> = {
   muy_barato: "Muy barato",
@@ -35,9 +36,11 @@ function distributionFrom(prices: number[]): PriceDistribution {
   return {
     count: sorted.length,
     min: sorted[0] ?? 0,
+    p10: roundTo(percentile(sorted, 0.1), 50),
     p25: roundTo(percentile(sorted, 0.25), 50),
     median: roundTo(percentile(sorted, 0.5), 50),
     p75: roundTo(percentile(sorted, 0.75), 50),
+    p90: roundTo(percentile(sorted, 0.9), 50),
     max: sorted[sorted.length - 1] ?? 0,
   };
 }
@@ -268,11 +271,15 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
   if (matchStrictness === "broad") confidence -= 14;
   if (workingListings.length < 5) confidence -= 12;
   if (workingListings.length < 8) confidence -= 4;
+  if (workingListings.length === 1) confidence -= 20;
+  if (workingListings.length <= 3) confidence -= 8;
   if (iqrRatio > 0.25) confidence -= 6;
   if (avgSimilarity < 0.7) confidence -= 10;
   if (outliersRemoved > 0) confidence += 2; // muestra más limpia
   if (scrapedEquipment) confidence += 3;
-  confidence = Math.round(clamp(confidence, 22, 90));
+  confidence = Math.round(clamp(confidence, 12, 90));
+
+  const confidenceTier = confidenceTierFromScore(confidence);
 
   confidenceDrivers.push(`${workingListings.length} anuncios tras limpieza`);
   confidenceDrivers.push(`Similitud media ${(avgSimilarity * 100).toFixed(0)} %`);
@@ -319,6 +326,7 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
     verdictLabel: VERDICT_LABELS[verdict],
     summary,
     confidence,
+    confidenceTier,
     confidenceDrivers,
     avgSimilarity,
     matchStrictness,
@@ -375,7 +383,8 @@ function valueFromHeuristic(vehicle: Vehicle): ValuationResult {
       vehicle.itv,
     ].filter(Boolean).length / 6;
 
-  const confidence = Math.round(clamp(14 + completeness * 10, 12, 32));
+  const confidence = Math.round(clamp(14 + completeness * 10, 8, 28));
+  const confidenceTier = confidenceTierFromScore(confidence);
   const confidenceDrivers = [
     "Sin anuncios observados",
     "Referencia de segmento por marca/modelo/año/km",
@@ -404,6 +413,7 @@ function valueFromHeuristic(vehicle: Vehicle): ValuationResult {
     verdictLabel,
     summary,
     confidence,
+    confidenceTier,
     confidenceDrivers,
     distribution: emptyDistribution(estimated),
     adjustments,

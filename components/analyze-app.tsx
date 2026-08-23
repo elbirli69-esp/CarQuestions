@@ -9,8 +9,11 @@ import { ComparableList } from "@/components/comparable-cars/comparable-list";
 import { ListingAnalysisCard } from "@/components/listing-analysis/listing-analysis-card";
 import { SellerQuestions } from "@/components/seller-questions/seller-questions";
 import { SourcesPanel } from "@/components/sources/sources-panel";
+import { MissingDataCard } from "@/components/valuation/missing-data-card";
+import { PurchaseRecommendationCard } from "@/components/valuation/purchase-recommendation-card";
 import { ScoreCard } from "@/components/valuation/score-card";
 import { ValuationCard } from "@/components/valuation/valuation-card";
+import { VehicleValidationAlert } from "@/components/validation/vehicle-validation-alert";
 import { VehicleChat } from "@/components/vehicle-chat/vehicle-chat";
 import { VehicleForm } from "@/components/vehicle-form/vehicle-form";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -103,7 +106,13 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
 
       {analysis ? (
         <div ref={resultsRef} className="flex flex-col gap-6">
+          <VehicleValidationAlert validation={analysis.validation} />
+          <PurchaseRecommendationCard
+            recommendation={analysis.purchaseRecommendation}
+            valuation={analysis.valuation}
+          />
           <ValuationCard valuation={analysis.valuation} />
+          <MissingDataCard suggestions={analysis.missingData} />
           <SourcesPanel
             sources={analysis.sources}
             listings={analysis.comparables}

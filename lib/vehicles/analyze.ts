@@ -7,10 +7,15 @@ import { saveAnalysis } from "@/lib/store/vehicle-store";
 import { createVehicleId } from "@/lib/utils/math";
 import { analyzeListing } from "@/lib/valuation/listing-analysis";
 import { valueVehicle } from "@/lib/valuation/engine";
-import { scoreVehicle } from "@/lib/valuation/scores";
+import { buildPurchaseRecommendation, scoreVehicle } from "@/lib/valuation/scores";
 import { buildSellerQuestions } from "@/lib/valuation/seller-questions";
+import {
+  buildMissingDataSuggestions,
+  validateVehicleConsistency,
+} from "@/lib/vehicles/consistency-validator";
 import { lookupKnowledge } from "@/lib/vehicles/knowledge-base";
 import { vehicleInputSchema } from "@/lib/vehicles/schema";
+import { analysisLogger } from "@/lib/observability/analysis-logger";
 
 function resolveDataMode(options: {
   hasLiveListings: boolean;
@@ -54,6 +59,14 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
     }
   }
 
+  const validation = validateVehicleConsistency(vehicle);
+  analysisLogger.vehicleValidation({
+    severity: validation.severity,
+    issueCount: validation.issues.length,
+    brand: vehicle.brand,
+    model: vehicle.model,
+  });
+
   const id = createVehicleId([
     vehicle.brand,
     vehicle.model,
@@ -79,30 +92,79 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
   const search = await searchAllComparables(query);
   const liveListings = search.listings.filter((listing) => !listing.isDemo && !listing.isCompetitor);
   const comparables = liveListings;
-  const knowledge = lookupKnowledge(vehicle);
+  analysisLogger.marketSearch({
+    comparableCount: comparables.length,
+    brand: vehicle.brand,
+    model: vehicle.model,
+  });
+  const allowModelKnowledge = validation.canUseModelSpecificKnowledge;
+  const knowledge = lookupKnowledge(vehicle, { allowModelKnowledge });
+  analysisLogger.ragRetrieval({
+    chunkCount: knowledge.knowledgeChunks.length,
+    modelSpecificIssues: knowledge.reliability.knownIssues.length,
+    segmentNotes: knowledge.reliability.segmentNotes?.length ?? 0,
+    brand: vehicle.brand,
+    model: vehicle.model,
+  });
+  if (!allowModelKnowledge) {
+    analysisLogger.fallback("model_knowledge_blocked", {
+      brand: vehicle.brand,
+      model: vehicle.model,
+      issues: validation.issues.map((i) => i.code),
+    });
+  }
   const valuation = valueVehicle(vehicle, comparables);
   const scores = scoreVehicle({
     vehicle,
     valuation,
     reliability: knowledge.reliability,
     listings: comparables,
+    validation,
   });
+
+  // Enrich listing score dimension from listing analysis
   const listingAnalysis = analyzeListing(vehicle, valuation.verdict, {
     marketObserved: valuation.origin === "observed",
   });
+  const listingDimension = scores.dimensions.find((d) => d.id === "listing");
+  if (listingDimension && listingAnalysis.qualityScore != null) {
+    listingDimension.score = listingAnalysis.qualityScore;
+    listingDimension.insufficientData = listingAnalysis.qualityScore < 40;
+    listingDimension.reason = `Calidad de la información del anuncio: ${listingAnalysis.qualityScore}/100.`;
+  }
+
   const sellerQuestions = buildSellerQuestions(
     vehicle,
     knowledge.reliability.knownIssues,
     knowledge.knowledgeChunks,
   );
 
-  const hasKnowledge = knowledge.reliability.available || knowledge.maintenance.available;
+  const purchaseRecommendation = buildPurchaseRecommendation({
+    vehicle,
+    valuation,
+    scores,
+    validation,
+    reliability: knowledge.reliability,
+  });
+
+  const missingData = buildMissingDataSuggestions(vehicle);
+
+  const hasKnowledge =
+    allowModelKnowledge &&
+    (knowledge.reliability.available || knowledge.maintenance.available);
   const dataMode = resolveDataMode({
     hasLiveListings: comparables.length > 0,
     hasKnowledge,
   });
 
   const limitations = [...valuation.limitations, ...listingAnalysis.limitations];
+  if (!validation.isConsistent) {
+    limitations.unshift(
+      ...validation.issues
+        .filter((issue) => issue.severity === "error")
+        .map((issue) => issue.message),
+    );
+  }
   if (comparables.length === 0) {
     limitations.push(
       "No se obtuvieron anuncios de coches.net. El precio de mercado es una estimación orientativa por segmento, no una mediana de anuncios reales.",
@@ -121,12 +183,20 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
       "La fiabilidad y el mantenimiento proceden de una base de conocimiento curada (RAG). No sustituyen inspección mecánica ni informes oficiales de este bastidor.",
     );
   }
+  if (knowledge.reliability.segmentNotes && knowledge.reliability.segmentNotes.length > 0) {
+    limitations.push(
+      "Las notas de segmento (combustible/tipo) no se presentan como problemas confirmados de este modelo concreto.",
+    );
+  }
 
   const analysis: AnalyzeResponse = {
     id,
     generatedAt: new Date().toISOString(),
     dataMode,
     vehicle: { ...vehicle, id },
+    validation,
+    purchaseRecommendation,
+    missingData,
     valuation,
     scores,
     comparables: comparables
@@ -145,6 +215,11 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
   };
 
   await saveAnalysis(analysis);
+  analysisLogger.analysisComplete({
+    id: analysis.id,
+    dataMode: analysis.dataMode,
+    canUseModelKnowledge: allowModelKnowledge,
+  });
   return analysis;
 }
 

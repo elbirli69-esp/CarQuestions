@@ -1,9 +1,9 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatEuro, formatPercent } from "@/lib/utils/format";
-import { formatSignedEuro } from "@/lib/utils/format";
+import { formatEuro, formatPercent, formatSignedEuro } from "@/lib/utils/format";
 import type { ValuationResult } from "@/types/valuation";
+import { CONFIDENCE_TIER_LABELS } from "@/types/vehicle-validation";
 import { cn } from "@/lib/utils";
 
 const VERDICT_STYLES: Record<string, string> = {
@@ -96,7 +96,9 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
           <div className="rounded-xl bg-muted/60 px-4 py-3">
             <p className="text-xs text-muted-foreground">Confianza</p>
             <p className={cn("text-sm font-medium", confidenceTone(valuation.confidence))}>
-              {valuation.confidence} %
+              {valuation.confidenceTier
+                ? CONFIDENCE_TIER_LABELS[valuation.confidenceTier]
+                : `${valuation.confidence} %`}
             </p>
             {valuation.confidenceDrivers && valuation.confidenceDrivers.length > 0 ? (
               <ul className="mt-2 space-y-0.5 text-xs text-muted-foreground">
@@ -132,11 +134,17 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
         </div>
 
         {hasDistribution ? (
-          <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-5">
+          <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4 lg:grid-cols-7">
             <Stat label="Mínimo" value={formatEuro(valuation.distribution.min)} />
+            {valuation.distribution.p10 != null ? (
+              <Stat label="P10" value={formatEuro(valuation.distribution.p10)} />
+            ) : null}
             <Stat label="P25" value={formatEuro(valuation.distribution.p25)} />
             <Stat label="Mediana" value={formatEuro(valuation.distribution.median)} />
             <Stat label="P75" value={formatEuro(valuation.distribution.p75)} />
+            {valuation.distribution.p90 != null ? (
+              <Stat label="P90" value={formatEuro(valuation.distribution.p90)} />
+            ) : null}
             <Stat label="Máximo" value={formatEuro(valuation.distribution.max)} />
           </div>
         ) : (

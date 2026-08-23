@@ -2,6 +2,12 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ListingAnalysis, MaintenanceSummary, ReliabilitySummary } from "@/types/valuation";
 
+const EVIDENCE_BADGE: Record<string, string> = {
+  A: "Específico del modelo",
+  B: "Motor/plataforma",
+  C: "Segmento",
+};
+
 export function ListingAnalysisCard({
   analysis,
   reliability,
@@ -21,7 +27,8 @@ export function ListingAnalysisCard({
               "Basado en el formulario y, si pegaste URL, en los datos que se pudieron leer del anuncio."}
           </CardDescription>
         </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-5">
+        <CardContent className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-6">
+          <Fact label="Calidad info" value={analysis.qualityScore != null ? `${analysis.qualityScore}/100` : "—"} />
           <Fact label="Precio" value={analysis.price} />
           <Fact label="Vehículo" value={analysis.vehicle} />
           <Fact label="Descripción" value={analysis.description} />
@@ -29,6 +36,32 @@ export function ListingAnalysisCard({
           <Fact label="Riesgo" value={analysis.risk} />
         </CardContent>
       </Card>
+
+      {analysis.qualityFactors.length > 0 ? (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Calidad de la información del anuncio</CardTitle>
+            <CardDescription>
+              {analysis.qualityScore != null
+                ? `Puntuación ${analysis.qualityScore}/100 según los datos disponibles.`
+                : "Completa más campos para evaluar la calidad del anuncio."}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {analysis.qualityFactors.map((factor) => (
+              <div key={factor.id} className="rounded-lg bg-muted/50 px-3 py-2 text-sm">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-medium">{factor.label}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {factor.score != null ? `${factor.score}/${factor.maxScore}` : "Falta"}
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground">{factor.note}</p>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      ) : null}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <ListCard title="Cosas que me gustan" items={analysis.likes} empty="Nada destacable todavía." />
@@ -45,13 +78,34 @@ export function ListingAnalysisCard({
         <ListCard title="Qué revisaría antes de comprar" items={analysis.inspectBeforeBuying} empty="" />
       </div>
 
+      {analysis.inspectionChecklist.length > 0 ? (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Checklist de inspección</CardTitle>
+            <CardDescription>Adaptada al tipo de vehículo indicado.</CardDescription>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {analysis.inspectionChecklist.map((phase) => (
+              <div key={phase.phase}>
+                <p className="mb-2 text-sm font-medium">{phase.phaseLabel}</p>
+                <ul className="list-disc space-y-1 pl-4 text-sm text-muted-foreground">
+                  {phase.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      ) : null}
+
       <Card>
         <CardHeader>
           <CardTitle>Conocimiento técnico del modelo</CardTitle>
           <CardDescription>
             {reliability.available
-              ? `Patrones de foros/manuales/recalls${reliability.score != null ? ` · score orientativo ${reliability.score}/100` : ""}. No es un informe de este bastidor.`
-              : "Sin ficha específica en la base de conocimiento."}
+              ? `Patrones con evidencia de modelo/motor${reliability.score != null ? ` · score orientativo ${reliability.score}/100` : ""}. No es un informe de este bastidor.`
+              : "Sin ficha específica del modelo en la base de conocimiento."}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-5 text-sm">
@@ -64,6 +118,9 @@ export function ListingAnalysisCard({
                     <Badge variant={issue.severity === "high" ? "destructive" : "secondary"}>
                       {issue.severity === "high" ? "alto" : issue.severity === "medium" ? "medio" : "bajo"}
                     </Badge>
+                    {issue.evidenceLevel ? (
+                      <Badge variant="outline">{EVIDENCE_BADGE[issue.evidenceLevel] ?? issue.evidenceLabel}</Badge>
+                    ) : null}
                   </div>
                   <p className="text-muted-foreground">{issue.detail}</p>
                   <p className="text-xs text-muted-foreground">Fuente: {issue.source}</p>
@@ -73,6 +130,21 @@ export function ListingAnalysisCard({
           ) : (
             <p className="text-muted-foreground">{reliability.notes[0]}</p>
           )}
+
+          {reliability.segmentNotes && reliability.segmentNotes.length > 0 ? (
+            <div className="space-y-3 border-t pt-4">
+              <p className="font-medium">Notas generales del segmento (no específicas del modelo)</p>
+              <ul className="space-y-2">
+                {reliability.segmentNotes.map((note) => (
+                  <li key={note.title} className="text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground">{note.title}</span>
+                    <span className="block">{note.detail}</span>
+                    <span className="text-xs">Fuente: {note.source} · {note.evidenceLabel}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
 
           {maintenance.available ? (
             <div className="space-y-2 border-t pt-4">
