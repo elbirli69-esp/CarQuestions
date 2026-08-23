@@ -258,9 +258,12 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
       vehicle.itv,
     ].filter(Boolean).length / 6;
 
-  const scrapedEquipment = workingListings.some(
-    (l) => (l.equipment?.length ?? 0) > 0 || l.rawData?.detailScraped === true,
-  );
+  // Los anuncios leídos del JSON de hidratación traen km, CV y año exactos,
+  // en lugar de valores parseados por regex de las cards.
+  const structuredCount = workingListings.filter(
+    (listing) => listing.rawData?.parsedFrom === "initial_props",
+  ).length;
+  const mostlyStructured = structuredCount >= workingListings.length * 0.8;
 
   let confidence =
     26 + workingListings.length * 2.4 + completeness * 12 + avgSimilarity * 26;
@@ -271,7 +274,7 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
   if (iqrRatio > 0.25) confidence -= 6;
   if (avgSimilarity < 0.7) confidence -= 10;
   if (outliersRemoved > 0) confidence += 2; // muestra más limpia
-  if (scrapedEquipment) confidence += 3;
+  if (mostlyStructured) confidence += 3;
   confidence = Math.round(clamp(confidence, 22, 90));
 
   confidenceDrivers.push(`${workingListings.length} anuncios tras limpieza`);
@@ -287,8 +290,8 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
   if (outliersRemoved > 0) {
     confidenceDrivers.push(`${outliersRemoved} outlier(s) excluidos`);
   }
-  if (scrapedEquipment) {
-    confidenceDrivers.push("Equipamiento scrapeado en comparables");
+  if (mostlyStructured) {
+    confidenceDrivers.push("Datos estructurados del portal (km y CV exactos)");
   }
   if (iqr > 0) confidenceDrivers.push(`Dispersión P25–P75: ${iqr.toLocaleString("es-ES")} €`);
 

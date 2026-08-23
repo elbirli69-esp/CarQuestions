@@ -1,7 +1,6 @@
 import type { VehicleContext } from "@/types/ai";
 import type { AnalyzeResponse } from "@/types/valuation";
 import type { VehicleInput } from "@/types/vehicle";
-import { fetchListingDetail } from "@/lib/sources/coches-net/fetch-listing-detail";
 import { searchAllComparables, toSourceCitations } from "@/lib/sources/registry";
 import { saveAnalysis } from "@/lib/store/vehicle-store";
 import { createVehicleId } from "@/lib/utils/math";
@@ -23,35 +22,16 @@ function resolveDataMode(options: {
 }
 
 export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeResponse> {
-  let vehicle = vehicleInputSchema.parse(input);
+  const vehicle = vehicleInputSchema.parse(input);
   const listingDetailNotes: string[] = [];
 
   if (vehicle.listingUrl) {
-    const detail = await fetchListingDetail(vehicle.listingUrl);
-    if (detail) {
-      vehicle = {
-        ...vehicle,
-        advertisedPrice: detail.price ?? vehicle.advertisedPrice,
-        mileage: detail.mileage ?? vehicle.mileage,
-        power: detail.power ?? vehicle.power,
-        year: detail.year ?? vehicle.year,
-        fuel: detail.fuel ?? vehicle.fuel,
-        transmission: detail.transmission ?? vehicle.transmission,
-        location: detail.location ?? vehicle.location,
-        equipment:
-          vehicle.equipment ??
-          (detail.equipment?.length ? detail.equipment.join(", ") : undefined),
-      };
-      listingDetailNotes.push("Ficha del anuncio scrapeada correctamente.");
-      if (detail.description) listingDetailNotes.push(`Descripción: ${detail.description.length} caracteres.`);
-      if (detail.equipment?.length) {
-        listingDetailNotes.push(`Equipamiento detectado: ${detail.equipment.slice(0, 8).join(", ")}.`);
-      }
-    } else {
-      listingDetailNotes.push(
-        "No se pudo scrapear la ficha individual (antibot o página vacía). Se usará búsqueda por resultados.",
-      );
-    }
+    // La ficha individual del anuncio está detrás de un challenge JS del portal.
+    // Los datos llegan del formulario, que los rellena desde /api/listings/extract
+    // leyendo el JSON de los resultados de búsqueda.
+    listingDetailNotes.push(
+      "La ficha completa del anuncio no es accesible: usamos los datos estructurados del listado de coches.net.",
+    );
   }
 
   const id = createVehicleId([

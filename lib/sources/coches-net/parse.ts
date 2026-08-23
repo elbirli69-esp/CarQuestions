@@ -1,4 +1,6 @@
 import type { FuelType, SellerType, TransmissionType } from "@/types/vehicle";
+import type { CochesNetApiAd } from "@/lib/sources/coches-net/api-types";
+import { parseSearchResults } from "@/lib/sources/coches-net/initial-props";
 
 export interface ParsedCochesNetAd {
   id: string;
@@ -16,6 +18,19 @@ export interface ParsedCochesNetAd {
   publicationDate?: string;
   bodyType?: string;
   descriptionSnippet?: string;
+  /** Solo disponible vía `__INITIAL_PROPS__`. */
+  photos?: string[];
+  creationDate?: string;
+  hasWarranty?: boolean;
+  isCertified?: boolean;
+  isFinanced?: boolean;
+  environmentalLabel?: string;
+  offerType?: string;
+  city?: string;
+  province?: string;
+  bodyTypeId?: number;
+  /** Origen de los datos, para trazar calidad en las notas del provider. */
+  parsedFrom?: "initial_props" | "cards";
 }
 
 function decodeHtml(value: string): string {
@@ -117,11 +132,91 @@ function absoluteUrl(href: string): string {
   return `https://www.coches.net${href.startsWith("/") ? href : `/${href}`}`;
 }
 
+/** Convierte un anuncio del JSON de hidratación al formato interno. */
+function fromApiAd(ad: CochesNetApiAd, context: { brand: string; model: string }): ParsedCochesNetAd {
+  const brand = ad.make ?? context.brand;
+  const model = ad.model ?? context.model;
+  const title = ad.title ?? `${brand} ${model}`.trim();
+  const version = extractVersion(title, brand, model);
+  const location = ad.location?.cityLiteral ?? ad.location?.mainProvince;
+
+  return {
+    id: ad.id,
+    url: absoluteUrl(ad.url ?? ""),
+    title,
+    price: ad.price && ad.price > 0 ? ad.price : undefined,
+    year: ad.year,
+    mileage: ad.km,
+    power: ad.hp,
+    fuel: ad.fuelType ? parseFuel(ad.fuelType) : undefined,
+    transmission: inferTransmission(title, version),
+    location,
+    sellerType: ad.isProfessional == null ? undefined : ad.isProfessional ? "dealer" : "private",
+    version,
+    publicationDate: ad.publicationDate,
+    creationDate: ad.creationDate,
+    photos: ad.photos?.length ? ad.photos : ad.img ? [ad.img] : undefined,
+    hasWarranty: ad.hasWarranty,
+    isCertified: ad.isCertified,
+    isFinanced: ad.isFinanced,
+    environmentalLabel: ad.environmentalLabel,
+    offerType: ad.offerType?.literal,
+    city: ad.location?.cityLiteral,
+    province: ad.location?.mainProvince,
+    bodyTypeId: ad.bodyTypeId,
+    descriptionSnippet: title,
+    parsedFrom: "initial_props",
+  };
+}
+
+export interface ParsedCochesNetSearchPage {
+  ads: ParsedCochesNetAd[];
+  totalResults?: number;
+  totalPages?: number;
+  source: "initial_props" | "cards";
+  /** Anuncios del JSON descartados por no validar. */
+  invalidCount?: number;
+}
+
+/**
+ * Lee una página de resultados priorizando el JSON de hidratación
+ * (~35 anuncios con datos completos) y cayendo a las cards SSR
+ * (~7 anuncios) si coches.net cambia la estructura.
+ */
+export function parseSearchPage(
+  html: string,
+  context: { brand: string; model: string },
+): ParsedCochesNetSearchPage {
+  const fromJson = parseSearchResults(html);
+  if (fromJson) {
+    return {
+      ads: fromJson.items
+        .map((ad) => fromApiAd(ad, context))
+        .filter((ad) => ad.id && ad.url),
+      totalResults: fromJson.totalResults,
+      totalPages: fromJson.totalPages,
+      source: "initial_props",
+      invalidCount: fromJson.invalidCount,
+    };
+  }
+
+  return { ads: parseSearchCardsHtml(html, context), source: "cards" };
+}
+
+export function parseSearchHtml(
+  html: string,
+  context: { brand: string; model: string },
+): ParsedCochesNetAd[] {
+  return parseSearchPage(html, context).ads;
+}
+
 /**
  * Parsea anuncios SSR de la página de resultados de coches.net.
  * Estructura observada: `data-ad-id`, `card-ad-title`, `card-adPrice-price`, `mt-CardAd-attrItem`.
+ *
+ * Fallback: `parseSearchPage` prefiere el JSON de hidratación.
  */
-export function parseSearchHtml(
+export function parseSearchCardsHtml(
   html: string,
   context: { brand: string; model: string },
 ): ParsedCochesNetAd[] {
@@ -203,6 +298,7 @@ export function parseSearchHtml(
       version,
       transmission: inferTransmission(title, version),
       descriptionSnippet: `${title}. ${attrSummary}`.slice(0, 200),
+      parsedFrom: "cards",
     });
   }
 
