@@ -6,6 +6,8 @@ import { createVehicleId, normalizeKey } from "@/lib/utils/math";
 
 const MIN_SIMILARITY_STRICT = 0.62;
 const MIN_SIMILARITY_RELAXED = 0.52;
+/** Tamaño de muestra al que aspiramos antes de estrechar más los filtros. */
+const MIN_HEALTHY_POOL = 12;
 
 function versionOverlap(
   queryVersion: string | undefined,
@@ -95,6 +97,15 @@ function fuelCompatible(queryFuel: FuelType | undefined, listingFuel: FuelType |
   return false;
 }
 
+/** Días desde la publicación del anuncio, útil como señal de negociación. */
+function daysSince(isoDate: string | undefined): number | undefined {
+  if (!isoDate) return undefined;
+  const published = Date.parse(isoDate);
+  if (Number.isNaN(published)) return undefined;
+  const days = Math.floor((Date.now() - published) / 86_400_000);
+  return days >= 0 ? days : undefined;
+}
+
 export function mapCochesNetAd(
   ad: ParsedCochesNetAd,
   query: ComparableQuery,
@@ -121,6 +132,7 @@ export function mapCochesNetAd(
     sellerType: ad.sellerType,
     publicationDate: ad.publicationDate,
     bodyType: ad.bodyType as VehicleListing["bodyType"],
+    images: ad.photos,
     similarity: computeSimilarity(query, ad),
     isDemo: false,
     fetchedAt,
@@ -129,6 +141,17 @@ export function mapCochesNetAd(
       cochesNetId: ad.id,
       matchStrictness,
       descriptionSnippet: ad.descriptionSnippet,
+      parsedFrom: ad.parsedFrom,
+      daysOnMarket: daysSince(ad.publicationDate),
+      creationDate: ad.creationDate,
+      hasWarranty: ad.hasWarranty,
+      isCertified: ad.isCertified,
+      isFinanced: ad.isFinanced,
+      environmentalLabel: ad.environmentalLabel,
+      offerType: ad.offerType,
+      city: ad.city,
+      province: ad.province,
+      totalPhotos: ad.photos?.length,
     },
   };
 }
@@ -169,24 +192,32 @@ export function mapAndFilterCochesNetAds(
   let matchStrictness: MatchStrictness = "strict";
   let pool = core;
 
+  // El JSON de hidratación da ~35 anuncios por página (antes ~7 por regex), así que
+  // cada filtro solo se aplica si deja una muestra utilizable, no el mínimo de 5.
+  const keepIfAtLeast = Math.min(MIN_HEALTHY_POOL, Math.max(5, Math.round(core.length * 0.35)));
+
   // Preferir año ±1 si hay masa.
-  pool = preferTightPool(pool, 6, (listing) => yearClose(query.year, listing.year, 1));
+  pool = preferTightPool(pool, keepIfAtLeast, (listing) =>
+    yearClose(query.year, listing.year, 1),
+  );
 
   // Cambio si el usuario lo indicó.
-  pool = preferTightPool(pool, 5, (listing) =>
+  pool = preferTightPool(pool, keepIfAtLeast, (listing) =>
     transmissionCompatible(query.transmission, listing.transmission),
   );
 
   // Versión / potencia / km.
-  pool = preferTightPool(pool, 5, (listing) =>
+  pool = preferTightPool(pool, keepIfAtLeast, (listing) =>
     versionMatches(query.version, listing.version, listing.title),
   );
-  pool = preferTightPool(pool, 5, (listing) => powerClose(query.power, listing.power));
-  pool = preferTightPool(pool, 5, (listing) => mileageClose(query.mileage, listing.mileage));
+  pool = preferTightPool(pool, keepIfAtLeast, (listing) => powerClose(query.power, listing.power));
+  pool = preferTightPool(pool, keepIfAtLeast, (listing) =>
+    mileageClose(query.mileage, listing.mileage),
+  );
 
   // Umbral de similarity: solo mantener bajos si no hay alternativa.
   const highSim = pool.filter((listing) => (listing.similarity ?? 0) >= MIN_SIMILARITY_STRICT);
-  if (highSim.length >= 5) {
+  if (highSim.length >= keepIfAtLeast) {
     pool = highSim;
   } else {
     const midSim = pool.filter((listing) => (listing.similarity ?? 0) >= MIN_SIMILARITY_RELAXED);
