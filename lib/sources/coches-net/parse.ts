@@ -75,6 +75,27 @@ function parseSellerType(chunk: string): SellerType | undefined {
   return undefined;
 }
 
+/** Infiera cambio desde título/versión (sDrive18dA, Automático, DSG…). */
+export function inferTransmission(
+  title: string,
+  version?: string,
+): TransmissionType | undefined {
+  const text = `${title} ${version ?? ""}`.toLowerCase();
+  if (/manual|cambio manual|\bmt\b/.test(text)) return "manual";
+  if (
+    /autom[aá]tico|automatic|dsg|dct|pdk|cvt|tiptronic|s\s?tronic|e-?dct|powershift|\bat\b/.test(
+      text,
+    )
+  ) {
+    return "automatic";
+  }
+  // Sufijo A en motorizaciones BMW/Mercedes (18dA, 220dA…) suele ser automático.
+  if (/\b\d{2,3}[a-z]?a\b/i.test(version ?? "") || /\b\d{2,3}[tdis]+a\b/i.test(title)) {
+    return "automatic";
+  }
+  return undefined;
+}
+
 function extractVersion(title: string, brand: string, model: string): string | undefined {
   let rest = title;
   const brandRe = new RegExp(`^${escapeRegExp(brand)}\\s+`, "i");
@@ -163,6 +184,7 @@ export function parseSearchHtml(
       }
     }
 
+    const version = extractVersion(title, context.brand, context.model);
     ads.push({
       id,
       url: absoluteUrl(href),
@@ -174,7 +196,8 @@ export function parseSearchHtml(
       fuel,
       location,
       sellerType: parseSellerType(chunk),
-      version: extractVersion(title, context.brand, context.model),
+      version,
+      transmission: inferTransmission(title, version),
     });
   }
 

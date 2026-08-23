@@ -82,7 +82,7 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
         </p>
       </header>
 
-      <DemoBanner dataMode={analysis?.dataMode ?? "knowledge"} />
+      {analysis ? <DemoBanner dataMode={analysis.dataMode} /> : null}
 
       <VehicleForm onSubmit={handleSubmit} isSubmitting={loading} />
 
@@ -104,21 +104,22 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
       {analysis ? (
         <div ref={resultsRef} className="flex flex-col gap-6">
           <ValuationCard valuation={analysis.valuation} />
+          <SourcesPanel
+            sources={analysis.sources}
+            listings={analysis.comparables}
+            comparableCount={analysis.valuation.comparableCount}
+            sourceCount={analysis.valuation.sourceCount}
+            updatedAt={analysis.valuation.dataUpdatedAt}
+            searchNotes={analysis.searchNotes}
+            matchStrictness={analysis.valuation.matchStrictness}
+            emptyMessage="coches.net no devolvió comparables útiles para este coche. El precio mostrado es solo una referencia de segmento."
+          />
           {hasMarketData ? (
-            <>
-              <SourcesPanel
-                sources={analysis.sources}
-                listings={analysis.comparables}
-                comparableCount={analysis.valuation.comparableCount}
-                sourceCount={analysis.valuation.sourceCount}
-                updatedAt={analysis.valuation.dataUpdatedAt}
-              />
-              <ComparableList
-                title="Coches similares"
-                description={`${analysis.comparables.length} anuncios comparables observados del mismo modelo.`}
-                listings={analysis.comparables}
-              />
-            </>
+            <ComparableList
+              title="Coches similares"
+              description={`${analysis.comparables.length} anuncios comparables observados del mismo modelo.`}
+              listings={analysis.comparables}
+            />
           ) : null}
           <ScoreCard scores={analysis.scores} />
           <ListingAnalysisCard

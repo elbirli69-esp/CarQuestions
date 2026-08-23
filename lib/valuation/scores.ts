@@ -125,7 +125,7 @@ export function scoreVehicle(options: {
     score: listingScore,
     reason:
       listingScore < 50
-        ? "Faltan datos relevantes del anuncio: conviene pedir más información al vendedor."
+        ? "Faltan datos relevantes (accidentes, ITV, equipamiento, historial…). Complétalos en el formulario."
         : "El anuncio/formulario incluye bastante contexto, aunque sigue faltando inspección real.",
     origin: "observed",
     insufficientData: listingScore < 40,

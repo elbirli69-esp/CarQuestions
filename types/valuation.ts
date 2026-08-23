@@ -29,6 +29,8 @@ export interface PriceAdjustment {
   applied: boolean;
 }
 
+export type MatchStrictness = "strict" | "relaxed" | "broad";
+
 export interface ValuationResult {
   estimatedPrice: number;
   advertisedPrice?: number;
@@ -39,6 +41,12 @@ export interface ValuationResult {
   verdictLabel: string;
   summary: string;
   confidence: number;
+  /** Factores legibles que explican el % de confianza. */
+  confidenceDrivers?: string[];
+  /** Media de similarity de los comparables usados (0–1). */
+  avgSimilarity?: number;
+  /** Cómo de estrechos fueron los filtros de comparables. */
+  matchStrictness?: MatchStrictness;
   distribution: PriceDistribution;
   adjustments: PriceAdjustment[];
   comparableCount: number;
@@ -124,6 +132,8 @@ export interface AnalyzeResponse {
   comparables: VehicleListing[];
   alternatives: VehicleListing[];
   sources: SourceCitation[];
+  /** Notas del scrape / búsqueda (antibot, muestra, páginas…). */
+  searchNotes?: string[];
   listingAnalysis: ListingAnalysis;
   sellerQuestions: SellerQuestion[];
   reliability: ReliabilitySummary;

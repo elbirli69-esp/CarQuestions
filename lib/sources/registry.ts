@@ -77,16 +77,23 @@ export function toSourceCitations(
   return listSourceProviders().map((provider) => {
     const listingCount = listings.filter((listing) => listing.source === provider.id).length;
     const notes = search.notes.filter((note) => note.toLowerCase().includes(provider.name.toLowerCase()));
+    const connected = listingCount > 0;
     return {
       id: provider.id,
       name: provider.name,
       kind: provider.kind,
       isMock: provider.isMock,
-      connected: provider.id === "coches.net" ? listingCount > 0 : !provider.isMock,
-      usedFor: listingCount > 0 ? ["comparables", "precio"] : ["arquitectura"],
+      connected,
+      usedFor: listingCount > 0 ? ["comparables", "precio"] : provider.isMock ? ["próximamente"] : ["búsqueda"],
       listingCount,
       updatedAt: search.fetchedAt,
-      note: notes[0] ?? (provider.isMock ? "Portal no conectado todavía." : undefined),
+      note:
+        notes[0] ??
+        (provider.isMock
+          ? "Portal no conectado todavía."
+          : listingCount === 0
+            ? "Conectado, pero sin anuncios para esta búsqueda."
+            : undefined),
     };
   });
 }

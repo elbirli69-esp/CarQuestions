@@ -39,17 +39,33 @@ export function ComparableList({
           {listings.slice(0, 8).map((listing) => (
             <article key={listing.id} className="rounded-xl bg-muted/50 p-4">
               <p className="font-medium">
-                {listing.brand} {listing.model} {listing.version ?? ""}
+                {listing.url ? (
+                  <a
+                    href={listing.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline-offset-2 hover:underline"
+                  >
+                    {listing.brand} {listing.model} {listing.version ?? ""}
+                  </a>
+                ) : (
+                  <>
+                    {listing.brand} {listing.model} {listing.version ?? ""}
+                  </>
+                )}
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
                 {listing.year} · {listing.mileage ? formatKm(listing.mileage) : "km n/d"} ·{" "}
                 {listing.fuel ? FUEL_LABELS[listing.fuel] : "combustible n/d"}
+                {listing.power ? ` · ${listing.power} CV` : ""}
               </p>
               <p className="mt-2 text-lg font-medium">
                 {listing.price ? formatEuro(listing.price) : "Precio n/d"}
               </p>
               <p className="text-xs text-muted-foreground">
-                {listing.source} · {listing.location} · {listing.transmission ? TRANSMISSION_LABELS[listing.transmission] : ""}
+                {listing.source} · {listing.location}
+                {listing.similarity != null ? ` · similitud ${(listing.similarity * 100).toFixed(0)} %` : ""}
+                {listing.transmission ? ` · ${TRANSMISSION_LABELS[listing.transmission]}` : ""}
                 {listing.bodyType ? ` · ${BODY_LABELS[listing.bodyType]}` : ""}
               </p>
             </article>

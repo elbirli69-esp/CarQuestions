@@ -385,6 +385,31 @@ export function VehicleForm({
                     </SelectContent>
                   </Select>
                 </Field>
+                <Field label="Accidentes / reparaciones" htmlFor="accidents">
+                  <Input
+                    id="accidents"
+                    placeholder="Ninguno / golpe leve en 2022…"
+                    value={form.accidents}
+                    onChange={(event) => update("accidents", event.target.value)}
+                  />
+                </Field>
+                <Field label="ITV" htmlFor="itv">
+                  <Input
+                    id="itv"
+                    placeholder="Pasada hasta 2027 / pendiente…"
+                    value={form.itv}
+                    onChange={(event) => update("itv", event.target.value)}
+                  />
+                </Field>
+                <Field label="Equipamiento" htmlFor="equipment" className="sm:col-span-2">
+                  <Textarea
+                    id="equipment"
+                    placeholder="Navegador, techo, cámara, asientos calefactados…"
+                    value={form.equipment}
+                    onChange={(event) => update("equipment", event.target.value)}
+                    rows={2}
+                  />
+                </Field>
                 <Field
                   label="Carrocería"
                   htmlFor="bodyType"
@@ -403,10 +428,10 @@ export function VehicleForm({
                     </SelectContent>
                   </Select>
                 </Field>
-                <Field label="Algo más que debamos saber" htmlFor="maintenanceHistory" className="sm:col-span-2">
+                <Field label="Historial / notas" htmlFor="maintenanceHistory" className="sm:col-span-2">
                   <Textarea
                     id="maintenanceHistory"
-                    placeholder="Mantenimiento, accidentes, equipamiento..."
+                    placeholder="Revisiones oficiales, facturas, distribución…"
                     value={form.maintenanceHistory}
                     onChange={(event) => update("maintenanceHistory", event.target.value)}
                     rows={3}

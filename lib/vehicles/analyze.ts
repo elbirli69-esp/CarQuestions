@@ -56,7 +56,9 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
     reliability: knowledge.reliability,
     listings: comparables,
   });
-  const listingAnalysis = analyzeListing(vehicle, valuation.verdict);
+  const listingAnalysis = analyzeListing(vehicle, valuation.verdict, {
+    marketObserved: valuation.origin === "observed",
+  });
   const sellerQuestions = buildSellerQuestions(
     vehicle,
     knowledge.reliability.knownIssues,
@@ -69,7 +71,7 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
     hasKnowledge,
   });
 
-  const limitations = [...valuation.limitations];
+  const limitations = [...valuation.limitations, ...listingAnalysis.limitations];
   if (comparables.length === 0) {
     limitations.push(
       "No se obtuvieron anuncios de coches.net. El precio de mercado es una estimación orientativa por segmento, no una mediana de anuncios reales.",
@@ -79,6 +81,9 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
     limitations.push(
       "Los comparables proceden de anuncios públicos de coches.net (mercado España). El valor estimado es la mediana de esos anuncios filtrados por modelo y año próximo.",
     );
+  }
+  if (search.notes.length > 0 && comparables.length === 0) {
+    limitations.push(...search.notes.slice(0, 3));
   }
   if (hasKnowledge) {
     limitations.push(
@@ -99,11 +104,12 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
       .slice(0, 24),
     alternatives: [],
     sources: toSourceCitations(comparables, search),
+    searchNotes: search.notes,
     listingAnalysis,
     sellerQuestions,
     reliability: knowledge.reliability,
     maintenance: knowledge.maintenance,
-    limitations,
+    limitations: Array.from(new Set(limitations)),
   };
 
   await saveAnalysis(analysis);

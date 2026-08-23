@@ -52,6 +52,41 @@ export function average(values: number[]): number | null {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
+/** Mediana ponderada (p. ej. por similarity de comparables). */
+export function weightedMedian(items: Array<{ value: number; weight: number }>): number {
+  const filtered = items.filter(
+    (item) => Number.isFinite(item.value) && Number.isFinite(item.weight) && item.weight > 0,
+  );
+  if (filtered.length === 0) return 0;
+  if (filtered.length === 1) return filtered[0]!.value;
+
+  const sorted = [...filtered].sort((a, b) => a.value - b.value);
+  const total = sorted.reduce((sum, item) => sum + item.weight, 0);
+  let cumulative = 0;
+  for (const item of sorted) {
+    cumulative += item.weight;
+    if (cumulative >= total / 2) return item.value;
+  }
+  return sorted[sorted.length - 1]!.value;
+}
+
+/** Recorta outliers con vallas de Tukey (1.5·IQR). Si quedaran demasiado pocos, no recorta. */
+export function trimPriceOutliers(prices: number[]): { kept: number[]; removed: number } {
+  if (prices.length < 6) return { kept: [...prices], removed: 0 };
+  const sorted = [...prices].sort((a, b) => a - b);
+  const q1 = percentile(sorted, 0.25);
+  const q3 = percentile(sorted, 0.75);
+  const iqr = q3 - q1;
+  if (iqr <= 0) return { kept: [...prices], removed: 0 };
+  const low = q1 - 1.5 * iqr;
+  const high = q3 + 1.5 * iqr;
+  const kept = prices.filter((price) => price >= low && price <= high);
+  if (kept.length < Math.max(4, Math.ceil(prices.length * 0.6))) {
+    return { kept: [...prices], removed: 0 };
+  }
+  return { kept, removed: prices.length - kept.length };
+}
+
 export function normalizeKey(value: string): string {
   return value
     .normalize("NFD")
