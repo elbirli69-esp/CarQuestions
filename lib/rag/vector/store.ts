@@ -32,16 +32,39 @@ export class KnowledgeVectorStore {
   private readonly chunks: KnowledgeChunk[];
   private readonly index: KnowledgeVectorIndex;
   private readonly chunkMap: Map<string, KnowledgeChunk>;
+  private readonly vectorByChunkId: Map<string, Record<string, number>>;
 
   constructor(chunks: KnowledgeChunk[], index?: KnowledgeVectorIndex | null) {
     this.chunks = chunks;
     this.index = index ?? buildRuntimeIndex(chunks);
     this.chunkMap = new Map(chunks.map((chunk) => [chunk.id, chunk]));
+    this.vectorByChunkId = new Map(this.index.entries.map((entry) => [entry.chunkId, entry.vector]));
   }
 
   static create(): KnowledgeVectorStore {
     const chunks = loadKnowledgeChunks();
     return new KnowledgeVectorStore(chunks, loadKnowledgeVectorIndex());
+  }
+
+  allChunks(): KnowledgeChunk[] {
+    return this.chunks;
+  }
+
+  getChunk(id: string): KnowledgeChunk | undefined {
+    return this.chunkMap.get(id);
+  }
+
+  /** Similitud TF-IDF de cada fragmento frente al texto de consulta. */
+  scoreChunks(text: string): Map<string, number> {
+    const queryVector = buildTfidfVector(expandAutomotiveQuery(text), this.index.idf);
+    const scores = new Map<string, number>();
+    for (const chunk of this.chunks) {
+      const vector =
+        this.vectorByChunkId.get(chunk.id) ??
+        buildTfidfVector(chunkSearchText(chunk), this.index.idf);
+      scores.set(chunk.id, cosineSimilarity(queryVector, vector));
+    }
+    return scores;
   }
 
   query(input: RetrievalQuery): RetrievedDocument[] {
@@ -52,7 +75,7 @@ export class KnowledgeVectorStore {
         .join(" "),
     );
     const queryVector = buildTfidfVector(queryText, this.index.idf);
-    const vectorByChunkId = new Map(this.index.entries.map((entry) => [entry.chunkId, entry.vector]));
+    const vectorByChunkId = this.vectorByChunkId;
 
     const ranked = this.chunks
       .filter((chunk) => matchesVehicleFilters(chunk, input.vehicle))

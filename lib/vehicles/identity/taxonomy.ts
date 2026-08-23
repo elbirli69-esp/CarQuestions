@@ -60,6 +60,12 @@ export function isPluggable(powertrain: PowertrainClass): boolean {
 const LCV_MODEL_PATTERN =
   /\b(transit|transporter|sprinter|crafter|ducato|boxer|jumper|jumpy|expert|master|movano|trafic|vivaro|daily|doblo|berlingo|partner|combo|caddy|kangoo|nv200|nv300|proace|dokker|scudo|talento|interstar|primastar|e-?nv200|custom|vito|citan|hiace|carry)\b/i;
 
+/**
+ * Los playbooks de vehículo comercial (ex-flota, sobrecarga, AdBlue de reparto)
+ * son una fuente clásica de contaminación en turismos. Por eso, si no hay
+ * indicios de comercial, se asume turismo con confianza baja: es preferible
+ * omitir conocimiento de furgoneta a atribuírselo a un SUV.
+ */
 export function classifyBodyClass(
   model: string,
   bodyType: BodyType | undefined,
@@ -67,13 +73,15 @@ export function classifyBodyClass(
   if (bodyType === "van" || bodyType === "pickup") return { value: "lcv", source: "derived" };
   if (LCV_MODEL_PATTERN.test(model)) return { value: "lcv", source: "inferred" };
   if (bodyType) return { value: "passenger", source: "derived" };
-  return { value: "unknown", source: "inferred" };
+  return { value: "passenger", source: "inferred" };
 }
 
+// Las denominaciones comerciales llevan el número pegado ("xDrive20d", "sDrive18d"),
+// por eso no se puede exigir un límite de palabra al final.
 const AWD_PATTERN =
-  /\b(4x4|awd|4wd|quattro|xdrive|4motion|4matic|allgrip|all4|haldex|4drive|sh-?awd|symmetrical|xdrive50|4matic\+|torsen)\b/i;
-const FWD_PATTERN = /\b(fwd|delantera|tracci[oó]n\s?delantera|2wd|4x2)\b/i;
-const RWD_PATTERN = /\b(rwd|propulsi[oó]n|tracci[oó]n\s?trasera|sdrive)\b/i;
+  /\b(4x4|awd|4wd|quattro|xdrive|4motion|4matic|allgrip|all4|haldex|4drive|sh-?awd|symmetrical|torsen)/i;
+const FWD_PATTERN = /\b(fwd|tracci[oó]n\s?delantera|2wd|4x2)\b/i;
+const RWD_PATTERN = /\b(rwd|propulsi[oó]n|tracci[oó]n\s?trasera|sdrive)/i;
 
 export function classifyDrivetrain(text: string): Drivetrain {
   if (AWD_PATTERN.test(text)) return "awd";
