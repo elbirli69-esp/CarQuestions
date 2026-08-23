@@ -14,6 +14,8 @@
     "smoke:store": "tsx scripts/smoke-analysis-store.ts",
     "scraping:benchmark": "tsx scripts/scraping-benchmark.ts",
     "scraping:fixtures": "tsx scripts/capture-coches-fixtures.ts",
+    "test": "node --import tsx --test lib/**/__tests__/*.test.ts",
+    "test:mvp": "node --import tsx --test lib/vehicles/__tests__/*.test.ts lib/rag/__tests__/*.test.ts lib/valuation/__tests__/*.test.ts",
     "test:scraping": "node --import tsx --test lib/sources/coches-net/__tests__/*.test.ts",
     "smoke:scraping": "tsx scripts/smoke-scraping-live.ts",
     "catalog:generate": "tsx scripts/generate-vehicle-catalog.ts",

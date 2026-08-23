@@ -1,5 +1,6 @@
-import type { ListingAnalysis, PriceVerdict } from "@/types/valuation";
+import type { ListingAnalysis, ListingQuality, PriceVerdict } from "@/types/valuation";
 import type { Vehicle } from "@/types/vehicle";
+import { scoreListingQuality } from "@/lib/valuation/listing-quality";
 
 function priceLabel(verdict: PriceVerdict, originObserved: boolean): string {
   if (!originObserved) return "Sin mercado";
@@ -11,7 +12,7 @@ function priceLabel(verdict: PriceVerdict, originObserved: boolean): string {
 export function analyzeListing(
   vehicle: Vehicle,
   verdict: PriceVerdict,
-  options?: { marketObserved?: boolean },
+  options?: { marketObserved?: boolean; listingQuality?: ListingQuality },
 ): ListingAnalysis {
   const marketObserved = options?.marketObserved ?? false;
   const likes: string[] = [];
@@ -53,6 +54,11 @@ export function analyzeListing(
     limitations.push("No hay URL de anuncio: el análisis se basa solo en lo que has escrito en el formulario.");
   }
 
+  const quality = options?.listingQuality ?? scoreListingQuality(vehicle);
+  if (quality.missing.length > 0) {
+    concerns.push(`Faltan: ${quality.missing.map((item) => item.label).join(", ")}.`);
+  }
+
   return {
     available: true,
     price: priceLabel(verdict, marketObserved),
@@ -69,5 +75,7 @@ export function analyzeListing(
     ],
     inspectBeforeBuying,
     limitations,
+    qualityScore: quality.score,
+    missingItems: quality.missing.map((item) => item.label),
   };
 }

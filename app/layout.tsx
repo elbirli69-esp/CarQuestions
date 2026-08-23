@@ -15,9 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CarQuestions | ¿Cuánto vale realmente este coche?",
+  title: "CarQuestions | ¿Es una buena compra?",
   description:
-    "Estima el precio de mercado de un coche de segunda mano, compara anuncios similares y pregunta lo que quieras antes de comprarlo.",
+    "Copiloto para comprar coches de segunda mano: precio honesto, riesgos, preguntas al vendedor y qué comprobar antes de pagar.",
   applicationName: "CarQuestions",
   keywords: [
     "tasación coche",

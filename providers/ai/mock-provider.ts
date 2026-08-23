@@ -7,9 +7,9 @@ function contextSummary(context: VehicleContext): string {
   const v = context.vehicle;
   const m = context.marketData;
   const marketNote =
-    m.comparableCount > 0
+    m.comparableCount > 0 && !m.isSegmentReference
       ? `Valor estimado: ${formatEuro(m.estimatedPrice)} (${formatEuro(m.low)} – ${formatEuro(m.high)}). Comparables: ${m.comparableCount}.`
-      : `Referencia orientativa (sin anuncios reales): ${formatEuro(m.estimatedPrice)} (${formatEuro(m.low)} – ${formatEuro(m.high)}). Confianza baja (${m.confidence} %).`;
+      : "Sin suficientes anuncios comparables. No hay un precio de mercado que se pueda afirmar.";
 
   return [
     `${v.brand} ${v.model} ${v.version ?? ""} ${v.year}, ${formatKm(v.mileage)}, ${v.fuel}.`,

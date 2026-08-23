@@ -264,6 +264,16 @@
         { "slug": "ix3", "name": "iX3" },
         { "slug": "z4", "name": "Z4" }
       ]
+    },
+    {
+      "slug": "tesla",
+      "name": "Tesla",
+      "models": [
+        { "slug": "model-3", "name": "Model 3" },
+        { "slug": "model-y", "name": "Model Y" },
+        { "slug": "model-s", "name": "Model S" },
+        { "slug": "model-x", "name": "Model X" }
+      ]
     }
   ]
 }

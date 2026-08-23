@@ -1,121 +1,144 @@
 import type { KnowledgeChunk } from "@/types/knowledge";
 import type { KnownIssue, SellerQuestion } from "@/types/valuation";
 import type { Vehicle } from "@/types/vehicle";
+import { isElectrifiedFuel, isElectricFuel } from "@/lib/vehicles/identity";
+
+const HV_HINT = /bater[ií]a hv|soh|pack|alta tensi[oó]n|heat pump|bomba de calor|octovalve|brake-by-wire|preacondicion/i;
+const DIESEL_HINT = /fap|dpf|egr|adblue|inyector|common.?rail|turbo di[eé]sel/i;
+const PETROL_HINT = /correa en ba[nñ]o|wet belt|cadena|puretech|ecoboost|gdi/i;
+
+function allowedForFuel(text: string, vehicle: Vehicle): boolean {
+  if (!isElectrifiedFuel(vehicle.fuel) && HV_HINT.test(text)) return false;
+  if (vehicle.fuel !== "diesel" && DIESEL_HINT.test(text) && !/itv|historial|factura/i.test(text)) return false;
+  if (vehicle.fuel === "diesel" && /bomba de calor|heat pump|octovalve/i.test(text)) return false;
+  if (vehicle.fuel === "petrol" && HV_HINT.test(text)) return false;
+  if (isElectricFuel(vehicle.fuel) && PETROL_HINT.test(text) && !/software|freno/i.test(text)) return false;
+  return true;
+}
+
+function pushUnique(
+  list: SellerQuestion[],
+  seen: Set<string>,
+  item: SellerQuestion,
+): void {
+  const key = item.question.toLowerCase();
+  if (seen.has(key)) return;
+  seen.add(key);
+  list.push({ ...item, reason: item.reason ?? item.why });
+}
 
 export function buildSellerQuestions(
   vehicle: Vehicle,
   issues: KnownIssue[],
   knowledgeChunks: KnowledgeChunk[] = [],
+  options?: { identityValid?: boolean },
 ): SellerQuestion[] {
-  const questions: SellerQuestion[] = [
-    {
-      question: "¿Tiene historial completo de mantenimiento y facturas?",
-      why: "Sin papeles es difícil saber si los intervalos se han respetado.",
-    },
-    {
+  const identityValid = options?.identityValid ?? true;
+  const questions: SellerQuestion[] = [];
+  const seen = new Set<string>();
+
+  pushUnique(questions, seen, {
+    question: "¿Tiene historial completo de mantenimiento y facturas?",
+    why: "Permite comprobar que los mantenimientos se han realizado realmente.",
+    reason: "Permite comprobar que los mantenimientos se han realizado realmente.",
+    priority: "alta",
+    category: "historial",
+  });
+  pushUnique(questions, seen, {
+    question: "¿Ha tenido accidentes, golpes estructurales o reparaciones de chapa?",
+    why: "Un siniestro no siempre se ve en fotos. Hay que preguntarlo por escrito.",
+    priority: "alta",
+    category: "siniestros",
+  });
+  if (!vehicle.itv) {
+    pushUnique(questions, seen, {
+      question: "¿Hasta cuándo tiene la ITV en vigor y ha pasado alguna con deficiencias?",
+      why: "La ITV no garantiza el estado mecánico, pero un rechazo reciente es una señal.",
+      priority: "alta",
+      category: "documentacion",
+    });
+  }
+  if (vehicle.owners == null) {
+    pushUnique(questions, seen, {
       question: "¿Cuántos propietarios ha tenido el vehículo?",
       why: "Afecta a la trazabilidad y, en algunos casos, al precio.",
-    },
-    {
-      question: "¿Ha tenido accidentes, golpes estructurales o reparaciones de chapa?",
-      why: "Un siniestro no siempre se ve en fotos. Hay que preguntarlo por escrito.",
-    },
-    {
-      question: "¿Ha sufrido inundación, filtraciones graves o declarado pérdida total / write-off?",
-      why: "Flood y pérdida total dejan fallos eléctricos y estructurales que un lavado no borra.",
-    },
-    {
-      question:
-        vehicle.fuel === "electric" || vehicle.fuel === "hybrid" || vehicle.fuel === "plugin_hybrid"
-          ? "¿Cuál es el estado de la batería y hay informe de salud?"
-          : "¿Cuándo se cambió la distribución (correa o cadena) y con qué kilometraje?",
-      why: "Es una de las intervenciones caras más habituales según el tipo de motor.",
-    },
-  ];
+      priority: "media",
+      category: "historial",
+    });
+  }
 
-  if (vehicle.transmission === "automatic") {
-    questions.push({
-      question: "¿Se ha realizado el mantenimiento de la caja automática (aceite y filtro)?",
-      why: "Muchas cajas automáticas no son 'para toda la vida'. Sin mantenimiento el riesgo sube.",
+  if (isElectrifiedFuel(vehicle.fuel)) {
+    pushUnique(questions, seen, {
+      question: "¿Cuál es el estado de la batería y hay informe de salud (SOH)?",
+      why: "En un eléctrico o híbrido el pack es el coste oculto. Sin cifra, no hay que inventarla.",
+      priority: "alta",
+      category: "bateria",
+    });
+  } else {
+    pushUnique(questions, seen, {
+      question: "¿Cuándo se cambió la distribución (correa o cadena) y con qué kilometraje?",
+      why: "Es una de las intervenciones caras más habituales en motores térmicos.",
+      priority: "alta",
+      category: "mantenimiento",
+    });
+  }
+
+  if (isElectricFuel(vehicle.fuel)) {
+    pushUnique(questions, seen, {
+      question: "¿Lleva bomba de calor y se ha comprobado la carga rápida en invierno?",
+      why: "Pregunta de segmento EV, no un problema documentado de este modelo concreto.",
+      priority: "media",
+      category: "bateria",
     });
   }
 
   if (vehicle.fuel === "diesel") {
-    questions.push({
+    pushUnique(questions, seen, {
       question: "¿El coche ha hecho sobre todo ciudad o carretera? ¿El FAP y la EGR tienen avisos?",
       why: "Los diésel urbanos acumulan más problemas de antipolución.",
+      priority: "alta",
+      category: "diesel",
     });
   }
 
-  if (vehicle.fuel === "electric" || vehicle.fuel === "plugin_hybrid") {
-    questions.push({
-      question: "¿Lleva bomba de calor (heat pump) y preacondiciona la batería antes de cargar rápido?",
-      why: "Sin heat pump y sin preconditioning, la autonomía invierno y la curva DC suelen ser peores de lo anunciado.",
-    });
-    questions.push({
-      question: "¿Cómo se sienten los frenos en una frenada fuerte? ¿Hay óxido en discos o avisos de EPB/brake-by-wire?",
-      why: "El regenerativo reduce desgaste de pastillas pero los discos oxidan y los sistemas brake-by-wire/EPB fallan si se ignoran.",
+  if (vehicle.transmission === "automatic" && !isElectricFuel(vehicle.fuel)) {
+    pushUnique(questions, seen, {
+      question: "¿Se ha realizado el mantenimiento de la caja automática (aceite y filtro)?",
+      why: "Muchas cajas automáticas no son «para toda la vida».",
+      priority: "media",
+      category: "transmision",
     });
   }
 
-  if (vehicle.year > 0 && vehicle.year <= 2005) {
-    questions.push({
-      question: "¿Hay fotos de bajos/estribos y qué trabajos de óxido o chapa estructural se hicieron?",
-      why: "En youngtimers el chasis manda: un cosmético bonito con óxido estructural sale caro.",
-    });
-  }
+  if (identityValid) {
+    for (const chunk of knowledgeChunks) {
+      for (const ask of chunk.askSeller ?? []) {
+        if (!allowedForFuel(`${ask} ${chunk.title} ${chunk.content}`, vehicle)) continue;
+        pushUnique(questions, seen, {
+          question: ask,
+          why: `${chunk.title}. Fuente: ${chunk.source}`,
+          relatedIssue: chunk.title,
+          priority: "media",
+          category: "modelo",
+        });
+      }
+    }
 
-  if (/4x4|awd|4wd|quattro|xdrive|4motion|4matic|allgrip|haldex|traction/i.test(`${vehicle.model}`)) {
-    questions.push({
-      question: "¿Se ha hecho el servicio de Haldex/transferencia/diferenciales y los neumáticos son del mismo tamaño/desgaste?",
-      why: "Los AWD fallan caro si se omite el aceite del acoplamiento o si las ruedas tienen radios distintos.",
-    });
-  }
-
-  const looksCommercial =
-    /transit|sprinter|crafter|ducato|boxer|jumper|master|trafic|vivaro|daily|movano|custom|vito/i.test(
-      `${vehicle.model} ${vehicle.brand}`,
-    );
-  if (looksCommercial) {
-    questions.push({
-      question: "¿Fue de flota/reparto? ¿Qué peso cargaba habitualmente y hay historial de FAP/AdBlue?",
-      why: "Las furgonetas ex-flota acumulan sobrecarga, regeneraciones forzadas y desgaste de embrague/eje trasero.",
-    });
-  }
-
-  if (!vehicle.itv) {
-    questions.push({
-      question: "¿Hasta cuándo tiene la ITV en vigor y ha pasado alguna con deficiencias?",
-      why: "La ITV no garantiza el estado mecánico, pero un rechazo reciente es una señal.",
-    });
-  }
-
-  const seen = new Set(questions.map((item) => item.question.toLowerCase()));
-
-  for (const chunk of knowledgeChunks) {
-    for (const ask of chunk.askSeller ?? []) {
-      const key = ask.toLowerCase();
-      if (seen.has(key)) continue;
-      seen.add(key);
-      questions.push({
-        question: ask,
-        why: `${chunk.title}. Fuente: ${chunk.source}`,
-        relatedIssue: chunk.title,
+    for (const issue of issues.slice(0, 3)) {
+      if (issue.evidenceLevel === "C" || issue.evidenceLevel === "D") continue;
+      if (!allowedForFuel(`${issue.title} ${issue.detail}`, vehicle)) continue;
+      pushUnique(questions, seen, {
+        question: `Respecto a ${issue.title.toLowerCase()}, ¿se ha revisado o reparado en este coche?`,
+        why: issue.detail,
+        relatedIssue: issue.title,
+        priority: issue.severity === "high" ? "alta" : "media",
+        category: "modelo",
       });
     }
   }
 
-  for (const issue of issues.slice(0, 3)) {
-    const question = `Respecto a ${issue.title.toLowerCase()}, ¿se ha revisado o reparado en este coche?`;
-    const key = question.toLowerCase();
-    if (seen.has(key)) continue;
-    seen.add(key);
-    questions.push({
-      question,
-      why: issue.detail,
-      relatedIssue: issue.title,
-    });
-  }
-
-  return questions.slice(0, 12);
+  const priorityRank = { alta: 0, media: 1, baja: 2 };
+  return questions
+    .sort((a, b) => (priorityRank[a.priority ?? "media"] ?? 1) - (priorityRank[b.priority ?? "media"] ?? 1))
+    .slice(0, 8);
 }

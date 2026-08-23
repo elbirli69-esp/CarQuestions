@@ -35,13 +35,23 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
     <Card className="bg-card">
       <CardHeader>
         <CardDescription>Valoración</CardDescription>
-        <CardTitle className="text-2xl sm:text-3xl">Valor estimado</CardTitle>
+        <CardTitle className="text-2xl sm:text-3xl">
+          {valuation.isSegmentReference || valuation.marketStatus === "none"
+            ? "Sin mercado comparable"
+            : "Valor de mercado"}
+        </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-6">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
-            <p className="text-sm text-muted-foreground">Valor estimado</p>
-            <p className="font-heading text-4xl tracking-tight">{formatEuro(valuation.estimatedPrice)}</p>
+            <p className="text-sm text-muted-foreground">
+              {valuation.isSegmentReference ? "Referencia de segmento" : "Valor estimado"}
+            </p>
+            <p className="font-heading text-4xl tracking-tight">
+              {valuation.marketStatus === "none"
+                ? "—"
+                : formatEuro(valuation.estimatedPrice)}
+            </p>
             <Badge variant="outline" className="mt-2">
               {ORIGIN_LABELS[valuation.origin]}
             </Badge>
@@ -81,6 +91,11 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
         </div>
 
         <p className="text-sm leading-6 text-muted-foreground">{valuation.summary}</p>
+        {valuation.isSegmentReference && valuation.segmentReference != null ? (
+          <p className="text-sm text-muted-foreground">
+            Referencia orientativa de segmento (no es mercado): {formatEuro(valuation.segmentReference)}.
+          </p>
+        ) : null}
 
         {topLimitations.length > 0 ? (
           <AlertLike items={topLimitations} />
@@ -132,11 +147,13 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
         </div>
 
         {hasDistribution ? (
-          <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-5">
+          <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4 lg:grid-cols-7">
             <Stat label="Mínimo" value={formatEuro(valuation.distribution.min)} />
+            <Stat label="P10" value={formatEuro(valuation.distribution.p10 ?? valuation.distribution.min)} />
             <Stat label="P25" value={formatEuro(valuation.distribution.p25)} />
             <Stat label="Mediana" value={formatEuro(valuation.distribution.median)} />
             <Stat label="P75" value={formatEuro(valuation.distribution.p75)} />
+            <Stat label="P90" value={formatEuro(valuation.distribution.p90 ?? valuation.distribution.max)} />
             <Stat label="Máximo" value={formatEuro(valuation.distribution.max)} />
           </div>
         ) : (

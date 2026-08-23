@@ -1,3 +1,5 @@
+import type { CanonicalVehicle } from "@/lib/vehicles/canonical";
+import type { ClaimSourceKind, ConfidenceBand, ConsistencyReport, EvidenceLevel } from "@/types/evidence";
 import type { VehicleListing } from "@/types/listing";
 import type { SourceCitation } from "@/types/source";
 import type { Vehicle } from "@/types/vehicle";
@@ -12,13 +14,18 @@ export type PriceVerdict =
 
 export type DataOrigin = "observed" | "ai_estimate" | "demo_model";
 
+export type MarketStatus = "observed" | "insufficient" | "none";
+
 export interface PriceDistribution {
   count: number;
   min: number;
+  p10?: number;
   p25: number;
   median: number;
   p75: number;
+  p90?: number;
   max: number;
+  pricePerKm?: number;
 }
 
 export interface PriceAdjustment {
@@ -33,6 +40,10 @@ export type MatchStrictness = "strict" | "relaxed" | "broad";
 
 export interface ValuationResult {
   estimatedPrice: number;
+  /** Present only when the figure is a segment heuristic, not a market median. */
+  isSegmentReference?: boolean;
+  segmentReference?: number;
+  marketStatus?: MarketStatus;
   advertisedPrice?: number;
   low: number;
   high: number;
@@ -41,6 +52,7 @@ export interface ValuationResult {
   verdictLabel: string;
   summary: string;
   confidence: number;
+  confidenceBand?: ConfidenceBand;
   /** Factores legibles que explican el % de confianza. */
   confidenceDrivers?: string[];
   /** Media de similarity de los comparables usados (0–1). */
@@ -64,6 +76,8 @@ export interface ScoreDimension {
   reason: string;
   origin: DataOrigin;
   insufficientData: boolean;
+  evidence?: string;
+  confidence?: ConfidenceBand;
 }
 
 export interface VehicleScorecard {
@@ -80,6 +94,9 @@ export interface KnownIssue {
   appliesWhen: string;
   source: string;
   isDemo: boolean;
+  evidenceLevel?: EvidenceLevel;
+  sourceType?: ClaimSourceKind;
+  sourceUrl?: string;
 }
 
 export interface ReliabilitySummary {
@@ -89,6 +106,8 @@ export interface ReliabilitySummary {
   knownIssues: KnownIssue[];
   isDemo: boolean;
   source: string;
+  evidenceLevel?: EvidenceLevel;
+  insufficientEvidence?: boolean;
 }
 
 export interface MaintenanceSummary {
@@ -112,12 +131,67 @@ export interface ListingAnalysis {
   askSeller: string[];
   inspectBeforeBuying: string[];
   limitations: string[];
+  qualityScore?: number;
+  missingItems?: string[];
 }
+
+export type QuestionPriority = "alta" | "media" | "baja";
 
 export interface SellerQuestion {
   question: string;
   why: string;
+  reason?: string;
   relatedIssue?: string;
+  priority?: QuestionPriority;
+  category?: string;
+}
+
+export type PurchaseVerdictId =
+  | "buena_oportunidad"
+  | "precio_razonable"
+  | "compraria_con_precaucion"
+  | "no_sin_investigar"
+  | "datos_incoherentes";
+
+export interface PurchaseVerdict {
+  id: PurchaseVerdictId;
+  label: string;
+  tone: "good" | "ok" | "caution" | "bad";
+  summary: string;
+}
+
+export type InspectionPhase = "before" | "cold" | "drive" | "hot" | "pay";
+
+export interface InspectionItem {
+  phase: InspectionPhase;
+  title: string;
+  detail: string;
+}
+
+export interface InspectionChecklist {
+  items: InspectionItem[];
+  adaptedTo: string;
+}
+
+export interface MissingDataItem {
+  field: string;
+  label: string;
+  impactPercent: number;
+  reason: string;
+}
+
+export interface MissingDataReport {
+  completeness: number;
+  potentialGainPercent: number;
+  message: string;
+  items: MissingDataItem[];
+}
+
+export interface ListingQuality {
+  score: number;
+  missing: Array<{ id: string; label: string; weight: number }>;
+  present: Array<{ id: string; label: string }>;
+  summary: string;
 }
 
 export type DataMode = "demo" | "live" | "mixed" | "knowledge";
@@ -127,6 +201,12 @@ export interface AnalyzeResponse {
   generatedAt: string;
   dataMode: DataMode;
   vehicle: Vehicle;
+  canonicalVehicle?: CanonicalVehicle;
+  consistency?: ConsistencyReport;
+  purchaseVerdict?: PurchaseVerdict;
+  missingData?: MissingDataReport;
+  listingQuality?: ListingQuality;
+  inspectionChecklist?: InspectionChecklist;
   valuation: ValuationResult;
   scores: VehicleScorecard;
   comparables: VehicleListing[];

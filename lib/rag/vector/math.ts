@@ -1,5 +1,9 @@
 import type { KnowledgeChunk } from "@/types/knowledge";
-import { chunkMatchesBrand, chunkMatchesModel } from "@/lib/rag/knowledge/filters";
+import {
+  chunkCompatibleWithFuel,
+  chunkMatchesBrand,
+  chunkMatchesModel,
+} from "@/lib/rag/knowledge/filters";
 import { tokenize } from "@/lib/utils/math";
 
 export function chunkSearchText(chunk: KnowledgeChunk): string {
@@ -90,8 +94,12 @@ export function cosineSimilarity(
 export function matchesVehicleFilters(
   chunk: KnowledgeChunk,
   vehicle?: { brand?: string; model?: string; year?: number; fuel?: string; version?: string },
+  options?: { allowUniversal?: boolean },
 ): boolean {
   if (!vehicle) return true;
+  const allowUniversal = options?.allowUniversal ?? false;
+  const isUniversal = chunk.brands.some((item) => item.trim() === "*");
+  if (isUniversal && !allowUniversal) return false;
 
   if (vehicle.brand && !chunkMatchesBrand(chunk, vehicle.brand)) return false;
   if (
@@ -101,9 +109,7 @@ export function matchesVehicleFilters(
     return false;
   }
 
-  if (chunk.fuels && chunk.fuels.length > 0 && vehicle.fuel && !chunk.fuels.includes(vehicle.fuel as never)) {
-    return false;
-  }
+  if (!chunkCompatibleWithFuel(chunk, vehicle.fuel as never)) return false;
 
   if (chunk.yearFrom && vehicle.year && vehicle.year < chunk.yearFrom) return false;
   if (chunk.yearTo && vehicle.year && vehicle.year > chunk.yearTo) return false;

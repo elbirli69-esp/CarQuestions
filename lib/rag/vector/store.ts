@@ -3,6 +3,7 @@ import type { RetrievedDocument, RetrievalQuery } from "@/types/rag";
 import { loadKnowledgeChunks, loadKnowledgeVectorIndex } from "@/lib/rag/knowledge/load";
 import { chunkToDocument } from "@/lib/rag/knowledge/to-documents";
 import { expandAutomotiveQuery } from "@/lib/rag/query/expand";
+import { classifyChunkEvidence } from "@/lib/rag/evidence";
 import {
   buildTfidfVector,
   chunkSearchText,
@@ -54,13 +55,24 @@ export class KnowledgeVectorStore {
     const queryVector = buildTfidfVector(queryText, this.index.idf);
     const vectorByChunkId = new Map(this.index.entries.map((entry) => [entry.chunkId, entry.vector]));
 
+    const vehicleHint = input.vehicle
+      ? {
+          brand: input.vehicle.brand ?? "",
+          model: input.vehicle.model ?? "",
+          version: input.vehicle.version,
+          year: input.vehicle.year ?? 0,
+          fuel: input.vehicle.fuel as never,
+        }
+      : null;
+
     const ranked = this.chunks
-      .filter((chunk) => matchesVehicleFilters(chunk, input.vehicle))
+      .filter((chunk) => matchesVehicleFilters(chunk, input.vehicle, { allowUniversal: false }))
       .map((chunk) => {
         const vector = vectorByChunkId.get(chunk.id) ?? buildTfidfVector(chunkSearchText(chunk), this.index.idf);
         const semanticScore = cosineSimilarity(queryVector, vector);
         const brand = input.vehicle?.brand?.toLowerCase() ?? "";
-        const isUniversal = chunk.brands.some((item) => item.trim() === "*");
+        const evidence = vehicleHint ? classifyChunkEvidence(chunk, vehicleHint) : "C";
+        const evidenceBoost = evidence === "A" ? 0.18 : evidence === "B" ? 0.08 : -0.2;
         const intentHints = (input.text ?? "").toLowerCase();
         const wantsIssues = /aver|fallo|problem|sintoma|ruido|fiab|cadena|fap|egr|turbo|caja|dsg|oxido|regen|freno/.test(
           intentHints,
@@ -83,27 +95,37 @@ export class KnowledgeVectorStore {
         const metadataBoost =
           (chunk.type === "issue" || chunk.type === "recall" ? 0.05 : 0) +
           (brand &&
-          !isUniversal &&
           chunk.brands.some((item) => item.toLowerCase().includes(brand) || brand.includes(item.toLowerCase()))
             ? 0.1
             : 0) +
-          (isUniversal ? 0.02 : 0) +
           (chunk.symptoms && chunk.symptoms.length > 0 ? 0.03 : 0) +
           typeBoost +
-          fuelBoost;
+          fuelBoost +
+          evidenceBoost;
         return {
           chunk,
           score: semanticScore + metadataBoost,
+          evidence,
         };
       })
-      .filter((item) => item.score > 0.01)
+      .filter((item) => item.score > 0.05 && (item.evidence === "A" || item.evidence === "B"))
       .sort((a, b) => b.score - a.score)
       .slice(0, limit);
 
-    return ranked.map(({ chunk, score }) => ({
-      document: chunkToDocument(chunk, input.vehicle as never),
-      score,
-    }));
+    return ranked.map(({ chunk, score, evidence }) => {
+      const document = chunkToDocument(chunk, input.vehicle as never);
+      return {
+        document: {
+          ...document,
+          metadata: {
+            ...document.metadata,
+            evidenceLevel: evidence,
+            sourceType: "technical",
+          },
+        },
+        score,
+      };
+    });
   }
 
   queryChunks(input: RetrievalQuery): KnowledgeChunk[] {

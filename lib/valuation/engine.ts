@@ -9,6 +9,7 @@ import type {
 import type { Vehicle } from "@/types/vehicle";
 import { estimateMarketAnchor } from "@/lib/sources/demo-listings";
 import { average, clamp, percentile, roundTo, trimPriceOutliers, weightedMedian } from "@/lib/utils/math";
+import { labelForBand, marketConfidence } from "@/lib/valuation/confidence";
 
 const VERDICT_LABELS: Record<PriceVerdict, string> = {
   muy_barato: "Muy barato",
@@ -19,26 +20,35 @@ const VERDICT_LABELS: Record<PriceVerdict, string> = {
   sin_precio: "Sin precio anunciado",
 };
 
-function emptyDistribution(estimated: number): PriceDistribution {
+function emptyDistribution(): PriceDistribution {
   return {
     count: 0,
-    min: estimated,
-    p25: estimated,
-    median: estimated,
-    p75: estimated,
-    max: estimated,
+    min: 0,
+    p10: 0,
+    p25: 0,
+    median: 0,
+    p75: 0,
+    p90: 0,
+    max: 0,
   };
 }
 
-function distributionFrom(prices: number[]): PriceDistribution {
+function distributionFrom(prices: number[], mileages: number[]): PriceDistribution {
   const sorted = [...prices].sort((a, b) => a - b);
+  const pricePerKm =
+    mileages.length > 0 && prices.length > 0
+      ? average(prices.map((price, index) => (mileages[index] ? price / Math.max(mileages[index]!, 1) : NaN)).filter((n) => Number.isFinite(n)))
+      : null;
   return {
     count: sorted.length,
     min: sorted[0] ?? 0,
+    p10: roundTo(percentile(sorted, 0.1), 50),
     p25: roundTo(percentile(sorted, 0.25), 50),
     median: roundTo(percentile(sorted, 0.5), 50),
     p75: roundTo(percentile(sorted, 0.75), 50),
+    p90: roundTo(percentile(sorted, 0.9), 50),
     max: sorted[sorted.length - 1] ?? 0,
+    pricePerKm: pricePerKm != null ? Number(pricePerKm.toFixed(3)) : undefined,
   };
 }
 
@@ -188,6 +198,7 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
     outliersRemoved > 0
       ? priced.filter((listing) => trimmedPriceSet.has(listing.price as number))
       : priced;
+  const marketStatus = workingListings.length >= 5 ? "observed" : workingListings.length > 0 ? "insufficient" : "none";
 
   if (outliersRemoved > 0) {
     limitations.push(
@@ -195,7 +206,10 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
     );
   }
 
-  const distribution = distributionFrom(workingListings.map((listing) => listing.price as number));
+  const distribution = distributionFrom(
+    workingListings.map((listing) => listing.price as number),
+    workingListings.map((listing) => listing.mileage ?? 0),
+  );
   const comparableMileage = average(
     workingListings
       .map((listing) => listing.mileage)
@@ -245,8 +259,15 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
 
   const advertisedPrice = vehicle.advertisedPrice;
   const percentDifference =
-    advertisedPrice && estimated ? (advertisedPrice - estimated) / estimated : undefined;
-  const verdict = percentDifference == null ? "sin_precio" : verdictFromDelta(percentDifference);
+    advertisedPrice && estimated && workingListings.length >= 3
+      ? (advertisedPrice - estimated) / estimated
+      : advertisedPrice && estimated && workingListings.length > 0
+        ? (advertisedPrice - estimated) / estimated
+        : undefined;
+  const verdict =
+    percentDifference == null || workingListings.length < 3
+      ? "sin_precio"
+      : verdictFromDelta(percentDifference);
 
   const completeness =
     [
@@ -262,17 +283,19 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
     (l) => (l.equipment?.length ?? 0) > 0 || l.rawData?.detailScraped === true,
   );
 
-  let confidence =
-    26 + workingListings.length * 2.4 + completeness * 12 + avgSimilarity * 26;
-  if (matchStrictness === "relaxed") confidence -= 8;
-  if (matchStrictness === "broad") confidence -= 14;
-  if (workingListings.length < 5) confidence -= 12;
-  if (workingListings.length < 8) confidence -= 4;
-  if (iqrRatio > 0.25) confidence -= 6;
-  if (avgSimilarity < 0.7) confidence -= 10;
-  if (outliersRemoved > 0) confidence += 2; // muestra más limpia
-  if (scrapedEquipment) confidence += 3;
-  confidence = Math.round(clamp(confidence, 22, 90));
+  const identified = Boolean(vehicle.brand && vehicle.model && vehicle.fuel);
+  const { score: confidence, band: confidenceBand } = marketConfidence({
+    comparableCount: workingListings.length,
+    matchStrictness,
+    avgSimilarity,
+    completeness,
+    vehicleIdentified: identified,
+  });
+  let adjustedConfidence = confidence;
+  if (iqrRatio > 0.25) adjustedConfidence -= 6;
+  if (outliersRemoved > 0) adjustedConfidence += 2;
+  if (scrapedEquipment) adjustedConfidence += 3;
+  adjustedConfidence = Math.round(clamp(adjustedConfidence, 14, 88));
 
   confidenceDrivers.push(`${workingListings.length} anuncios tras limpieza`);
   confidenceDrivers.push(`Similitud media ${(avgSimilarity * 100).toFixed(0)} %`);
@@ -294,13 +317,17 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
 
   const sourceCount = new Set(workingListings.map((listing) => listing.source)).size;
   const summary =
-    percentDifference == null
-      ? "No hay precio anunciado, así que solo se estima el intervalo de mercado a partir de comparables."
-      : percentDifference < 0
-        ? `Está aproximadamente un ${Math.abs(percentDifference * 100).toFixed(1).replace(".", ",")} % por debajo del valor estimado de mercado.`
-        : percentDifference > 0
-          ? `Está aproximadamente un ${(percentDifference * 100).toFixed(1).replace(".", ",")} % por encima del valor estimado de mercado.`
-          : "Coincide con el valor estimado de mercado.";
+    workingListings.length < 3
+      ? workingListings.length === 1
+        ? "Solo hay 1 anuncio comparable. La confianza es muy baja: no hay mercado suficiente para un veredicto."
+        : "Hay muy pocos anuncios comparables. El intervalo es orientativo y de baja confianza."
+      : percentDifference == null
+        ? "No hay precio anunciado, así que solo se estima el intervalo de mercado a partir de comparables."
+        : percentDifference < 0
+          ? `Está aproximadamente un ${Math.abs(percentDifference * 100).toFixed(1).replace(".", ",")} % por debajo del valor estimado de mercado.`
+          : percentDifference > 0
+            ? `Está aproximadamente un ${(percentDifference * 100).toFixed(1).replace(".", ",")} % por encima del valor estimado de mercado.`
+            : "Coincide con el valor estimado de mercado.";
 
   if (!vehicle.power) {
     limitations.push("No se ha indicado la potencia. No se ajusta el precio por motor.");
@@ -316,12 +343,15 @@ function valueFromObservedListings(vehicle: Vehicle, listings: VehicleListing[])
     high,
     percentDifference,
     verdict,
-    verdictLabel: VERDICT_LABELS[verdict],
+    verdictLabel: workingListings.length < 3 ? "Sin mercado comparable" : VERDICT_LABELS[verdict],
     summary,
-    confidence,
-    confidenceDrivers,
+    confidence: adjustedConfidence,
+    confidenceBand,
+    confidenceDrivers: [...confidenceDrivers, `Confianza ${labelForBand(confidenceBand)}`],
     avgSimilarity,
     matchStrictness,
+    marketStatus,
+    isSegmentReference: false,
     distribution,
     adjustments,
     comparableCount: workingListings.length,
@@ -375,17 +405,20 @@ function valueFromHeuristic(vehicle: Vehicle): ValuationResult {
       vehicle.itv,
     ].filter(Boolean).length / 6;
 
-  const confidence = Math.round(clamp(14 + completeness * 10, 12, 32));
+  const { score: confidence, band: confidenceBand } = marketConfidence({
+    comparableCount: 0,
+    completeness,
+    vehicleIdentified: Boolean(vehicle.brand && vehicle.model),
+  });
   const confidenceDrivers = [
     "Sin anuncios observados",
-    "Referencia de segmento por marca/modelo/año/km",
+    "Sin mercado comparable",
     `Completitud del formulario ${(completeness * 100).toFixed(0)} %`,
+    `Confianza ${labelForBand(confidenceBand)}`,
   ];
 
   const summary =
-    percentDifference == null
-      ? "No hay precio anunciado ni anuncios reales conectados. Solo se muestra una referencia orientativa de segmento."
-      : `Frente a una referencia orientativa (no mediana de anuncios), el anuncio quedaría ~${Math.abs(percentDifference * 100).toFixed(1).replace(".", ",")} % ${percentDifference < 0 ? "por debajo" : "por encima"}. Confirma en coches.net antes de decidir.`;
+    "Sin suficientes anuncios comparables. La cifra de segmento, si se muestra, no es un precio de mercado.";
 
   if (!vehicle.power) {
     limitations.push("No se ha indicado la potencia. La referencia no ajusta por motor concreto.");
@@ -404,8 +437,12 @@ function valueFromHeuristic(vehicle: Vehicle): ValuationResult {
     verdictLabel,
     summary,
     confidence,
+    confidenceBand,
     confidenceDrivers,
-    distribution: emptyDistribution(estimated),
+    marketStatus: "none",
+    isSegmentReference: true,
+    segmentReference: estimated,
+    distribution: emptyDistribution(),
     adjustments,
     comparableCount: 0,
     sourceCount: 0,

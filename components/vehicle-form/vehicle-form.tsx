@@ -16,6 +16,11 @@ import {
   FUEL_LABELS,
   TRANSMISSION_LABELS,
 } from "@/lib/vehicles/labels";
+import {
+  detectVersionFamilies,
+  inferFuelFromVersion,
+  matchesBrandList,
+} from "@/lib/vehicles/identity";
 import type { VehicleCatalog } from "@/lib/vehicles/catalog-types";
 import { BODY_TYPES, CONDITION_LEVELS, FUEL_TYPES, TRANSMISSION_TYPES, type VehicleInput } from "@/types/vehicle";
 import type { ListingExtractResult } from "@/types/source";
@@ -108,6 +113,21 @@ export function VehicleForm({
       })),
     [selectedBrand],
   );
+
+  const identityHint = useMemo(() => {
+    const version = form.version.trim();
+    if (!version || !selectedBrand) return null;
+    const families = detectVersionFamilies(version);
+    const mismatch = families.find((family) => !matchesBrandList(selectedBrand.name, family.brands));
+    if (mismatch) {
+      return `La versión ${version} no parece corresponder con ${selectedBrand.name}.`;
+    }
+    const implied = inferFuelFromVersion(version);
+    if (implied && form.fuel && implied !== form.fuel) {
+      return `La versión ${version} sugiere ${implied}, no ${form.fuel}.`;
+    }
+    return null;
+  }, [form.fuel, form.version, selectedBrand]);
 
   const years = useMemo(() => {
     const max = new Date().getFullYear() + 1;
@@ -249,6 +269,12 @@ export function VehicleForm({
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         ) : null}
+        {identityHint ? (
+          <Alert variant="destructive" className="mb-4">
+            <AlertTitle>Combinación incoherente</AlertTitle>
+            <AlertDescription>{identityHint} Puedes analizar igual, pero no inventaremos ficha técnica.</AlertDescription>
+          </Alert>
+        ) : null}
 
         <div className="mb-4">
           <Field
@@ -326,7 +352,7 @@ export function VehicleForm({
           >
             <Input
               id="version"
-              placeholder="sDrive18d"
+              placeholder="218d, 1.5 TSI…"
               value={form.version}
               onChange={(event) => update("version", event.target.value)}
             />

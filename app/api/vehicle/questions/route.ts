@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { handleRouteError, jsonError } from "@/lib/api/errors";
+import { logEvent } from "@/lib/observability/log";
 import { fetchListingDetail } from "@/lib/sources/coches-net/fetch-listing-detail";
 import {
   issueToDocument,
@@ -44,20 +45,26 @@ export async function POST(request: Request) {
       ...analysis.reliability.knownIssues.map((issue) => issueToDocument(analysis.vehicle, issue)),
     ];
 
-    const retrieved = await retrieveDocuments(
-      {
-        text: parsed.data.question,
-        vehicle: {
-          brand: analysis.vehicle.brand,
-          model: analysis.vehicle.model,
-          year: analysis.vehicle.year,
-          fuel: analysis.vehicle.fuel,
-          version: analysis.vehicle.version,
-        },
-        limit: 12,
-      },
-      documents,
-    );
+    const identityValid = analysis.consistency?.status !== "invalid";
+    const retrieved = identityValid
+      ? await retrieveDocuments(
+          {
+            text: parsed.data.question,
+            vehicle: {
+              brand: analysis.vehicle.brand,
+              model: analysis.vehicle.model,
+              year: analysis.vehicle.year,
+              fuel: analysis.vehicle.fuel,
+              version: analysis.vehicle.version,
+            },
+            limit: 12,
+          },
+          documents,
+        )
+      : [];
+    if (!identityValid) {
+      logEvent("rag.retrieval", { blocked: true, reason: "invalid_identity", analysisId: analysis.id }, "warn");
+    }
 
     const context = {
       ...toVehicleContext(analysis),

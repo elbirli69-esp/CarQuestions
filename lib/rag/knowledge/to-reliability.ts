@@ -1,10 +1,14 @@
 import type { KnowledgeChunk } from "@/types/knowledge";
 import type { KnownIssue, MaintenanceSummary, ReliabilitySummary } from "@/types/valuation";
 import type { Vehicle } from "@/types/vehicle";
+import { classifyChunkEvidence, classifySourceKind } from "@/lib/rag/evidence";
 import { chunkMatchesVehicle } from "@/lib/rag/knowledge/filters";
 import { average, clamp } from "@/lib/utils/math";
 
-export function chunkToKnownIssue(chunk: KnowledgeChunk): KnownIssue | null {
+const INSUFFICIENT =
+  "No tenemos evidencia suficiente para afirmar que este sea un problema conocido de este modelo.";
+
+export function chunkToKnownIssue(chunk: KnowledgeChunk, vehicle?: Vehicle): KnownIssue | null {
   if (chunk.type !== "issue" && chunk.type !== "recall") return null;
   const extra = [
     chunk.symptoms?.length ? `Síntomas habituales: ${chunk.symptoms.join("; ")}.` : null,
@@ -14,6 +18,8 @@ export function chunkToKnownIssue(chunk: KnowledgeChunk): KnownIssue | null {
     .filter(Boolean)
     .join(" ");
 
+  const evidenceLevel = vehicle ? classifyChunkEvidence(chunk, vehicle) : "B";
+
   return {
     title: chunk.title,
     detail: extra ? `${chunk.content} ${extra}` : chunk.content,
@@ -21,18 +27,25 @@ export function chunkToKnownIssue(chunk: KnowledgeChunk): KnownIssue | null {
     appliesWhen: chunk.appliesWhen ?? chunk.title,
     source: chunk.source,
     isDemo: false,
+    evidenceLevel,
+    sourceType: classifySourceKind(chunk),
+    sourceUrl: chunk.sourceUrl,
   };
 }
 
 export function chunksToReliability(chunks: KnowledgeChunk[], vehicle: Vehicle): ReliabilitySummary {
-  const relevant = chunks.filter((chunk) => chunkMatchesVehicle(chunk, vehicle));
+  const specific = chunks.filter((chunk) => chunkMatchesVehicle(chunk, vehicle, { allowUniversal: false }));
+  const usable = specific.filter((chunk) => {
+    const level = classifyChunkEvidence(chunk, vehicle);
+    return level === "A" || level === "B";
+  });
 
-  const issues = relevant
+  const issues = usable
     .filter((chunk) => chunk.type === "issue" || chunk.type === "recall")
-    .map(chunkToKnownIssue)
+    .map((chunk) => chunkToKnownIssue(chunk, vehicle))
     .filter((issue): issue is KnownIssue => issue != null);
 
-  const scoreValues = relevant
+  const scoreValues = usable
     .map((chunk) => chunk.reliabilityScore)
     .filter((value): value is number => typeof value === "number");
 
@@ -40,16 +53,18 @@ export function chunksToReliability(chunks: KnowledgeChunk[], vehicle: Vehicle):
     return {
       available: false,
       score: null,
-      notes: [
-        `No hay ficha de fiabilidad suficientemente específica para ${vehicle.brand} ${vehicle.model} ${vehicle.year} en la base de conocimiento.`,
-      ],
+      notes: [INSUFFICIENT],
       knownIssues: [],
       isDemo: false,
       source: "Base de conocimiento curada",
+      evidenceLevel: undefined,
+      insufficientEvidence: true,
     };
   }
 
-  const maintenanceNotes = relevant
+  const modelSpecific = usable.filter((chunk) => classifyChunkEvidence(chunk, vehicle) === "A");
+  const evidenceLevel = modelSpecific.length > 0 ? "A" : "B";
+  const maintenanceNotes = usable
     .filter((chunk) => chunk.type === "maintenance")
     .map((chunk) => `${chunk.title}: ${chunk.content}`);
 
@@ -64,24 +79,33 @@ export function chunksToReliability(chunks: KnowledgeChunk[], vehicle: Vehicle):
     available: true,
     score,
     notes:
-      maintenanceNotes.length > 0
-        ? maintenanceNotes.slice(0, 3)
-        : [`Ficha curada para ${vehicle.brand} ${vehicle.model} (base de conocimiento RAG).`],
+      evidenceLevel === "A"
+        ? maintenanceNotes.slice(0, 3).length > 0
+          ? maintenanceNotes.slice(0, 3)
+          : [`Patrones documentados para ${vehicle.brand} ${vehicle.model}. No es un diagnóstico de este bastidor.`]
+        : [
+            `Hay patrones de la marca o motorización, no una ficha específica de ${vehicle.brand} ${vehicle.model}.`,
+            ...maintenanceNotes.slice(0, 2),
+          ],
     knownIssues: issues.slice(0, 8),
     isDemo: false,
     source: "Base de conocimiento curada",
+    evidenceLevel,
+    insufficientEvidence: false,
   };
 }
 
 export function chunksToMaintenance(chunks: KnowledgeChunk[], vehicle?: Vehicle): MaintenanceSummary {
-  const relevant = vehicle ? chunks.filter((chunk) => chunkMatchesVehicle(chunk, vehicle)) : chunks;
+  const relevant = vehicle
+    ? chunks.filter((chunk) => chunkMatchesVehicle(chunk, vehicle, { allowUniversal: false }))
+    : chunks;
   const maintenance = relevant.filter((chunk) => chunk.type === "maintenance");
   const inspections = relevant.filter((chunk) => chunk.type === "inspection");
 
   if (maintenance.length === 0 && inspections.length === 0) {
     return {
       available: false,
-      notes: ["Sin ficha de mantenimiento específica en la base de conocimiento."],
+      notes: ["Sin ficha de mantenimiento específica en la base de conocimiento. No inventamos intervalos."],
       upcoming: [],
       isDemo: false,
       source: "Base de conocimiento curada",
@@ -101,8 +125,7 @@ export function chunksToMaintenance(chunks: KnowledgeChunk[], vehicle?: Vehicle)
         .filter((value): value is string => Boolean(value)),
       ...inspections.map((chunk) => chunk.content).slice(0, 3),
     ].slice(0, 6),
-    estimatedYearlyCost:
-      yearlyCosts.length > 0 ? Math.round(average(yearlyCosts) ?? 0) : undefined,
+    estimatedYearlyCost: yearlyCosts.length > 0 ? Math.round(average(yearlyCosts) ?? 0) : undefined,
     isDemo: false,
     source: "Base de conocimiento curada",
   };

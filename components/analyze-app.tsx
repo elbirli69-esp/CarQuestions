@@ -6,11 +6,15 @@ import { DemoBanner } from "@/components/demo-banner";
 import { HelpGuide } from "@/components/help/help-guide";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ComparableList } from "@/components/comparable-cars/comparable-list";
+import { ConsistencyAlert } from "@/components/consistency/consistency-alert";
+import { InspectionChecklistCard } from "@/components/inspection/inspection-checklist";
 import { ListingAnalysisCard } from "@/components/listing-analysis/listing-analysis-card";
+import { MissingDataCard } from "@/components/missing-data/missing-data-card";
 import { SellerQuestions } from "@/components/seller-questions/seller-questions";
 import { SourcesPanel } from "@/components/sources/sources-panel";
 import { ScoreCard } from "@/components/valuation/score-card";
 import { ValuationCard } from "@/components/valuation/valuation-card";
+import { PurchaseVerdictCard } from "@/components/verdict/purchase-verdict-card";
 import { VehicleChat } from "@/components/vehicle-chat/vehicle-chat";
 import { VehicleForm } from "@/components/vehicle-form/vehicle-form";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -75,10 +79,10 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
           </div>
         </div>
         <h1 className="font-heading max-w-xl text-3xl leading-tight font-medium tracking-tight sm:text-4xl">
-          ¿Cuánto vale realmente este coche?
+          ¿Es una buena compra?
         </h1>
         <p className="max-w-xl text-base leading-7 text-muted-foreground">
-          Rellena lo básico y obtén referencia de precio, fiabilidad del modelo y preguntas para el vendedor.
+          Precio, riesgos, lo que falta saber y qué preguntar al vendedor. Si no hay evidencia, lo decimos.
         </p>
       </header>
 
@@ -103,6 +107,9 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
 
       {analysis ? (
         <div ref={resultsRef} className="flex flex-col gap-6">
+          {analysis.consistency ? <ConsistencyAlert report={analysis.consistency} /> : null}
+          <PurchaseVerdictCard analysis={analysis} />
+          {analysis.missingData ? <MissingDataCard report={analysis.missingData} /> : null}
           <ValuationCard valuation={analysis.valuation} />
           <SourcesPanel
             sources={analysis.sources}
@@ -112,7 +119,7 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
             updatedAt={analysis.valuation.dataUpdatedAt}
             searchNotes={[...(analysis.searchNotes ?? []), ...(analysis.listingDetailNotes ?? [])]}
             matchStrictness={analysis.valuation.matchStrictness}
-            emptyMessage="coches.net no devolvió comparables útiles para este coche. El precio mostrado es solo una referencia de segmento."
+            emptyMessage="Sin suficientes anuncios comparables. No se finge un mercado."
           />
           {hasMarketData ? (
             <ComparableList
@@ -128,6 +135,9 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
             maintenance={analysis.maintenance}
           />
           <SellerQuestions questions={analysis.sellerQuestions} />
+          {analysis.inspectionChecklist ? (
+            <InspectionChecklistCard checklist={analysis.inspectionChecklist} />
+          ) : null}
           {hasAlternatives ? (
             <ComparableList
               title="Alternativas del segmento"

@@ -15,15 +15,17 @@ export function ListingAnalysisCard({
     <div className="flex flex-col gap-4">
       <Card>
         <CardHeader>
-          <CardTitle>Análisis del anuncio</CardTitle>
+          <CardTitle>Calidad de la información del anuncio</CardTitle>
           <CardDescription>
-            {analysis.limitations[0] ??
-              "Basado en el formulario y, si pegaste URL, en los datos que se pudieron leer del anuncio."}
+            {analysis.qualityScore != null
+              ? `${analysis.qualityScore}/100. ${analysis.limitations[0] ?? ""}`
+              : analysis.limitations[0] ??
+                "Basado en el formulario y, si pegaste URL, en los datos que se pudieron leer del anuncio."}
           </CardDescription>
         </CardHeader>
         <CardContent className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-5">
+          <Fact label="Calidad" value={analysis.qualityScore != null ? `${analysis.qualityScore}/100` : "—"} />
           <Fact label="Precio" value={analysis.price} />
-          <Fact label="Vehículo" value={analysis.vehicle} />
           <Fact label="Descripción" value={analysis.description} />
           <Fact label="Equipamiento" value={analysis.equipment} />
           <Fact label="Riesgo" value={analysis.risk} />
@@ -50,8 +52,8 @@ export function ListingAnalysisCard({
           <CardTitle>Conocimiento técnico del modelo</CardTitle>
           <CardDescription>
             {reliability.available
-              ? `Patrones de foros/manuales/recalls${reliability.score != null ? ` · score orientativo ${reliability.score}/100` : ""}. No es un informe de este bastidor.`
-              : "Sin ficha específica en la base de conocimiento."}
+              ? `Solo evidencia de modelo o plataforma (nivel ${reliability.evidenceLevel ?? "B"})${reliability.score != null ? ` · score orientativo ${reliability.score}/100` : ""}. No es un informe de este bastidor.`
+              : reliability.notes[0] ?? "No tenemos evidencia suficiente para este modelo."}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-5 text-sm">
@@ -64,6 +66,11 @@ export function ListingAnalysisCard({
                     <Badge variant={issue.severity === "high" ? "destructive" : "secondary"}>
                       {issue.severity === "high" ? "alto" : issue.severity === "medium" ? "medio" : "bajo"}
                     </Badge>
+                    {issue.evidenceLevel ? (
+                      <Badge variant="outline">
+                        {issue.evidenceLevel === "A" ? "Del modelo" : "Marca / motor"}
+                      </Badge>
+                    ) : null}
                   </div>
                   <p className="text-muted-foreground">{issue.detail}</p>
                   <p className="text-xs text-muted-foreground">Fuente: {issue.source}</p>

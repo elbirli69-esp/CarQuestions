@@ -94,14 +94,13 @@ export function retrieveKnowledgeForVehicle(vehicle: Vehicle, limit = 16): Knowl
     String(vehicle.year),
     vehicle.fuel,
     vehicle.transmission,
-    "fiabilidad mantenimiento fallos averías sintomas soluciones foros tecnicos",
   ]
     .filter(Boolean)
     .join(" ");
 
   return getKnowledgeVectorStore()
     .queryChunks({
-      text: expandAutomotiveQuery(queryText),
+      text: queryText,
       vehicle: {
         brand: vehicle.brand,
         model: vehicle.model,
