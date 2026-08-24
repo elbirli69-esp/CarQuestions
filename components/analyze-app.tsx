@@ -5,25 +5,31 @@ import { useRef, useState } from "react";
 import { DemoBanner } from "@/components/demo-banner";
 import { HelpGuide } from "@/components/help/help-guide";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { AnalysisProgressCard } from "@/components/valuation/analysis-progress-card";
 import { AnalysisResultsTabs } from "@/components/valuation/analysis-results-tabs";
 import { ConsistencyAlert } from "@/components/valuation/consistency-alert";
 import { VehicleForm } from "@/components/vehicle-form/vehicle-form";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Skeleton } from "@/components/ui/skeleton";
 import type { AnalyzeResponse } from "@/types/valuation";
 import type { VehicleInput } from "@/types/vehicle";
 
 export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: AnalyzeResponse | null }) {
   const [analysis, setAnalysis] = useState<AnalyzeResponse | null>(initialAnalysis);
   const [loading, setLoading] = useState(false);
+  const [evaluatingVehicle, setEvaluatingVehicle] = useState<VehicleInput | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pendingQuestion, setPendingQuestion] = useState("");
   const resultsRef = useRef<HTMLDivElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
 
   async function handleSubmit(vehicle: VehicleInput) {
     setError(null);
+    setEvaluatingVehicle(vehicle);
     setLoading(true);
     setAnalysis(null);
+    requestAnimationFrame(() => {
+      progressRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
     try {
       const response = await fetch("/api/vehicle/analyze", {
         method: "POST",
@@ -42,8 +48,15 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
       setError(err instanceof Error ? err.message : "No se ha podido analizar el vehículo.");
     } finally {
       setLoading(false);
+      setEvaluatingVehicle(null);
     }
   }
+
+  const evaluatingLabel = evaluatingVehicle
+    ? [evaluatingVehicle.brand, evaluatingVehicle.model, evaluatingVehicle.version]
+        .filter(Boolean)
+        .join(" ")
+    : undefined;
 
   const hasMarketData = analysis ? analysis.valuation.comparableCount > 0 : false;
   const hasAlternatives = analysis ? analysis.alternatives.length > 0 : false;
@@ -90,10 +103,12 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
       ) : null}
 
       {loading ? (
-        <div className="flex flex-col gap-3" aria-live="polite">
-          <Skeleton className="h-40 w-full rounded-xl" />
-          <Skeleton className="h-24 w-full rounded-xl" />
-          <Skeleton className="h-24 w-full rounded-xl" />
+        <div ref={progressRef}>
+          <AnalysisProgressCard
+            active={loading}
+            vehicleLabel={evaluatingLabel}
+            hasListingUrl={Boolean(evaluatingVehicle?.listingUrl)}
+          />
         </div>
       ) : null}
 

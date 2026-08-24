@@ -677,8 +677,14 @@ export function VehicleForm({
         </Accordion>
 
         <Button type="submit" size="lg" className="mt-6 h-11 w-full" disabled={isSubmitting || extractingUrl}>
-          {isSubmitting ? <LoaderCircleIcon className="animate-spin" /> : null}
-          Analizar coche
+          {isSubmitting ? (
+            <>
+              <LoaderCircleIcon className="animate-spin" aria-hidden />
+              Analizando…
+            </>
+          ) : (
+            "Analizar coche"
+          )}
         </Button>
       </section>
     </form>
