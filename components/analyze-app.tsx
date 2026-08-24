@@ -10,6 +10,7 @@ import { ListingAnalysisCard } from "@/components/listing-analysis/listing-analy
 import { SellerQuestions } from "@/components/seller-questions/seller-questions";
 import { SourcesPanel } from "@/components/sources/sources-panel";
 import { ConsistencyAlert } from "@/components/valuation/consistency-alert";
+import { IdentityEvidenceCard } from "@/components/valuation/identity-evidence-card";
 import { InspectionChecklistCard } from "@/components/valuation/inspection-checklist-card";
 import { MissingDataCard } from "@/components/valuation/missing-data-card";
 import { PurchaseVerdictCard } from "@/components/valuation/purchase-verdict-card";
@@ -110,6 +111,9 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
       {analysis ? (
         <div ref={resultsRef} className="flex flex-col gap-6">
           {analysis.consistency ? <ConsistencyAlert report={analysis.consistency} /> : null}
+          {analysis.identityEvidence ? (
+            <IdentityEvidenceCard evidence={analysis.identityEvidence} />
+          ) : null}
           {analysis.purchaseVerdict ? (
             <PurchaseVerdictCard verdict={analysis.purchaseVerdict} valuation={analysis.valuation} />
           ) : null}

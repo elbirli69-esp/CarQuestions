@@ -51,6 +51,8 @@ export interface Vehicle {
   brand: string;
   model: string;
   version?: string;
+  /** Slug de motorización en catálogo (si se eligió del desplegable). */
+  trimSlug?: string;
   year: number;
   mileage: number;
   fuel: FuelType;

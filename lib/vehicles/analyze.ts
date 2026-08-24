@@ -11,6 +11,7 @@ import { valueVehicle } from "@/lib/valuation/engine";
 import { scoreVehicle } from "@/lib/valuation/scores";
 import { buildSellerQuestions } from "@/lib/valuation/seller-questions";
 import { validateVehicleConsistency } from "@/lib/vehicles/consistency";
+import { resolveVehicleIdentity } from "@/lib/vehicles/identity";
 import { buildInspectionChecklist } from "@/lib/vehicles/inspection-checklist";
 import { lookupKnowledge } from "@/lib/vehicles/knowledge-base";
 import { detectMissingData } from "@/lib/vehicles/missing-data";
@@ -32,7 +33,9 @@ function resolveDataMode(options: {
 }
 
 export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeResponse> {
-  let vehicle = vehicleInputSchema.parse(input);
+  const parsedInput = vehicleInputSchema.parse(input);
+  let vehicle: VehicleInput = { ...parsedInput };
+  const trimSlugInput = parsedInput.trimSlug;
   const listingDetailNotes: string[] = [];
   let listingScraped = false;
 
@@ -40,16 +43,10 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
     brand: vehicle.brand,
     model: vehicle.model,
     version: vehicle.version,
+    trimSlug: trimSlugInput,
     year: vehicle.year,
     fuel: vehicle.fuel,
     hasListingUrl: Boolean(vehicle.listingUrl),
-  });
-
-  const consistency = validateVehicleConsistency(vehicle);
-  analysisLog.vehicleValidation({
-    status: consistency.status,
-    issues: consistency.issues.map((i) => i.code),
-    blockModelKnowledge: consistency.blockModelKnowledge,
   });
 
   if (vehicle.listingUrl) {
@@ -92,16 +89,20 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
     }
   }
 
-  // Re-validate after listing merge (fuel/year may change)
-  const consistencyAfter = validateVehicleConsistency(vehicle);
-  const effectiveConsistency =
-    consistencyAfter.status === "invalid" || consistency.status === "invalid"
-      ? consistencyAfter.status === "invalid"
-        ? consistencyAfter
-        : consistency
-      : consistencyAfter.status === "suspicious"
-        ? consistencyAfter
-        : consistency;
+  const identity = resolveVehicleIdentity(vehicle, { trimSlug: trimSlugInput });
+  vehicle = { ...identity.vehicle, trimSlug: identity.trimResolution.trimSlug ?? trimSlugInput };
+
+  const effectiveConsistency = validateVehicleConsistency(vehicle, {
+    trimSlug: vehicle.trimSlug,
+    trimCatalogVerified: identity.evidence.trimCatalogMatch,
+  });
+
+  analysisLog.vehicleValidation({
+    status: effectiveConsistency.status,
+    issues: effectiveConsistency.issues.map((i) => i.code),
+    trimCatalogMatch: effectiveConsistency.trimCatalogMatch,
+    blockModelKnowledge: effectiveConsistency.blockModelKnowledge,
+  });
 
   const id = createVehicleId([
     vehicle.brand,
@@ -299,6 +300,7 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
     maintenance: knowledge.maintenance,
     limitations: Array.from(new Set(limitations)),
     consistency: effectiveConsistency,
+    identityEvidence: identity.evidence,
     purchaseVerdict,
     missingData,
     inspectionChecklist,

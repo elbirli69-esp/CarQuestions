@@ -1,5 +1,10 @@
 import type { FuelType, Vehicle, VehicleInput } from "@/types/vehicle";
 import { findBrandByName, findModelInBrand } from "@/lib/vehicles/catalog";
+import {
+  findTrimBySlug,
+  findTrimOwnedByOtherBrand,
+  getTrimsForModel,
+} from "@/lib/vehicles/trims";
 import { normalizeKey } from "@/lib/utils/math";
 
 export type ConsistencySeverity = "error" | "warning" | "info";
@@ -23,6 +28,10 @@ export interface ConsistencyReport {
     brandSlug?: string;
     modelSlug?: string;
   };
+  /** Trim matched in motorization catalog */
+  trimCatalogMatch?: boolean;
+  trimSlug?: string;
+  engineCode?: string;
   /** Blocks model-specific RAG / reliability when true */
   blockModelKnowledge: boolean;
   /** Blocks market search when identity is too broken */
@@ -304,6 +313,84 @@ function v8OnPrius(brand: string, model: string, version?: string, power?: numbe
   return null;
 }
 
+function validateTrimCatalog(
+  brandSlug: string | undefined,
+  modelSlug: string | undefined,
+  vehicle: Pick<Vehicle | VehicleInput, "version" | "fuel" | "power" | "year" | "transmission">,
+  trimSlug?: string,
+): { issues: ConsistencyIssue[]; trim?: ReturnType<typeof findTrimBySlug>; trimCatalogMatch: boolean } {
+  const issues: ConsistencyIssue[] = [];
+  if (!brandSlug || !modelSlug) return { issues, trimCatalogMatch: false };
+
+  const trim =
+    trimSlug ? findTrimBySlug(brandSlug, modelSlug, trimSlug) : undefined;
+  const trimCatalogMatch = Boolean(trim);
+
+  if (trim) {
+    if (trim.fuel !== vehicle.fuel) {
+      issues.push({
+        code: "trim_fuel_mismatch",
+        severity: "error",
+        field: "fuel",
+        message: `La versión «${trim.name}» es ${trim.fuel}, no ${vehicle.fuel}.`,
+      });
+    }
+    if (trim.powerHp != null && vehicle.power != null) {
+      const delta = Math.abs(trim.powerHp - vehicle.power);
+      if (delta > Math.max(15, trim.powerHp * 0.12)) {
+        issues.push({
+          code: "trim_power_mismatch",
+          severity: "warning",
+          field: "power",
+          message: `La versión «${trim.name}» suele tener ${trim.powerHp} CV, no ${vehicle.power} CV.`,
+        });
+      }
+    }
+    if (trim.yearFrom && vehicle.year < trim.yearFrom) {
+      issues.push({
+        code: "trim_year_mismatch",
+        severity: "error",
+        field: "year",
+        message: `«${trim.name}» no se comercializó antes de ${trim.yearFrom}.`,
+      });
+    }
+    if (trim.yearTo && vehicle.year > trim.yearTo + 1) {
+      issues.push({
+        code: "trim_year_mismatch",
+        severity: "warning",
+        field: "year",
+        message: `«${trim.name}» dejó de venderse ~${trim.yearTo}; el año ${vehicle.year} es tardío.`,
+      });
+    }
+    return { issues, trim, trimCatalogMatch };
+  }
+
+  // No catalog trim selected: check if version belongs to another brand
+  if (vehicle.version?.trim()) {
+    const foreignTrim = findTrimOwnedByOtherBrand(vehicle.version, brandSlug);
+    if (foreignTrim) {
+      issues.push({
+        code: "foreign_trim_catalog",
+        severity: "error",
+        field: "version",
+        message: `«${vehicle.version}» corresponde a ${foreignTrim.entry.brandSlug} ${foreignTrim.entry.modelSlug}, no a este modelo.`,
+      });
+    }
+    // If model has trims but version doesn't match any, warn
+    const trims = getTrimsForModel(brandSlug, modelSlug);
+    if (trims.length > 0 && !trims.some((t) => normalizeKey(t.name) === normalizeKey(vehicle.version ?? ""))) {
+      issues.push({
+        code: "unknown_trim",
+        severity: "warning",
+        field: "version",
+        message: `«${vehicle.version}» no está en el catálogo de versiones de este modelo. Revisa o elige del desplegable.`,
+      });
+    }
+  }
+
+  return { issues, trimCatalogMatch: false };
+}
+
 /**
  * VehicleConsistencyValidator — rejects impossible brand/model/trim/fuel combinations
  * before RAG or market analysis invents knowledge.
@@ -313,6 +400,7 @@ export function validateVehicleConsistency(
     Vehicle | VehicleInput,
     "brand" | "model" | "version" | "year" | "mileage" | "fuel" | "power" | "transmission"
   >,
+  options?: { trimSlug?: string; trimCatalogVerified?: boolean },
 ): ConsistencyReport {
   const issues: ConsistencyIssue[] = [];
   const brand = findBrandByName(vehicle.brand);
@@ -344,7 +432,17 @@ export function validateVehicleConsistency(
   const ownership = detectModelOwnership(vehicle.brand, vehicle.model);
   if (ownership) issues.push(ownership);
 
-  if (vehicle.version) {
+  const trimValidation = validateTrimCatalog(
+    catalogMatch.brandSlug,
+    catalogMatch.modelSlug,
+    vehicle,
+    options?.trimSlug,
+  );
+  issues.push(...trimValidation.issues);
+
+  const trimVerified = trimValidation.trimCatalogMatch || options?.trimCatalogVerified;
+
+  if (vehicle.version && !trimVerified) {
     const foreign = detectForeignTrim(vehicle.brand, vehicle.version);
     if (foreign) issues.push(foreign);
   }
@@ -386,7 +484,14 @@ export function validateVehicleConsistency(
   const blockMarketSearch =
     status === "invalid" &&
     issues.some((i) =>
-      ["brand_model_mismatch", "foreign_trim", "fuel_brand_conflict", "exotic_diesel"].includes(i.code),
+      [
+        "brand_model_mismatch",
+        "foreign_trim",
+        "foreign_trim_catalog",
+        "trim_fuel_mismatch",
+        "fuel_brand_conflict",
+        "exotic_diesel",
+      ].includes(i.code),
     );
 
   const summary =
@@ -400,6 +505,9 @@ export function validateVehicleConsistency(
     status,
     issues,
     catalogMatch,
+    trimCatalogMatch: trimValidation.trimCatalogMatch,
+    trimSlug: trimValidation.trim?.slug ?? options?.trimSlug,
+    engineCode: trimValidation.trim?.engineCode,
     blockModelKnowledge,
     blockMarketSearch,
     summary,

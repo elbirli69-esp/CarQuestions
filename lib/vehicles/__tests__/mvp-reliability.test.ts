@@ -9,6 +9,7 @@ import { chunkMatchesModel, chunkMatchesVehicle } from "@/lib/rag/knowledge/filt
 import { chunksToReliability } from "@/lib/rag/knowledge/to-reliability";
 import type { KnowledgeChunk } from "@/types/knowledge";
 import { validateVehicleConsistency } from "@/lib/vehicles/consistency";
+import { resolveVehicleIdentity } from "@/lib/vehicles/identity";
 import { detectMissingData } from "@/lib/vehicles/missing-data";
 import { isAllowedCochesNetListingUrl } from "@/lib/vehicles/url-policy";
 import { buildInspectionChecklist } from "@/lib/vehicles/inspection-checklist";
@@ -108,6 +109,54 @@ describe("VehicleConsistencyValidator", () => {
       }),
     );
     assert.equal(report.status, "invalid");
+  });
+
+  it("BMW X1 + catalog trim slug sdrive18d is verified", () => {
+    const report = validateVehicleConsistency(baseVehicle(), {
+      trimSlug: "sdrive18d",
+      trimCatalogVerified: true,
+    });
+    assert.equal(report.trimCatalogMatch, true);
+    assert.equal(report.trimSlug, "sdrive18d");
+    assert.notEqual(report.status, "invalid");
+  });
+
+  it("Ebro S800 + BMW trim slug triggers foreign_trim_catalog", () => {
+    const report = validateVehicleConsistency(
+      baseVehicle({
+        brand: "Ebro",
+        model: "S800",
+        version: "sDrive18d",
+        year: 2025,
+        mileage: 12000,
+        fuel: "electric",
+        power: 220,
+      }),
+      { trimSlug: "sdrive18d" },
+    );
+    assert.equal(report.trimCatalogMatch, false);
+    assert.ok(
+      report.issues.some((i) => i.code === "foreign_trim_catalog" || i.code === "foreign_trim"),
+    );
+  });
+});
+
+describe("Identity evidence chain", () => {
+  it("closes chain with catalog trim for BMW X1 sDrive18d", () => {
+    const result = resolveVehicleIdentity(baseVehicle(), { trimSlug: "sdrive18d" });
+    assert.equal(result.evidence.trimCatalogMatch, true);
+    assert.equal(result.evidence.trimSlug, "sdrive18d");
+    assert.equal(result.vehicle.version, "sDrive18d");
+    assert.ok(result.evidence.fields.some((f) => f.field === "version" && f.verified));
+    assert.match(result.evidence.summary, /catálogo/i);
+  });
+
+  it("marks free-text version as unverified when no trim match", () => {
+    const result = resolveVehicleIdentity(
+      baseVehicle({ brand: "Ebro", model: "S800", version: "sDrive18d", fuel: "electric", power: 220 }),
+    );
+    assert.equal(result.evidence.trimCatalogMatch, false);
+    assert.ok(result.evidence.fields.some((f) => f.field === "version" && !f.verified));
   });
 });
 

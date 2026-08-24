@@ -43,6 +43,12 @@ export const vehicleInputSchema = z.object({
   brand: z.string().trim().min(1, "Indica la marca").max(80),
   model: z.string().trim().min(1, "Indica el modelo").max(80),
   version: optionalText,
+  trimSlug: z
+    .string()
+    .trim()
+    .max(80)
+    .optional()
+    .transform((value) => (value ? value : undefined)),
   year: z
     .number({ error: "Indica un año válido" })
     .int()

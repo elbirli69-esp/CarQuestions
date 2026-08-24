@@ -1,3 +1,4 @@
+import type { IdentityEvidenceChain } from "@/lib/vehicles/identity";
 import type { ConsistencyReport } from "@/lib/vehicles/consistency";
 import type { EvidenceLevel, SourceClass } from "@/lib/vehicles/evidence";
 import type { InspectionChecklist } from "@/lib/vehicles/inspection-checklist";
@@ -181,6 +182,7 @@ export interface AnalyzeResponse {
   maintenance: MaintenanceSummary;
   limitations: string[];
   consistency?: ConsistencyReport;
+  identityEvidence?: IdentityEvidenceChain;
   purchaseVerdict?: PurchaseVerdict;
   missingData?: MissingDataReport;
   inspectionChecklist?: InspectionChecklist;

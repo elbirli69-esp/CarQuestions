@@ -57,12 +57,21 @@ CarQuestions ya tenía un flujo funcional (formulario → scrape/búsqueda coche
 - UX reordenada: coherencia → veredicto → precio → gaps → fuentes → score → anuncio → preguntas → checklist.
 - Mobile-first conservado (stack vertical `max-w-3xl`).
 
+### Fase 3 — Cadena de evidencia + versiones en catálogo
+- **`resolveVehicleIdentity`** (`lib/vehicles/identity.ts`): cierra la cadena catálogo trim → campos canónicos → provenance por campo.
+- **Catálogo de motorizaciones** (`data/vehicle-trims.json`, `lib/vehicles/trims.ts`): trims curados (BMW X1, Ebro S800, Golf, A3, Prius, Model 3, León, Clio, Clase A).
+- **`GET /api/vehicles/trims`**: alimenta el desplegable de versión en el formulario (igual que marca/modelo).
+- **Formulario**: `CatalogSelect` de versión + opción «Otra versión»; auto-rellena combustible/CV/cambio al elegir trim.
+- **`validateTrimCatalog`**: `foreign_trim_catalog`, `trim_fuel_mismatch`, `unknown_trim`; trim verificado salta heurística naive `foreign_trim`.
+- **UI**: `IdentityEvidenceCard` — fuente y verificación de cada campo de identidad.
+
 ## 4. Arquitectura modificada
 
 ```
 analyzeVehicle
-  ├─ validateVehicleConsistency  → blockModelKnowledge / blockMarketSearch
-  ├─ URL policy + listing scrape
+  ├─ listing scrape (si URL)
+  ├─ resolveVehicleIdentity  → trim catalog + provenance
+  ├─ validateVehicleConsistency (+ trimCatalog) → blockModelKnowledge / blockMarketSearch
   ├─ searchAllComparables (omitido si identidad rota)
   ├─ lookupKnowledge (omitido si identidad rota)
   │    └─ filters + to-reliability (solo nivel A/B model-specific)
@@ -74,6 +83,8 @@ analyzeVehicle
 
 Nuevos módulos clave:
 - `lib/vehicles/consistency.ts`
+- `lib/vehicles/identity.ts`
+- `lib/vehicles/trims.ts`
 - `lib/vehicles/evidence.ts`
 - `lib/vehicles/missing-data.ts`
 - `lib/vehicles/purchase-verdict.ts`
@@ -83,7 +94,7 @@ Nuevos módulos clave:
 
 ## 5. Tests creados
 
-`lib/vehicles/__tests__/mvp-reliability.test.ts` — 23 casos:
+`lib/vehicles/__tests__/mvp-reliability.test.ts` — 27 casos MVP (+ trim catalog + evidence chain):
 
 1. BMW X1 sDrive18d válido  
 2. Ebro S800 eléctrico coherente  
@@ -104,8 +115,8 @@ Scripts: `npm run test:mvp`, `npm test`.
 
 | Suite | Resultado |
 |-------|-----------|
-| `npm run test:mvp` | **23/23 pass** |
-| `npm test` (scraping + mvp) | **29/29 pass** |
+| `npm run test:mvp` | **27/27 pass** |
+| `npm test` (scraping + mvp) | **33/33 pass** |
 | `npm run build` | **OK** |
 | Smoke API live | Ebro inválido bloquea RAG; BMW X1 obtiene mercado + issues nivel A |
 
@@ -123,7 +134,7 @@ Scripts: `npm run test:mvp`, `npm test`.
 
 ## 8. Limitaciones actuales
 
-- Catálogo solo prueba marca/modelo URL, no motorizaciones oficiales completas.
+- Catálogo de motorizaciones curado (9 modelos); falta expansión masiva y scrape coches.net.
 - Corpus RAG sigue mayoritariamente `isDemo: true` (ahora se declara).
 - Verificación de título de anuncios es heurística (normalize/includes), no parser estructural perfecto.
 - Sin calibración empírica del % de confianza vs error real.
@@ -133,7 +144,7 @@ Scripts: `npm run test:mvp`, `npm test`.
 
 ## 9. Pendiente para la siguiente iteración
 
-1. Tabla canónica de motorizaciones (engine_code, potencia, años) por modelo.
+1. Expandir `vehicle-trims.json` / scrape motorizaciones desde coches.net.
 2. Revisión humana del corpus RAG y quitar `isDemo` donde proceda.
 3. Parser de marca/modelo desde URL/slug de coches.net (no solo título).
 4. Calibrar confianza con holdout de precios históricos.
@@ -156,18 +167,18 @@ Scripts: `npm run test:mvp`, `npm test`.
 | Dimensión | Nota | Comentario |
 |-----------|------|------------|
 | UX | 7.5 | Veredicto + gaps claros; aún denso en móvil |
-| Datos | 8.0 | Coherencia fuerte; provenance básica |
+| Datos | 8.5 | Cadena de evidencia + trims canónicos (parcial) |
 | Mercado | 7.5 | Honesto; depende de scrape |
 | Precio | 8.0 | Sin falsas medianas |
 | RAG | 8.0 | Aislamiento A/B vs C; corpus demo |
 | Fiabilidad | 7.0 | Ya no inventa; cobertura modelo irregular |
 | Preguntas | 8.5 | Priorizadas y por combustible |
 | Inspección | 8.0 | Checklist por fases |
-| Transparencia | 8.5 | Demo, banda confianza, limitaciones |
+| Transparencia | 9.0 | Provenance por campo + demo/confianza |
 | Mobile | 7.0 | Layout ok; falta QA visual dedicada |
 | Performance | 7.0 | Menos trabajo si identidad inválida |
 
-### Valoración global: **7.8 / 10**
+### Valoración global: **8.1 / 10**
 
 De una demo que **fingía certeza** a un copiloto que **falla en abierto** cuando no sabe — condición necesaria para confiar en una compra de ~30.000 €.
 

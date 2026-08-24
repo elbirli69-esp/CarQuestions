@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { CatalogSelect } from "@/components/vehicle-form/catalog-select";
 import { Field } from "@/components/vehicle-form/field";
+import { CUSTOM_TRIM_SLUG, findTrimByVersionText } from "@/lib/vehicles/trims";
 import {
   BODY_LABELS,
   CONDITION_LABELS,
@@ -20,11 +21,21 @@ import type { VehicleCatalog } from "@/lib/vehicles/catalog-types";
 import { BODY_TYPES, CONDITION_LEVELS, FUEL_TYPES, TRANSMISSION_TYPES, type VehicleInput } from "@/types/vehicle";
 import type { ListingExtractResult } from "@/types/source";
 
+type TrimOptionsPayload = {
+  slug: string;
+  label: string;
+  name: string;
+  fuel?: string;
+  powerHp?: number;
+  transmission?: string;
+};
+
 const emptyForm = {
   listingUrl: "",
   brandSlug: "",
   modelSlug: "",
-  version: "",
+  trimSlug: "",
+  versionCustom: "",
   year: "",
   mileage: "",
   fuel: "",
@@ -65,6 +76,8 @@ export function VehicleForm({
   const [extractingUrl, setExtractingUrl] = useState(false);
   const [catalog, setCatalog] = useState<VehicleCatalog | null>(null);
   const [catalogError, setCatalogError] = useState<string | null>(null);
+  const [trimOptions, setTrimOptions] = useState<TrimOptionsPayload[]>([]);
+  const [trimsLoading, setTrimsLoading] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -114,6 +127,74 @@ export function VehicleForm({
     return Array.from({ length: max - 1989 }, (_, index) => String(max - index));
   }, []);
 
+  useEffect(() => {
+    if (!form.brandSlug || !form.modelSlug) {
+      setTrimOptions([]);
+      return;
+    }
+    let cancelled = false;
+    setTrimsLoading(true);
+    void fetch(
+      `/api/vehicles/trims?brandSlug=${encodeURIComponent(form.brandSlug)}&modelSlug=${encodeURIComponent(form.modelSlug)}`,
+    )
+      .then((res) => res.json())
+      .then((data: { trims?: TrimOptionsPayload[] }) => {
+        if (cancelled) return;
+        setTrimOptions(data.trims ?? []);
+      })
+      .catch(() => {
+        if (!cancelled) setTrimOptions([]);
+      })
+      .finally(() => {
+        if (!cancelled) setTrimsLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [form.brandSlug, form.modelSlug]);
+
+  useEffect(() => {
+    if (!form.brandSlug || !form.modelSlug || trimOptions.length === 0) return;
+    if (form.trimSlug && form.trimSlug !== CUSTOM_TRIM_SLUG) return;
+    const text = form.versionCustom.trim();
+    if (!text) return;
+    const match = findTrimByVersionText(form.brandSlug, form.modelSlug, text);
+    if (!match) return;
+    const trim = trimOptions.find((t) => t.slug === match.slug);
+    if (!trim) return;
+    setForm((current) => ({
+      ...current,
+      trimSlug: trim.slug,
+      versionCustom: trim.name,
+      fuel: trim.fuel || current.fuel,
+      power: trim.powerHp != null ? String(trim.powerHp) : current.power,
+      transmission: trim.transmission || current.transmission,
+    }));
+  }, [trimOptions, form.brandSlug, form.modelSlug, form.trimSlug, form.versionCustom]);
+
+  const trimSelectOptions = useMemo(
+    () => [
+      ...trimOptions.map((trim) => ({ value: trim.slug, label: trim.label })),
+      ...(trimOptions.length > 0
+        ? [{ value: CUSTOM_TRIM_SLUG, label: "Otra versión (escribir)" }]
+        : []),
+    ],
+    [trimOptions],
+  );
+
+  function applyTrimFields(trimSlug: string) {
+    const trim = trimOptions.find((t) => t.slug === trimSlug);
+    if (!trim || trimSlug === CUSTOM_TRIM_SLUG) return;
+    setForm((current) => ({
+      ...current,
+      trimSlug,
+      versionCustom: trim.name,
+      fuel: trim.fuel || current.fuel,
+      power: trim.powerHp != null ? String(trim.powerHp) : current.power,
+      transmission: trim.transmission || current.transmission,
+    }));
+  }
+
   function update(name: keyof typeof emptyForm, value: string) {
     setForm((current) => ({ ...current, [name]: value }));
   }
@@ -141,11 +222,25 @@ export function VehicleForm({
       }
     }
 
+    const versionText = vehicle.version?.trim() ?? "";
+    let trimSlug = "";
+    let versionCustom = versionText;
+    if (brandSlug && modelSlug && versionText) {
+      const match = findTrimByVersionText(brandSlug, modelSlug, versionText);
+      if (match) {
+        trimSlug = match.slug;
+        versionCustom = match.name;
+      } else if (versionText) {
+        trimSlug = CUSTOM_TRIM_SLUG;
+      }
+    }
+
     setForm((current) => ({
       ...current,
       brandSlug,
       modelSlug,
-      version: vehicle.version?.trim() || current.version,
+      trimSlug,
+      versionCustom,
       year: vehicle.year != null ? String(vehicle.year) : current.year,
       mileage: vehicle.mileage != null ? String(vehicle.mileage) : current.mileage,
       fuel: vehicle.fuel || current.fuel,
@@ -205,10 +300,18 @@ export function VehicleForm({
       setError("Selecciona un modelo del catálogo.");
       return;
     }
+    const catalogTrim =
+      form.trimSlug && form.trimSlug !== CUSTOM_TRIM_SLUG
+        ? trimOptions.find((trim) => trim.slug === form.trimSlug)
+        : undefined;
+    const versionText = catalogTrim?.name ?? form.versionCustom.trim();
+
     const vehicle: VehicleInput = {
       brand: selectedBrand.name,
       model: selectedModel.name,
-      version: form.version.trim() || undefined,
+      version: versionText || undefined,
+      trimSlug:
+        form.trimSlug && form.trimSlug !== CUSTOM_TRIM_SLUG ? form.trimSlug : undefined,
       year: Number(form.year),
       mileage: Number(form.mileage),
       fuel: form.fuel as VehicleInput["fuel"],
@@ -304,7 +407,13 @@ export function VehicleForm({
               options={brandOptions}
               value={form.brandSlug}
               onValueChange={(slug) => {
-                setForm((current) => ({ ...current, brandSlug: slug, modelSlug: "" }));
+                setForm((current) => ({
+                  ...current,
+                  brandSlug: slug,
+                  modelSlug: "",
+                  trimSlug: "",
+                  versionCustom: "",
+                }));
               }}
             />
           </Field>
@@ -316,20 +425,62 @@ export function VehicleForm({
               placeholder={form.brandSlug ? "Buscar modelo…" : "Primero elige marca"}
               options={modelOptions}
               value={form.modelSlug}
-              onValueChange={(slug) => update("modelSlug", slug)}
+              onValueChange={(slug) => {
+                setForm((current) => ({
+                  ...current,
+                  modelSlug: slug,
+                  trimSlug: "",
+                  versionCustom: "",
+                }));
+              }}
             />
           </Field>
           <Field
             label="Versión"
             htmlFor="version"
-            hint="Recomendado. Ej. versión comercial o código de motor. Debe encajar con la marca."
+            hint={
+              trimOptions.length > 0
+                ? "Elige la motorización del catálogo o escribe otra si no aparece."
+                : "Recomendado. Ej. versión comercial o código de motor. Debe encajar con la marca."
+            }
           >
-            <Input
-              id="version"
-              placeholder="Versión o acabado"
-              value={form.version}
-              onChange={(event) => update("version", event.target.value)}
-            />
+            {trimOptions.length > 0 ? (
+              <div className="flex flex-col gap-2">
+                <CatalogSelect
+                  id="version"
+                  disabled={trimsLoading}
+                  placeholder={trimsLoading ? "Cargando versiones…" : "Buscar versión…"}
+                  options={trimSelectOptions}
+                  value={form.trimSlug}
+                  onValueChange={(slug) => {
+                    if (slug === CUSTOM_TRIM_SLUG) {
+                      setForm((current) => ({
+                        ...current,
+                        trimSlug: CUSTOM_TRIM_SLUG,
+                        versionCustom: "",
+                      }));
+                      return;
+                    }
+                    applyTrimFields(slug);
+                  }}
+                />
+                {form.trimSlug === CUSTOM_TRIM_SLUG ? (
+                  <Input
+                    id="versionCustom"
+                    placeholder="Versión o acabado (texto libre)"
+                    value={form.versionCustom}
+                    onChange={(event) => update("versionCustom", event.target.value)}
+                  />
+                ) : null}
+              </div>
+            ) : (
+              <Input
+                id="version"
+                placeholder="Versión o acabado"
+                value={form.versionCustom}
+                onChange={(event) => update("versionCustom", event.target.value)}
+              />
+            )}
           </Field>
           <Field
             label="Potencia (CV)"

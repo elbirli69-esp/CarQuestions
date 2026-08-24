@@ -1,0 +1,305 @@
+{
+  "generatedAt": "2026-08-24T10:00:00.000Z",
+  "source": "curated-motorizations",
+  "entries": [
+    {
+      "brandSlug": "bmw",
+      "modelSlug": "x1",
+      "trims": [
+        {
+          "slug": "sdrive18d",
+          "name": "sDrive18d",
+          "fuel": "diesel",
+          "powerHp": 150,
+          "yearFrom": 2015,
+          "yearTo": 2022,
+          "engineCode": "B47",
+          "transmission": "automatic",
+          "label": "sDrive18d · 150 CV · Diésel"
+        },
+        {
+          "slug": "sdrive18i",
+          "name": "sDrive18i",
+          "fuel": "petrol",
+          "powerHp": 140,
+          "yearFrom": 2015,
+          "yearTo": 2022,
+          "engineCode": "B38",
+          "transmission": "automatic",
+          "label": "sDrive18i · 140 CV · Gasolina"
+        },
+        {
+          "slug": "xdrive20d",
+          "name": "xDrive20d",
+          "fuel": "diesel",
+          "powerHp": 190,
+          "yearFrom": 2015,
+          "yearTo": 2022,
+          "engineCode": "B47",
+          "transmission": "automatic",
+          "label": "xDrive20d · 190 CV · Diésel"
+        },
+        {
+          "slug": "xdrive25d",
+          "name": "xDrive25d",
+          "fuel": "diesel",
+          "powerHp": 231,
+          "yearFrom": 2016,
+          "yearTo": 2022,
+          "engineCode": "B47",
+          "transmission": "automatic",
+          "label": "xDrive25d · 231 CV · Diésel"
+        },
+        {
+          "slug": "ix1",
+          "name": "iX1",
+          "fuel": "electric",
+          "powerHp": 204,
+          "yearFrom": 2022,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "iX1 · 204 CV · Eléctrico"
+        }
+      ]
+    },
+    {
+      "brandSlug": "ebro",
+      "modelSlug": "s800",
+      "trims": [
+        {
+          "slug": "premium-ev",
+          "name": "Premium",
+          "fuel": "electric",
+          "powerHp": 220,
+          "yearFrom": 2024,
+          "yearTo": 2026,
+          "label": "Premium · 220 CV · Eléctrico"
+        },
+        {
+          "slug": "comfort-ev",
+          "name": "Comfort",
+          "fuel": "electric",
+          "powerHp": 180,
+          "yearFrom": 2024,
+          "yearTo": 2026,
+          "label": "Comfort · 180 CV · Eléctrico"
+        }
+      ]
+    },
+    {
+      "brandSlug": "volkswagen",
+      "modelSlug": "golf",
+      "trims": [
+        {
+          "slug": "1-5-tsi",
+          "name": "1.5 TSI",
+          "fuel": "petrol",
+          "powerHp": 130,
+          "yearFrom": 2017,
+          "yearTo": 2026,
+          "engineCode": "EA211",
+          "label": "1.5 TSI · 130 CV · Gasolina"
+        },
+        {
+          "slug": "2-0-tdi",
+          "name": "2.0 TDI",
+          "fuel": "diesel",
+          "powerHp": 150,
+          "yearFrom": 2013,
+          "yearTo": 2020,
+          "engineCode": "EA288",
+          "label": "2.0 TDI · 150 CV · Diésel"
+        },
+        {
+          "slug": "gti",
+          "name": "GTI",
+          "fuel": "petrol",
+          "powerHp": 245,
+          "yearFrom": 2013,
+          "yearTo": 2026,
+          "label": "GTI · 245 CV · Gasolina"
+        },
+        {
+          "slug": "gtd",
+          "name": "GTD",
+          "fuel": "diesel",
+          "powerHp": 200,
+          "yearFrom": 2013,
+          "yearTo": 2020,
+          "label": "GTD · 200 CV · Diésel"
+        }
+      ]
+    },
+    {
+      "brandSlug": "audi",
+      "modelSlug": "a3",
+      "trims": [
+        {
+          "slug": "35-tfsi",
+          "name": "35 TFSI",
+          "fuel": "petrol",
+          "powerHp": 150,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "label": "35 TFSI · 150 CV · Gasolina"
+        },
+        {
+          "slug": "35-tdi",
+          "name": "35 TDI",
+          "fuel": "diesel",
+          "powerHp": 150,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "label": "35 TDI · 150 CV · Diésel"
+        },
+        {
+          "slug": "40-tfsi-quattro",
+          "name": "40 TFSI quattro",
+          "fuel": "petrol",
+          "powerHp": 190,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "label": "40 TFSI quattro · 190 CV · Gasolina"
+        }
+      ]
+    },
+    {
+      "brandSlug": "toyota",
+      "modelSlug": "prius",
+      "trims": [
+        {
+          "slug": "hybrid",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "powerHp": 122,
+          "yearFrom": 2016,
+          "yearTo": 2026,
+          "label": "Hybrid · 122 CV · Híbrido"
+        },
+        {
+          "slug": "plugin-hybrid",
+          "name": "Plug-in Hybrid",
+          "fuel": "plugin_hybrid",
+          "powerHp": 220,
+          "yearFrom": 2019,
+          "yearTo": 2026,
+          "label": "Plug-in Hybrid · 220 CV"
+        }
+      ]
+    },
+    {
+      "brandSlug": "tesla",
+      "modelSlug": "model-3",
+      "trims": [
+        {
+          "slug": "standard-range",
+          "name": "Standard Range",
+          "fuel": "electric",
+          "powerHp": 283,
+          "yearFrom": 2019,
+          "yearTo": 2026,
+          "label": "Standard Range · Eléctrico"
+        },
+        {
+          "slug": "long-range",
+          "name": "Long Range",
+          "fuel": "electric",
+          "powerHp": 366,
+          "yearFrom": 2019,
+          "yearTo": 2026,
+          "label": "Long Range · Eléctrico"
+        },
+        {
+          "slug": "performance",
+          "name": "Performance",
+          "fuel": "electric",
+          "powerHp": 513,
+          "yearFrom": 2019,
+          "yearTo": 2026,
+          "label": "Performance · Eléctrico"
+        }
+      ]
+    },
+    {
+      "brandSlug": "seat",
+      "modelSlug": "leon",
+      "trims": [
+        {
+          "slug": "1-5-tsi",
+          "name": "1.5 TSI",
+          "fuel": "petrol",
+          "powerHp": 150,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "label": "1.5 TSI · 150 CV · Gasolina"
+        },
+        {
+          "slug": "2-0-tdi",
+          "name": "2.0 TDI",
+          "fuel": "diesel",
+          "powerHp": 150,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "label": "2.0 TDI · 150 CV · Diésel"
+        }
+      ]
+    },
+    {
+      "brandSlug": "renault",
+      "modelSlug": "clio",
+      "trims": [
+        {
+          "slug": "tce-100",
+          "name": "TCe 100",
+          "fuel": "petrol",
+          "powerHp": 100,
+          "yearFrom": 2019,
+          "yearTo": 2026,
+          "label": "TCe 100 · Gasolina"
+        },
+        {
+          "slug": "dci-100",
+          "name": "dCi 100",
+          "fuel": "diesel",
+          "powerHp": 100,
+          "yearFrom": 2019,
+          "yearTo": 2024,
+          "label": "dCi 100 · Diésel"
+        },
+        {
+          "slug": "e-tech-hybrid",
+          "name": "E-Tech Hybrid",
+          "fuel": "hybrid",
+          "powerHp": 140,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "label": "E-Tech Hybrid · 140 CV"
+        }
+      ]
+    },
+    {
+      "brandSlug": "mercedes-benz",
+      "modelSlug": "clase-a",
+      "trims": [
+        {
+          "slug": "a180d",
+          "name": "A 180 d",
+          "fuel": "diesel",
+          "powerHp": 116,
+          "yearFrom": 2018,
+          "yearTo": 2026,
+          "label": "A 180 d · Diésel"
+        },
+        {
+          "slug": "a200",
+          "name": "A 200",
+          "fuel": "petrol",
+          "powerHp": 163,
+          "yearFrom": 2018,
+          "yearTo": 2026,
+          "label": "A 200 · Gasolina"
+        }
+      ]
+    }
+  ]
+}
