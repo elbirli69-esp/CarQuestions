@@ -28,10 +28,15 @@ const optionalUrl = z
         return;
       }
       const host = url.hostname.toLowerCase();
-      if (host !== "www.coches.net" && host !== "coches.net") {
+      const allowed =
+        host === "www.coches.net" ||
+        host === "coches.net" ||
+        host.endsWith("autoscout24.es") ||
+        host.endsWith("autoscout24.com");
+      if (!allowed) {
         ctx.addIssue({
           code: "custom",
-          message: "Por ahora solo se aceptan URLs de anuncios de coches.net.",
+          message: "Solo se aceptan URLs de anuncios de coches.net o AutoScout24.",
         });
       }
     } catch {

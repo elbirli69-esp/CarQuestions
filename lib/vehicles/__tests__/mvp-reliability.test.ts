@@ -11,7 +11,7 @@ import type { KnowledgeChunk } from "@/types/knowledge";
 import { validateVehicleConsistency } from "@/lib/vehicles/consistency";
 import { resolveVehicleIdentity } from "@/lib/vehicles/identity";
 import { detectMissingData } from "@/lib/vehicles/missing-data";
-import { isAllowedCochesNetListingUrl } from "@/lib/vehicles/url-policy";
+import { isAllowedCochesNetListingUrl, isAllowedAutoScout24ListingUrl, isAllowedListingUrl } from "@/lib/vehicles/url-policy";
 import { buildInspectionChecklist } from "@/lib/vehicles/inspection-checklist";
 
 function baseVehicle(overrides: Partial<Vehicle> = {}): Vehicle {
@@ -378,6 +378,16 @@ describe("URL policy / SSRF", () => {
       isAllowedCochesNetListingUrl("https://www.coches.net/bmw-x1/detalle/123"),
       true,
     );
+  });
+
+  it("allows AutoScout24 https listing URLs", () => {
+    assert.equal(
+      isAllowedAutoScout24ListingUrl(
+        "https://www.autoscout24.es/anuncios/bmw-x1-sdrive-18ia-gasolina-negro-cat_ma13mo19242-0f88b622-d31f-499b-a221-bae5c97673c2",
+      ),
+      true,
+    );
+    assert.equal(isAllowedListingUrl("https://www.autoscout24.es/anuncios/test-uuid"), false);
   });
 
   it("rejects localhost and non-coches hosts", () => {

@@ -6,7 +6,6 @@ import type {
   SourceSearchResult,
 } from "@/types/source";
 import {
-  autoScoutProvider,
   autocasionProvider,
   cochesComProvider,
   dgtProvider,
@@ -15,11 +14,12 @@ import {
   milanunciosProvider,
   wallapopProvider,
 } from "@/lib/sources/providers";
+import { autoScout24Provider } from "@/lib/sources/autoscout24/provider";
 import { cochesNetProvider } from "@/lib/sources/coches-net/provider";
 
 const providers: SourceProvider[] = [
   cochesNetProvider,
-  autoScoutProvider,
+  autoScout24Provider,
   wallapopProvider,
   milanunciosProvider,
   cochesComProvider,

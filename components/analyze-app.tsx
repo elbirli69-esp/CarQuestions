@@ -5,18 +5,8 @@ import { useRef, useState } from "react";
 import { DemoBanner } from "@/components/demo-banner";
 import { HelpGuide } from "@/components/help/help-guide";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { ComparableList } from "@/components/comparable-cars/comparable-list";
-import { ListingAnalysisCard } from "@/components/listing-analysis/listing-analysis-card";
-import { SellerQuestions } from "@/components/seller-questions/seller-questions";
-import { SourcesPanel } from "@/components/sources/sources-panel";
+import { AnalysisResultsTabs } from "@/components/valuation/analysis-results-tabs";
 import { ConsistencyAlert } from "@/components/valuation/consistency-alert";
-import { IdentityEvidenceCard } from "@/components/valuation/identity-evidence-card";
-import { InspectionChecklistCard } from "@/components/valuation/inspection-checklist-card";
-import { MissingDataCard } from "@/components/valuation/missing-data-card";
-import { PurchaseVerdictCard } from "@/components/valuation/purchase-verdict-card";
-import { ScoreCard } from "@/components/valuation/score-card";
-import { ValuationCard } from "@/components/valuation/valuation-card";
-import { VehicleChat } from "@/components/vehicle-chat/vehicle-chat";
 import { VehicleForm } from "@/components/vehicle-form/vehicle-form";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -29,7 +19,6 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
   const [error, setError] = useState<string | null>(null);
   const [pendingQuestion, setPendingQuestion] = useState("");
   const resultsRef = useRef<HTMLDivElement>(null);
-  const chatRef = useRef<HTMLDivElement>(null);
 
   async function handleSubmit(vehicle: VehicleInput) {
     setError(null);
@@ -111,74 +100,14 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
       {analysis ? (
         <div ref={resultsRef} className="flex flex-col gap-6">
           {analysis.consistency ? <ConsistencyAlert report={analysis.consistency} /> : null}
-          {analysis.identityEvidence ? (
-            <IdentityEvidenceCard evidence={analysis.identityEvidence} />
-          ) : null}
-          {analysis.purchaseVerdict ? (
-            <PurchaseVerdictCard verdict={analysis.purchaseVerdict} valuation={analysis.valuation} />
-          ) : null}
-          {!identityBroken ? <ValuationCard valuation={analysis.valuation} /> : null}
-          {analysis.missingData ? <MissingDataCard report={analysis.missingData} /> : null}
-          <SourcesPanel
-            sources={analysis.sources}
-            listings={analysis.comparables}
-            comparableCount={analysis.valuation.comparableCount}
-            sourceCount={analysis.valuation.sourceCount}
-            updatedAt={analysis.valuation.dataUpdatedAt}
-            searchNotes={[...(analysis.searchNotes ?? []), ...(analysis.listingDetailNotes ?? [])]}
-            matchStrictness={analysis.valuation.matchStrictness}
-            emptyMessage="Sin anuncios comparables suficientes. No se inventa un precio de mercado."
+          <AnalysisResultsTabs
+            analysis={analysis}
+            identityBroken={identityBroken}
+            hasMarketData={hasMarketData}
+            hasAlternatives={hasAlternatives}
+            pendingQuestion={pendingQuestion}
+            onQuestionChange={setPendingQuestion}
           />
-          {hasMarketData && !identityBroken ? (
-            <ComparableList
-              title="Coches similares"
-              description={`${analysis.comparables.length} anuncios comparables observados del mismo modelo.`}
-              listings={analysis.comparables}
-            />
-          ) : null}
-          <ScoreCard scores={analysis.scores} />
-          <ListingAnalysisCard
-            analysis={analysis.listingAnalysis}
-            reliability={analysis.reliability}
-            maintenance={analysis.maintenance}
-          />
-          <SellerQuestions questions={analysis.sellerQuestions} />
-          {analysis.inspectionChecklist ? (
-            <InspectionChecklistCard checklist={analysis.inspectionChecklist} />
-          ) : null}
-          {hasAlternatives ? (
-            <ComparableList
-              title="Alternativas del segmento"
-              description="Rivales comparables para valorar otras opciones."
-              listings={analysis.alternatives}
-              onAsk={(nextQuestion) => {
-                setPendingQuestion(nextQuestion);
-                requestAnimationFrame(() => {
-                  chatRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-                });
-              }}
-            />
-          ) : null}
-          <div ref={chatRef}>
-            <VehicleChat
-              analysisId={analysis.id}
-              vehicle={analysis.vehicle}
-              question={pendingQuestion}
-              onQuestionChange={setPendingQuestion}
-            />
-          </div>
-          {analysis.limitations.length > 0 ? (
-            <Alert>
-              <AlertTitle>Limitaciones</AlertTitle>
-              <AlertDescription>
-                <ul className="mt-2 list-disc space-y-1 pl-4">
-                  {analysis.limitations.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </AlertDescription>
-            </Alert>
-          ) : null}
         </div>
       ) : null}
     </div>

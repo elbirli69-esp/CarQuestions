@@ -254,12 +254,13 @@ export function VehicleForm({
 
   async function extractFromUrl(rawUrl: string) {
     const url = rawUrl.trim();
-    if (!url || !/coches\.net/i.test(url)) {
+    if (!url || !/(coches\.net|autoscout24)/i.test(url)) {
       setUrlStatus(null);
       return;
     }
+    const portal = /autoscout24/i.test(url) ? "AutoScout24" : "coches.net";
     setExtractingUrl(true);
-    setUrlStatus("Leyendo anuncio de coches.net…");
+    setUrlStatus(`Leyendo anuncio de ${portal}…`);
     setError(null);
     try {
       const response = await fetch("/api/listings/extract", {
@@ -342,7 +343,7 @@ export function VehicleForm({
         <div className="mb-5 flex flex-col gap-1">
           <h2 className="font-heading text-lg font-medium">Datos del coche</h2>
           <p className="text-sm text-muted-foreground">
-            Pega un anuncio de coches.net o rellena lo esencial. Versión y CV afinan el precio.
+            Pega un anuncio de coches.net o AutoScout24, o rellena lo esencial. Versión y CV afinan el precio.
           </p>
         </div>
 
@@ -355,7 +356,7 @@ export function VehicleForm({
 
         <div className="mb-4">
           <Field
-            label="URL del anuncio (coches.net)"
+            label="URL del anuncio (coches.net / AutoScout24)"
             htmlFor="listingUrl"
             hint="Al pegar el enlace se intentan rellenar marca, modelo, año, km, combustible y precio."
           >
@@ -363,7 +364,7 @@ export function VehicleForm({
               <Input
                 id="listingUrl"
                 inputMode="url"
-                placeholder="https://www.coches.net/..."
+                placeholder="https://www.coches.net/... o https://www.autoscout24.es/anuncios/..."
                 value={form.listingUrl}
                 onChange={(event) => {
                   update("listingUrl", event.target.value);

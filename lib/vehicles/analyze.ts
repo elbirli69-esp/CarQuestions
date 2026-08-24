@@ -2,8 +2,7 @@ import type { VehicleContext } from "@/types/ai";
 import type { AnalyzeResponse } from "@/types/valuation";
 import type { VehicleInput } from "@/types/vehicle";
 import { analysisLog } from "@/lib/observability/analysis-log";
-import { fetchListingDetail } from "@/lib/sources/coches-net/fetch-listing-detail";
-import { searchAllComparables, toSourceCitations } from "@/lib/sources/registry";
+import { fetchListingDetailFromUrl } from "@/lib/sources/listing-detail";
 import { saveAnalysis } from "@/lib/store/vehicle-store";
 import { createVehicleId } from "@/lib/utils/math";
 import { analyzeListing } from "@/lib/valuation/listing-analysis";
@@ -17,7 +16,8 @@ import { lookupKnowledge } from "@/lib/vehicles/knowledge-base";
 import { detectMissingData } from "@/lib/vehicles/missing-data";
 import { buildPurchaseVerdict } from "@/lib/vehicles/purchase-verdict";
 import { vehicleInputSchema } from "@/lib/vehicles/schema";
-import { isAllowedCochesNetListingUrl } from "@/lib/vehicles/url-policy";
+import { searchAllComparables, toSourceCitations } from "@/lib/sources/registry";
+import { isAllowedListingUrl } from "@/lib/vehicles/url-policy";
 
 function resolveDataMode(options: {
   hasLiveListings: boolean;
@@ -50,12 +50,12 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
   });
 
   if (vehicle.listingUrl) {
-    if (!isAllowedCochesNetListingUrl(vehicle.listingUrl)) {
+    if (!isAllowedListingUrl(vehicle.listingUrl)) {
       listingDetailNotes.push(
-        "URL de anuncio rechazada: solo se aceptan fichas https de coches.net.",
+        "URL de anuncio rechazada: solo se aceptan fichas https de coches.net o AutoScout24.",
       );
     } else {
-      const detail = await fetchListingDetail(vehicle.listingUrl);
+      const detail = await fetchListingDetailFromUrl(vehicle.listingUrl);
       if (detail) {
         listingScraped = true;
         vehicle = {
@@ -262,6 +262,11 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
   if (comparables.some((listing) => listing.source === "coches.net")) {
     limitations.push(
       "Los comparables proceden de anuncios públicos de coches.net (mercado España).",
+    );
+  }
+  if (comparables.some((listing) => listing.source === "autoscout24")) {
+    limitations.push(
+      "Los comparables proceden de anuncios públicos de AutoScout24 (mercado España).",
     );
   }
   if (searchNotes.length > 0 && comparables.length === 0) {

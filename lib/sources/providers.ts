@@ -55,14 +55,6 @@ function mockMarketplace(
   };
 }
 
-export const autoScoutProvider = mockMarketplace(
-  "autoscout24",
-  "AutoScout24",
-  ["autoscout24.es", "www.autoscout24.es", "autoscout24.com"],
-  7,
-  20,
-);
-
 export const wallapopProvider = mockMarketplace(
   "wallapop",
   "Wallapop",
