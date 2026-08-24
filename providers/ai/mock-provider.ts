@@ -6,16 +6,21 @@ import { formatEuro, formatKm, formatPercent } from "@/lib/utils/format";
 function contextSummary(context: VehicleContext): string {
   const v = context.vehicle;
   const m = context.marketData;
-  const marketNote =
-    m.comparableCount > 0
-      ? `Valor estimado: ${formatEuro(m.estimatedPrice)} (${formatEuro(m.low)} – ${formatEuro(m.high)}). Comparables: ${m.comparableCount}.`
-      : `Referencia orientativa (sin anuncios reales): ${formatEuro(m.estimatedPrice)} (${formatEuro(m.low)} – ${formatEuro(m.high)}). Confianza baja (${m.confidence} %).`;
+  const market = context.market;
+  const hasMarket =
+    (market?.status === "observed" && market.estimatedPrice != null) ||
+    (m.comparableCount >= 3 && m.origin === "observed" && m.estimatedPrice > 0);
+  const marketNote = hasMarket
+    ? `Valor estimado: ${formatEuro(market?.estimatedPrice ?? m.estimatedPrice)} (${formatEuro(m.low)} – ${formatEuro(m.high)}). Comparables: ${market?.comparableCount ?? m.comparableCount}.`
+    : `Sin mercado comparable observado. No inventamos un precio de mercado.`;
 
   return [
     `${v.brand} ${v.model} ${v.version ?? ""} ${v.year}, ${formatKm(v.mileage)}, ${v.fuel}.`,
     v.advertisedPrice ? `Precio anunciado: ${formatEuro(v.advertisedPrice)}.` : "Sin precio anunciado.",
     marketNote,
-    m.percentDifference != null ? `Desviación: ${formatPercent(m.percentDifference)}. Valoración: ${m.verdictLabel}.` : "",
+    m.percentDifference != null && hasMarket
+      ? `Desviación: ${formatPercent(m.percentDifference)}. Valoración: ${m.verdictLabel}.`
+      : "",
   ]
     .filter(Boolean)
     .join(" ");
@@ -44,14 +49,36 @@ export class MockAIProvider implements AIProvider {
     void history;
     const v = context.vehicle;
     const m = context.marketData;
-    const hasMarket = m.comparableCount > 0;
+    const market = context.market;
+    const identity = context.identity;
+    const hasMarket =
+      (market?.status === "observed" && market.estimatedPrice != null) ||
+      (m.comparableCount >= 3 && m.origin === "observed" && m.estimatedPrice > 0);
     const intent = classifyQuestionIntent(question);
     const snippets = knowledgeSnippets(context);
     const retrievedIds = (context.retrievedDocuments ?? []).map((item) => item.document.id);
     let text = "";
 
+    if (identity && !identity.safeForTechnicalKnowledge) {
+      text = [
+        "Los datos que has introducido se contradicen (marca, modelo, versión o combustible).",
+        ...identity.issues
+          .filter((issue) => issue.severity === "blocking")
+          .map((issue) => `- ${issue.message}`),
+        "Corrige el formulario antes de preguntar por averías o precio. No invento conocimiento técnico para un vehículo incoherente.",
+      ].join("\n");
+      return {
+        text,
+        provider: this.name,
+        isDemo: true,
+        origin: "ai_estimate",
+        usedDocuments: retrievedIds,
+        disclaimer:
+          "Identidad del vehículo inválida. Las respuestas técnicas y de mercado están bloqueadas hasta corregir los datos.",
+      };
+    }
+
     if (intent === "price") {
-      const maxPay = m.low;
       text = [
         contextSummary(context),
         m.advertisedPrice
@@ -60,9 +87,9 @@ export class MockAIProvider implements AIProvider {
             : `Sin anuncios reales conectados, solo puedo comparar con una referencia orientativa: «${m.verdictLabel}». Confirma en portales antes de decidir.`
           : "No hay precio anunciado, así que no se puede decir si es barato o caro.",
         m.advertisedPrice && hasMarket
-          ? `Como techo prudente con estos comparables, estaría cerca de ${formatEuro(maxPay)}.`
+          ? `Como techo prudente con estos comparables, estaría cerca de ${formatEuro(m.low)}.`
           : m.advertisedPrice
-            ? `Como referencia prudente sin anuncios reales, un techo orientativo podría rondar ${formatEuro(maxPay)}, pero hay que contrastarlo con anuncios actuales.`
+            ? "Sin anuncios comparables suficientes no propongo un techo de negociación numérico."
             : "",
         snippets.length ? `Contexto técnico a tener en cuenta al negociar:\n${snippets.join("\n")}` : "",
       ]
@@ -134,9 +161,13 @@ export class MockAIProvider implements AIProvider {
 
     // Reglas puntuales de depreciación / km año sobre el intent general
     const q = question.toLowerCase();
-    if (q.includes("3 años") || q.includes("depreci") || q.includes("valer")) {
-      const future = Math.round(m.estimatedPrice * Math.pow(0.9, 3));
-      text = `Una regla orientativa (no predicción) sería perder en torno a un 10 % anual: ${formatEuro(m.estimatedPrice)} → unos ${formatEuro(future)} dentro de 3 años, si el mercado y el kilometraje se mantienen razonables. Confirma con anuncios reales del segmento.`;
+    if ((q.includes("3 años") || q.includes("depreci") || q.includes("valer")) && hasMarket) {
+      const base = market?.estimatedPrice ?? m.estimatedPrice;
+      const future = Math.round(base * Math.pow(0.9, 3));
+      text = `Una regla orientativa (no predicción) sería perder en torno a un 10 % anual: ${formatEuro(base)} → unos ${formatEuro(future)} dentro de 3 años, si el mercado y el kilometraje se mantienen razonables. Confirma con anuncios reales del segmento.`;
+    } else if ((q.includes("3 años") || q.includes("depreci") || q.includes("valer")) && !hasMarket) {
+      text =
+        "Sin comparables de mercado observados no puedo estimar depreciación numérica. Busca anuncios equivalentes en el portal y compara al menos cinco precios.";
     } else if (q.includes("30.000") || q.includes("30000") || q.includes("km al año")) {
       text = [
         v.fuel === "diesel"

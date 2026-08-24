@@ -1,6 +1,9 @@
+import type { VehicleIdentity } from "@/types/identity";
+import type { MarketValuation } from "@/types/market";
 import type { VehicleListing } from "@/types/listing";
 import type { RetrievedDocument } from "@/types/rag";
 import type { SourceCitation } from "@/types/source";
+import type { TechnicalKnowledge } from "@/types/technical";
 import type {
   AnalyzeResponse,
   MaintenanceSummary,
@@ -18,6 +21,12 @@ export interface VehicleContext {
   maintenanceData: MaintenanceSummary;
   sourceData: SourceCitation[];
   retrievedDocuments?: RetrievedDocument[];
+  /** Identidad validada del análisis (coherencia marca/modelo/motor). */
+  identity?: VehicleIdentity;
+  /** Valoración de mercado honesta (puede no tener precio). */
+  market?: MarketValuation;
+  /** Conocimiento técnico acotado por identidad y tren motriz. */
+  knowledge?: TechnicalKnowledge;
 }
 
 export interface ChatMessage {

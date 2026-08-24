@@ -1,15 +1,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import type { VehicleScorecard } from "@/types/valuation";
+import type { Scorecard } from "@/types/analysis";
 import { cn } from "@/lib/utils";
 
-export function ScoreCard({ scores }: { scores: VehicleScorecard }) {
+export function ScoreCard({ scores }: { scores: Scorecard }) {
   return (
     <Card>
       <CardHeader>
         <CardDescription>Score del vehículo</CardDescription>
-        <CardTitle>
-          {scores.overall != null ? `${scores.overall}/100` : "Sin score global"}
-        </CardTitle>
+        <CardTitle>{scores.overall != null ? `${scores.overall}/100` : "Sin score global"}</CardTitle>
         <p className="text-sm text-muted-foreground">{scores.summary}</p>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
@@ -36,7 +34,7 @@ export function ScoreCard({ scores }: { scores: VehicleScorecard }) {
                 style={{ width: `${dimension.score ?? 0}%` }}
               />
             </div>
-            <p className="text-xs text-muted-foreground">{dimension.reason}</p>
+            <p className="text-xs text-muted-foreground">{dimension.explanation}</p>
           </div>
         ))}
       </CardContent>

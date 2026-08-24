@@ -1,5 +1,15 @@
+import type {
+  BuyVerdict,
+  InspectionChecklist,
+  ListingQuality,
+  MissingDataReport,
+  Scorecard,
+} from "@/types/analysis";
+import type { VehicleIdentity } from "@/types/identity";
+import type { MarketValuation } from "@/types/market";
 import type { VehicleListing } from "@/types/listing";
 import type { SourceCitation } from "@/types/source";
+import type { TechnicalKnowledge } from "@/types/technical";
 import type { Vehicle } from "@/types/vehicle";
 
 export type PriceVerdict =
@@ -114,10 +124,15 @@ export interface ListingAnalysis {
   limitations: string[];
 }
 
+/** @deprecated Usar SellerQuestion de @/types/analysis (con priority/category). */
 export interface SellerQuestion {
   question: string;
   why: string;
   relatedIssue?: string;
+  priority?: "high" | "medium" | "low";
+  category?: string;
+  evidenceLevel?: string;
+  id?: string;
 }
 
 export type DataMode = "demo" | "live" | "mixed" | "knowledge";
@@ -127,8 +142,21 @@ export interface AnalyzeResponse {
   generatedAt: string;
   dataMode: DataMode;
   vehicle: Vehicle;
+  /** Identificación canónica y validación de coherencia. */
+  identity: VehicleIdentity;
+  /** Veredicto principal: ¿es una buena compra? */
+  buyVerdict: BuyVerdict;
+  /** Valoración de mercado honesta (puede no tener precio). */
+  market: MarketValuation;
+  /** Conocimiento técnico por niveles de evidencia. */
+  knowledge: TechnicalKnowledge;
+  /** Adaptador legacy para componentes que aún consumen ValuationResult. */
   valuation: ValuationResult;
-  scores: VehicleScorecard;
+  /** Scorecard por dimensiones con confianza. */
+  scores: Scorecard;
+  listingQuality: ListingQuality;
+  missingData: MissingDataReport;
+  inspection: InspectionChecklist;
   comparables: VehicleListing[];
   alternatives: VehicleListing[];
   sources: SourceCitation[];
@@ -136,9 +164,12 @@ export interface AnalyzeResponse {
   searchNotes?: string[];
   /** Notas del scrape de la ficha del anuncio (URL pegada). */
   listingDetailNotes?: string[];
+  /** @deprecated Usar listingQuality. Se mantiene por compatibilidad. */
   listingAnalysis: ListingAnalysis;
   sellerQuestions: SellerQuestion[];
+  /** @deprecated Usar knowledge. Se mantiene por compatibilidad con el chat. */
   reliability: ReliabilitySummary;
+  /** @deprecated Usar knowledge.maintenance. */
   maintenance: MaintenanceSummary;
   limitations: string[];
 }

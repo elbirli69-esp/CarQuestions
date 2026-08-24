@@ -1,4 +1,5 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import type { VehicleIdentity } from "@/types/identity";
 import type { DataMode } from "@/types/valuation";
 
 const COPY: Record<DataMode, { title: string; description: string }> = {
@@ -15,7 +16,7 @@ const COPY: Record<DataMode, { title: string; description: string }> = {
   knowledge: {
     title: "Sin anuncios de mercado",
     description:
-      "No se pudieron obtener comparables de coches.net. El precio es una referencia orientativa por segmento. Fiabilidad y mantenimiento sí vienen de datos curados.",
+      "No se pudieron obtener comparables de coches.net. No mostramos un precio de mercado inventado. Fiabilidad y mantenimiento sí vienen de datos curados cuando la identidad del coche es coherente.",
   },
   demo: {
     title: "Modo demostración",
@@ -23,7 +24,40 @@ const COPY: Record<DataMode, { title: string; description: string }> = {
   },
 };
 
-export function DemoBanner({ dataMode = "knowledge" }: { dataMode?: DataMode; text?: string }) {
+export function DemoBanner({
+  dataMode = "knowledge",
+  identity,
+}: {
+  dataMode?: DataMode;
+  identity?: VehicleIdentity;
+}) {
+  if (identity && !identity.safeForTechnicalKnowledge) {
+    return (
+      <Alert
+        variant="destructive"
+        className="border-destructive/40 bg-destructive/10 text-destructive dark:text-red-100"
+      >
+        <AlertTitle>Datos del vehículo incoherentes</AlertTitle>
+        <AlertDescription>
+          Marca, modelo, versión o combustible se contradicen. Corrígelos antes de fiarte del análisis técnico o del
+          precio. El conocimiento RAG está bloqueado para evitar alucinaciones.
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
+  if (identity?.status === "suspicious") {
+    return (
+      <Alert className="border-amber-500/30 bg-amber-500/10 text-amber-950 dark:border-amber-400/25 dark:bg-amber-400/10 dark:text-amber-50">
+        <AlertTitle>Revisa los datos del anuncio</AlertTitle>
+        <AlertDescription>
+          Hay señales de inconsistencia ({identity.issues.length} aviso
+          {identity.issues.length === 1 ? "" : "s"}). El análisis continúa con precaución.
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
   const copy = COPY[dataMode] ?? COPY.knowledge;
 
   return (

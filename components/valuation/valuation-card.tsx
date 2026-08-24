@@ -4,6 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { formatEuro, formatPercent } from "@/lib/utils/format";
 import { formatSignedEuro } from "@/lib/utils/format";
 import type { ValuationResult } from "@/types/valuation";
+import type { MarketValuation } from "@/types/market";
+import { CONFIDENCE_LABELS } from "@/lib/valuation/confidence";
 import { cn } from "@/lib/utils";
 
 const VERDICT_STYLES: Record<string, string> = {
@@ -27,9 +29,18 @@ function confidenceTone(confidence: number): string {
   return "text-red-700 dark:text-red-300";
 }
 
-export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
-  const hasDistribution = valuation.comparableCount >= 5;
+export function ValuationCard({
+  valuation,
+  market,
+}: {
+  valuation: ValuationResult;
+  market?: MarketValuation;
+}) {
+  const hasMarket = market?.status === "observed" && market.estimatedPrice != null;
+  const hasDistribution = hasMarket && (market?.distribution?.count ?? 0) >= 5;
   const topLimitations = valuation.limitations.slice(0, 2);
+  const confidenceLevel = market?.confidence.level;
+  const confidenceLabel = confidenceLevel ? CONFIDENCE_LABELS[confidenceLevel] : null;
 
   return (
     <Card className="bg-card">
@@ -41,9 +52,11 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div>
             <p className="text-sm text-muted-foreground">Valor estimado</p>
-            <p className="font-heading text-4xl tracking-tight">{formatEuro(valuation.estimatedPrice)}</p>
+            <p className="font-heading text-4xl tracking-tight">
+              {hasMarket ? formatEuro(valuation.estimatedPrice) : "Sin mercado"}
+            </p>
             <Badge variant="outline" className="mt-2">
-              {ORIGIN_LABELS[valuation.origin]}
+              {hasMarket ? ORIGIN_LABELS.observed : "Sin anuncios comparables"}
             </Badge>
           </div>
           <div>
@@ -90,13 +103,17 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
           <div className="rounded-xl bg-muted/60 px-4 py-3">
             <p className="text-xs text-muted-foreground">Intervalo orientativo</p>
             <p className="text-sm font-medium">
-              {formatEuro(valuation.low)} – {formatEuro(valuation.high)}
+              {hasMarket
+                ? `${formatEuro(valuation.low)} – ${formatEuro(valuation.high)}`
+                : market?.segmentReference
+                  ? `Ref. segmento ~${formatEuro(market.segmentReference.value)}`
+                  : "—"}
             </p>
           </div>
           <div className="rounded-xl bg-muted/60 px-4 py-3">
             <p className="text-xs text-muted-foreground">Confianza</p>
-            <p className={cn("text-sm font-medium", confidenceTone(valuation.confidence))}>
-              {valuation.confidence} %
+            <p className={cn("text-sm font-medium", confidenceLevel ? confidenceTone(market!.confidence.score) : "")}>
+              {confidenceLabel ?? "Sin base"}
             </p>
             {valuation.confidenceDrivers && valuation.confidenceDrivers.length > 0 ? (
               <ul className="mt-2 space-y-0.5 text-xs text-muted-foreground">
@@ -146,7 +163,7 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
               : "No hay percentiles de mercado: sin anuncios observados no se simula una distribución de precios."}
           </p>
         )}
-        {valuation.percentDifference != null && valuation.origin === "observed" ? (
+        {valuation.percentDifference != null && hasMarket ? (
           <p className="text-xs text-muted-foreground">
             Desviación frente a la estimación: {formatPercent(valuation.percentDifference)}
           </p>

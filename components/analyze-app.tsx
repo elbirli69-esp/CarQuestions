@@ -2,6 +2,11 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
+import { BuyVerdictCard } from "@/components/valuation/buy-verdict-card";
+import { IdentityAlert } from "@/components/identity/identity-alert";
+import { InspectionChecklistCard } from "@/components/valuation/inspection-checklist-card";
+import { ListingQualityCard } from "@/components/valuation/listing-quality-card";
+import { MissingDataCard } from "@/components/valuation/missing-data-card";
 import { DemoBanner } from "@/components/demo-banner";
 import { HelpGuide } from "@/components/help/help-guide";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -51,7 +56,7 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
     }
   }
 
-  const hasMarketData = analysis ? analysis.valuation.comparableCount > 0 : false;
+  const hasMarketData = analysis ? analysis.market.status === "observed" : false;
   const hasAlternatives = analysis ? analysis.alternatives.length > 0 : false;
 
   return (
@@ -82,7 +87,7 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
         </p>
       </header>
 
-      {analysis ? <DemoBanner dataMode={analysis.dataMode} /> : null}
+      {analysis ? <DemoBanner dataMode={analysis.dataMode} identity={analysis.identity} /> : null}
 
       <VehicleForm onSubmit={handleSubmit} isSubmitting={loading} />
 
@@ -103,16 +108,18 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
 
       {analysis ? (
         <div ref={resultsRef} className="flex flex-col gap-6">
-          <ValuationCard valuation={analysis.valuation} />
+          <IdentityAlert identity={analysis.identity} />
+          <BuyVerdictCard verdict={analysis.buyVerdict} />
+          <ValuationCard valuation={analysis.valuation} market={analysis.market} />
           <SourcesPanel
             sources={analysis.sources}
             listings={analysis.comparables}
-            comparableCount={analysis.valuation.comparableCount}
-            sourceCount={analysis.valuation.sourceCount}
-            updatedAt={analysis.valuation.dataUpdatedAt}
+            comparableCount={analysis.market.comparableCount}
+            sourceCount={analysis.market.sourceCount}
+            updatedAt={analysis.market.dataUpdatedAt}
             searchNotes={[...(analysis.searchNotes ?? []), ...(analysis.listingDetailNotes ?? [])]}
-            matchStrictness={analysis.valuation.matchStrictness}
-            emptyMessage="coches.net no devolvió comparables útiles para este coche. El precio mostrado es solo una referencia de segmento."
+            matchStrictness={analysis.market.matchStrictness ?? undefined}
+            emptyMessage="coches.net no devolvió comparables útiles. No mostramos precio de mercado inventado."
           />
           {hasMarketData ? (
             <ComparableList
@@ -120,14 +127,24 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
               description={`${analysis.comparables.length} anuncios comparables observados del mismo modelo.`}
               listings={analysis.comparables}
             />
+          ) : analysis.market.segmentReference ? (
+            <Alert>
+              <AlertTitle>Referencia orientativa de segmento</AlertTitle>
+              <AlertDescription>
+                {analysis.market.segmentReference.value.toLocaleString("es-ES")} € —{" "}
+                {analysis.market.segmentReference.disclaimer}
+              </AlertDescription>
+            </Alert>
           ) : null}
+          <ListingQualityCard quality={analysis.listingQuality} />
+          <MissingDataCard report={analysis.missingData} />
           <ScoreCard scores={analysis.scores} />
           <ListingAnalysisCard
             analysis={analysis.listingAnalysis}
-            reliability={analysis.reliability}
-            maintenance={analysis.maintenance}
+            knowledge={analysis.knowledge}
           />
           <SellerQuestions questions={analysis.sellerQuestions} />
+          <InspectionChecklistCard checklist={analysis.inspection} />
           {hasAlternatives ? (
             <ComparableList
               title="Alternativas del segmento"
