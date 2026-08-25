@@ -186,4 +186,7 @@ export interface AnalyzeResponse {
   purchaseVerdict?: PurchaseVerdict;
   missingData?: MissingDataReport;
   inspectionChecklist?: InspectionChecklist;
+  /** Curado manualmente en modo experto. */
+  expertCurated?: boolean;
+  expertCuratedAt?: string;
 }

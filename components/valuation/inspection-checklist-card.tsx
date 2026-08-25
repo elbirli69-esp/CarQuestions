@@ -1,8 +1,21 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { EditableField } from "@/components/expert/editable-field";
 import type { InspectionChecklist } from "@/lib/vehicles/inspection-checklist";
 
-export function InspectionChecklistCard({ checklist }: { checklist: InspectionChecklist }) {
+export function InspectionChecklistCard({
+  checklist,
+  expertMode = false,
+  onItemChange,
+}: {
+  checklist: InspectionChecklist;
+  expertMode?: boolean;
+  onItemChange?: (
+    phaseId: string,
+    itemIndex: number,
+    patch: { item?: string; reason?: string },
+  ) => void;
+}) {
   return (
     <Card>
       <CardHeader>
@@ -18,10 +31,23 @@ export function InspectionChecklistCard({ checklist }: { checklist: InspectionCh
               <AccordionTrigger>{phase.title}</AccordionTrigger>
               <AccordionContent>
                 <ul className="space-y-3">
-                  {phase.items.map((item) => (
-                    <li key={item.item} className="text-sm">
-                      <p className="font-medium">{item.item}</p>
-                      <p className="text-muted-foreground">{item.reason}</p>
+                  {phase.items.map((item, itemIndex) => (
+                    <li key={`${phase.id}-${itemIndex}-${item.item}`} className="text-sm">
+                      <EditableField
+                        expertMode={expertMode}
+                        value={item.item}
+                        label="Ítem checklist"
+                        className="font-medium"
+                        onChange={(value) => onItemChange?.(phase.id, itemIndex, { item: value })}
+                      />
+                      <EditableField
+                        expertMode={expertMode}
+                        value={item.reason}
+                        label="Motivo ítem"
+                        multiline
+                        className="text-muted-foreground"
+                        onChange={(value) => onItemChange?.(phase.id, itemIndex, { reason: value })}
+                      />
                     </li>
                   ))}
                 </ul>

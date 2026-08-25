@@ -1,8 +1,19 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { EditableField } from "@/components/expert/editable-field";
 import type { VehicleScorecard } from "@/types/valuation";
 import { cn } from "@/lib/utils";
 
-export function ScoreCard({ scores }: { scores: VehicleScorecard }) {
+export function ScoreCard({
+  scores,
+  expertMode = false,
+  onSummaryChange,
+  onDimensionChange,
+}: {
+  scores: VehicleScorecard;
+  expertMode?: boolean;
+  onSummaryChange?: (value: string) => void;
+  onDimensionChange?: (id: string, patch: { reason?: string }) => void;
+}) {
   return (
     <Card>
       <CardHeader>
@@ -10,7 +21,14 @@ export function ScoreCard({ scores }: { scores: VehicleScorecard }) {
         <CardTitle>
           {scores.overall != null ? `${scores.overall}/100` : "Sin score global"}
         </CardTitle>
-        <p className="text-sm text-muted-foreground">{scores.summary}</p>
+        <EditableField
+          expertMode={expertMode}
+          value={scores.summary}
+          label="Resumen score"
+          multiline
+          className="text-sm text-muted-foreground"
+          onChange={onSummaryChange}
+        />
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
         {scores.dimensions.map((dimension) => (
@@ -36,7 +54,14 @@ export function ScoreCard({ scores }: { scores: VehicleScorecard }) {
                 style={{ width: `${dimension.score ?? 0}%` }}
               />
             </div>
-            <p className="text-xs text-muted-foreground">{dimension.reason}</p>
+            <EditableField
+              expertMode={expertMode}
+              value={dimension.reason}
+              label={`Motivo ${dimension.label}`}
+              multiline
+              className="text-xs text-muted-foreground"
+              onChange={(value) => onDimensionChange?.(dimension.id, { reason: value })}
+            />
           </div>
         ))}
       </CardContent>

@@ -1,15 +1,29 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { EditableField, EditableListField } from "@/components/expert/editable-field";
 import type { ListingAnalysis, MaintenanceSummary, ReliabilitySummary } from "@/types/valuation";
 
 export function ListingAnalysisCard({
   analysis,
   reliability,
   maintenance,
+  expertMode = false,
+  onAnalysisChange,
+  onListChange,
+  onKnownIssueChange,
+  onReliabilityNoteChange,
 }: {
   analysis: ListingAnalysis;
   reliability: ReliabilitySummary;
   maintenance: MaintenanceSummary;
+  expertMode?: boolean;
+  onAnalysisChange?: (patch: Partial<ListingAnalysis>) => void;
+  onListChange?: (
+    field: "likes" | "concerns" | "askSeller" | "inspectBeforeBuying",
+    items: string[],
+  ) => void;
+  onKnownIssueChange?: (index: number, patch: { title?: string; detail?: string }) => void;
+  onReliabilityNoteChange?: (index: number, value: string) => void;
 }) {
   return (
     <div className="flex flex-col gap-4">
@@ -27,11 +41,40 @@ export function ListingAnalysisCard({
             <p className="pb-1 text-sm text-muted-foreground">/ 100</p>
           </div>
           <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-5">
-            <Fact label="Precio" value={analysis.price} />
-            <Fact label="Vehículo" value={analysis.vehicle} />
-            <Fact label="Descripción" value={analysis.description} />
-            <Fact label="Equipamiento" value={analysis.equipment} />
-            <Fact label="Riesgo" value={analysis.risk} />
+            <Fact
+              label="Precio"
+              value={analysis.price}
+              expertMode={expertMode}
+              onChange={(value) => onAnalysisChange?.({ price: value })}
+            />
+            <Fact
+              label="Vehículo"
+              value={analysis.vehicle}
+              expertMode={expertMode}
+              onChange={(value) => onAnalysisChange?.({ vehicle: value })}
+            />
+            <Fact
+              label="Descripción"
+              value={analysis.description}
+              expertMode={expertMode}
+              onChange={(value) => onAnalysisChange?.({ description: value })}
+            />
+            <Fact
+              label="Equipamiento"
+              value={analysis.equipment}
+              expertMode={expertMode}
+              onChange={(value) => onAnalysisChange?.({ equipment: value })}
+            />
+            <Fact
+              label="Riesgo"
+              value={analysis.risk}
+              expertMode={expertMode}
+              onChange={(value) =>
+                onAnalysisChange?.({
+                  risk: value as ListingAnalysis["risk"],
+                })
+              }
+            />
           </div>
           {analysis.missingFields.length > 0 ? (
             <p className="text-sm text-muted-foreground">
@@ -42,18 +85,34 @@ export function ListingAnalysisCard({
       </Card>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <ListCard title="Cosas que me gustan" items={analysis.likes} empty="Nada destacable todavía." />
+        <ListCard
+          title="Cosas que me gustan"
+          items={analysis.likes}
+          empty="Nada destacable todavía."
+          expertMode={expertMode}
+          onChange={(items) => onListChange?.("likes", items)}
+        />
         <ListCard
           title="Cosas que me preocupan"
           items={analysis.concerns}
           empty="Faltan datos, no hay una preocupación concreta."
+          expertMode={expertMode}
+          onChange={(items) => onListChange?.("concerns", items)}
         />
         <ListCard
           title="Qué preguntaría al vendedor"
           items={analysis.askSeller}
           empty="Completa más datos para generar preguntas."
+          expertMode={expertMode}
+          onChange={(items) => onListChange?.("askSeller", items)}
         />
-        <ListCard title="Qué revisaría antes de comprar" items={analysis.inspectBeforeBuying} empty="" />
+        <ListCard
+          title="Qué revisaría antes de comprar"
+          items={analysis.inspectBeforeBuying}
+          empty=""
+          expertMode={expertMode}
+          onChange={(items) => onListChange?.("inspectBeforeBuying", items)}
+        />
       </div>
 
       <Card>
@@ -68,10 +127,16 @@ export function ListingAnalysisCard({
         <CardContent className="space-y-5 text-sm">
           {reliability.available ? (
             <ul className="space-y-3">
-              {reliability.knownIssues.map((issue) => (
-                <li key={issue.title} className="space-y-1">
+              {reliability.knownIssues.map((issue, index) => (
+                <li key={`${issue.title}-${index}`} className="space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <p className="font-medium">{issue.title}</p>
+                    <EditableField
+                      expertMode={expertMode}
+                      value={issue.title}
+                      label={`Problema ${index + 1}`}
+                      className="font-medium"
+                      onChange={(value) => onKnownIssueChange?.(index, { title: value })}
+                    />
                     <Badge variant={issue.severity === "high" ? "destructive" : "secondary"}>
                       {issue.severity === "high" ? "alto" : issue.severity === "medium" ? "medio" : "bajo"}
                     </Badge>
@@ -80,13 +145,27 @@ export function ListingAnalysisCard({
                     ) : null}
                     {issue.isDemo ? <Badge variant="outline">demo</Badge> : null}
                   </div>
-                  <p className="text-muted-foreground">{issue.detail}</p>
+                  <EditableField
+                    expertMode={expertMode}
+                    value={issue.detail}
+                    label={`Detalle problema ${index + 1}`}
+                    multiline
+                    className="text-muted-foreground"
+                    onChange={(value) => onKnownIssueChange?.(index, { detail: value })}
+                  />
                   <p className="text-xs text-muted-foreground">Fuente: {issue.source}</p>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="text-muted-foreground">{reliability.notes[0]}</p>
+            <EditableField
+              expertMode={expertMode}
+              value={reliability.notes[0] ?? ""}
+              label="Nota fiabilidad"
+              multiline
+              className="text-muted-foreground"
+              onChange={(value) => onReliabilityNoteChange?.(0, value)}
+            />
           )}
 
           {maintenance.available ? (
@@ -111,31 +190,55 @@ export function ListingAnalysisCard({
   );
 }
 
-function Fact({ label, value }: { label: string; value: string }) {
+function Fact({
+  label,
+  value,
+  expertMode,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  expertMode?: boolean;
+  onChange?: (value: string) => void;
+}) {
   return (
     <div className="rounded-lg bg-muted/50 px-3 py-2">
       <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="font-medium capitalize">{value}</p>
+      {expertMode ? (
+        <EditableField expertMode value={value} label={label} className="font-medium capitalize" onChange={onChange} />
+      ) : (
+        <p className="font-medium capitalize">{value}</p>
+      )}
     </div>
   );
 }
 
-function ListCard({ title, items, empty }: { title: string; items: string[]; empty: string }) {
+function ListCard({
+  title,
+  items,
+  empty,
+  expertMode,
+  onChange,
+}: {
+  title: string;
+  items: string[];
+  empty: string;
+  expertMode?: boolean;
+  onChange?: (items: string[]) => void;
+}) {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-base">{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        {items.length === 0 ? (
-          <p className="text-sm text-muted-foreground">{empty}</p>
-        ) : (
-          <ul className="list-disc space-y-1 pl-4 text-sm">
-            {items.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        )}
+        <EditableListField
+          expertMode={expertMode ?? false}
+          items={items}
+          label={title}
+          emptyHint={empty}
+          onChange={onChange}
+        />
       </CardContent>
     </Card>
   );

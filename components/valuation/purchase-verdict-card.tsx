@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { EditableField } from "@/components/expert/editable-field";
 import { formatEuro, formatPercent } from "@/lib/utils/format";
 import { cn } from "@/lib/utils";
 import type { PurchaseVerdict } from "@/lib/vehicles/purchase-verdict";
@@ -24,35 +25,73 @@ const DOT: Record<PurchaseVerdict["tone"], string> = {
 export function PurchaseVerdictCard({
   verdict,
   valuation,
+  expertMode = false,
+  onVerdictChange,
 }: {
   verdict: PurchaseVerdict;
   valuation: ValuationResult;
+  expertMode?: boolean;
+  onVerdictChange?: (patch: Partial<PurchaseVerdict>) => void;
 }) {
   return (
     <Card className="bg-card">
       <CardHeader className="gap-3">
         <CardDescription>¿Es una buena compra?</CardDescription>
         <CardTitle className="font-heading text-2xl sm:text-3xl">
-          <span
-            className={cn(
-              "inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-base font-medium ring-1 sm:text-lg",
-              TONE[verdict.tone],
-            )}
-          >
-            <span className={cn("size-2.5 shrink-0 rounded-full", DOT[verdict.tone])} aria-hidden />
-            {verdict.label}
-          </span>
+          {expertMode ? (
+            <EditableField
+              expertMode
+              value={verdict.label}
+              label="Veredicto"
+              className="font-heading text-lg"
+              onChange={(value) => onVerdictChange?.({ label: value })}
+            />
+          ) : (
+            <span
+              className={cn(
+                "inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-base font-medium ring-1 sm:text-lg",
+                TONE[verdict.tone],
+              )}
+            >
+              <span className={cn("size-2.5 shrink-0 rounded-full", DOT[verdict.tone])} aria-hidden />
+              {verdict.label}
+            </span>
+          )}
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <p className="text-sm leading-6 text-muted-foreground">{verdict.summary}</p>
+        <EditableField
+          expertMode={expertMode}
+          value={verdict.summary}
+          label="Resumen del veredicto"
+          multiline
+          className="text-sm leading-6 text-muted-foreground"
+          onChange={(value) => onVerdictChange?.({ summary: value })}
+        />
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <Metric label="Precio" value={verdict.priceLine ?? "—"} />
-          <Metric label="Mercado" value={verdict.marketLine ?? "—"} />
-          <Metric label="Diferencia" value={verdict.deltaLine ?? "—"} />
+          <Metric
+            label="Precio"
+            value={verdict.priceLine ?? "—"}
+            expertMode={expertMode}
+            onChange={(value) => onVerdictChange?.({ priceLine: value })}
+          />
+          <Metric
+            label="Mercado"
+            value={verdict.marketLine ?? "—"}
+            expertMode={expertMode}
+            onChange={(value) => onVerdictChange?.({ marketLine: value })}
+          />
+          <Metric
+            label="Diferencia"
+            value={verdict.deltaLine ?? "—"}
+            expertMode={expertMode}
+            onChange={(value) => onVerdictChange?.({ deltaLine: value })}
+          />
           <Metric
             label="Confianza"
             value={`${verdict.confidenceLabel} (${verdict.confidencePercent} %)`}
+            expertMode={expertMode}
+            onChange={(value) => onVerdictChange?.({ confidenceLabel: value })}
           />
         </div>
         {valuation.segmentReference ? (
@@ -78,11 +117,31 @@ export function PurchaseVerdictCard({
   );
 }
 
-function Metric({ label, value }: { label: string; value: string }) {
+function Metric({
+  label,
+  value,
+  expertMode,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  expertMode?: boolean;
+  onChange?: (value: string) => void;
+}) {
   return (
     <div className="rounded-xl bg-muted/60 px-3 py-3">
       <p className="text-xs text-muted-foreground">{label}</p>
-      <p className="mt-1 text-sm font-medium leading-snug">{value}</p>
+      {expertMode ? (
+        <EditableField
+          expertMode
+          value={value}
+          label={label}
+          className="mt-1"
+          onChange={onChange}
+        />
+      ) : (
+        <p className="mt-1 text-sm font-medium leading-snug">{value}</p>
+      )}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { EditableField } from "@/components/expert/editable-field";
 import { formatEuro, formatPercent } from "@/lib/utils/format";
 import { formatSignedEuro } from "@/lib/utils/format";
 import type { ValuationResult } from "@/types/valuation";
@@ -27,7 +28,15 @@ function confidenceTone(confidence: number): string {
   return "text-red-700 dark:text-red-300";
 }
 
-export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
+export function ValuationCard({
+  valuation,
+  expertMode = false,
+  onValuationChange,
+}: {
+  valuation: ValuationResult;
+  expertMode?: boolean;
+  onValuationChange?: (patch: Partial<ValuationResult>) => void;
+}) {
   const hasDistribution = valuation.comparableCount >= 5 && valuation.distribution.count >= 5;
   const topLimitations = valuation.limitations.slice(0, 2);
   const hasEstimate = valuation.estimatedPrice != null;
@@ -49,6 +58,21 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
             <p className="font-heading text-4xl tracking-tight">
               {hasEstimate ? formatEuro(valuation.estimatedPrice!) : "—"}
             </p>
+            {expertMode ? (
+              <EditableField
+                expertMode
+                label="Valor estimado (€)"
+                value={valuation.estimatedPrice != null ? String(valuation.estimatedPrice) : ""}
+                placeholder="Sin estimación"
+                className="mt-2 max-w-[200px]"
+                onChange={(value) => {
+                  const n = Number(value.replace(/\s/g, ""));
+                  onValuationChange?.({
+                    estimatedPrice: Number.isFinite(n) && n > 0 ? Math.round(n) : null,
+                  });
+                }}
+              />
+            ) : null}
             <Badge variant="outline" className="mt-2">
               {ORIGIN_LABELS[valuation.origin]}
             </Badge>
@@ -84,10 +108,26 @@ export function ValuationCard({ valuation }: { valuation: ValuationResult }) {
               />
               {valuation.verdictLabel}
             </div>
+            {expertMode ? (
+              <EditableField
+                expertMode
+                label="Etiqueta de valoración"
+                value={valuation.verdictLabel}
+                className="mt-2"
+                onChange={(value) => onValuationChange?.({ verdictLabel: value })}
+              />
+            ) : null}
           </div>
         </div>
 
-        <p className="text-sm leading-6 text-muted-foreground">{valuation.summary}</p>
+        <EditableField
+          expertMode={expertMode}
+          value={valuation.summary}
+          label="Resumen de valoración"
+          multiline
+          className="text-sm leading-6 text-muted-foreground"
+          onChange={(value) => onValuationChange?.({ summary: value })}
+        />
 
         {valuation.segmentReference ? (
           <div className="rounded-xl border border-dashed px-4 py-3 text-sm">

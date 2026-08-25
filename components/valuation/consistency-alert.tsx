@@ -1,7 +1,18 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { EditableField } from "@/components/expert/editable-field";
 import type { ConsistencyReport } from "@/lib/vehicles/consistency";
 
-export function ConsistencyAlert({ report }: { report: ConsistencyReport }) {
+export function ConsistencyAlert({
+  report,
+  expertMode = false,
+  onSummaryChange,
+  onIssueChange,
+}: {
+  report: ConsistencyReport;
+  expertMode?: boolean;
+  onSummaryChange?: (value: string) => void;
+  onIssueChange?: (index: number, message: string) => void;
+}) {
   if (report.status === "valid") return null;
 
   const isInvalid = report.status === "invalid";
@@ -19,18 +30,29 @@ export function ConsistencyAlert({ report }: { report: ConsistencyReport }) {
           {isInvalid ? "Datos del vehículo incoherentes" : "Datos dudosos"}
         </CardTitle>
         <CardDescription className={isInvalid ? "text-red-950/80 dark:text-red-50/80" : undefined}>
-          {report.summary}
+          <EditableField
+            expertMode={expertMode}
+            value={report.summary}
+            label="Resumen coherencia"
+            multiline
+            onChange={onSummaryChange}
+          />
         </CardDescription>
       </CardHeader>
       <CardContent>
         <ul className="list-disc space-y-1.5 pl-4 text-sm">
-          {report.issues.map((issue) => (
-            <li key={`${issue.code}-${issue.message}`}>
+          {report.issues.map((issue, index) => (
+            <li key={`${issue.code}-${index}`}>
               <span className="font-medium">
                 {issue.severity === "error" ? "Error" : issue.severity === "warning" ? "Aviso" : "Info"}
                 :{" "}
               </span>
-              {issue.message}
+              <EditableField
+                expertMode={expertMode}
+                value={issue.message}
+                label={`Incidencia ${index + 1}`}
+                onChange={(value) => onIssueChange?.(index, value)}
+              />
             </li>
           ))}
         </ul>

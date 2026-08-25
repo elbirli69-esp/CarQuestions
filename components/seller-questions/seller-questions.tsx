@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { EditableField } from "@/components/expert/editable-field";
 import type { SellerQuestion } from "@/types/valuation";
 
 const PRIORITY_STYLES: Record<string, string> = {
@@ -8,7 +9,15 @@ const PRIORITY_STYLES: Record<string, string> = {
   baja: "bg-muted text-muted-foreground",
 };
 
-export function SellerQuestions({ questions }: { questions: SellerQuestion[] }) {
+export function SellerQuestions({
+  questions,
+  expertMode = false,
+  onQuestionChange,
+}: {
+  questions: SellerQuestion[];
+  expertMode?: boolean;
+  onQuestionChange?: (index: number, patch: Partial<SellerQuestion>) => void;
+}) {
   return (
     <Card>
       <CardHeader>
@@ -21,11 +30,16 @@ export function SellerQuestions({ questions }: { questions: SellerQuestion[] }) 
       <CardContent>
         <ol className="space-y-4">
           {questions.map((item, index) => (
-            <li key={item.question} className="text-sm">
+            <li key={`${index}-${item.question}`} className="text-sm">
               <div className="mb-1 flex flex-wrap items-center gap-2">
-                <p className="font-medium">
-                  {index + 1}. {item.question}
-                </p>
+                <span className="font-medium">{index + 1}.</span>
+                <EditableField
+                  expertMode={expertMode}
+                  value={item.question}
+                  label={`Pregunta ${index + 1}`}
+                  className="flex-1 font-medium"
+                  onChange={(value) => onQuestionChange?.(index, { question: value })}
+                />
                 {item.priority ? (
                   <Badge className={PRIORITY_STYLES[item.priority] ?? PRIORITY_STYLES.media} variant="secondary">
                     {item.priority}
@@ -35,7 +49,14 @@ export function SellerQuestions({ questions }: { questions: SellerQuestion[] }) 
                   <Badge variant="outline">{item.category}</Badge>
                 ) : null}
               </div>
-              <p className="text-muted-foreground">{item.reason ?? item.why}</p>
+              <EditableField
+                expertMode={expertMode}
+                value={item.reason ?? item.why}
+                label={`Motivo pregunta ${index + 1}`}
+                multiline
+                className="text-muted-foreground"
+                onChange={(value) => onQuestionChange?.(index, { reason: value, why: value })}
+              />
             </li>
           ))}
         </ol>
