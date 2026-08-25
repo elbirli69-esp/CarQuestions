@@ -13,6 +13,7 @@ const FIELD_LABELS: Record<PlateLookupFieldKey, string> = {
   bodyType: "carrocería",
   engineCode: "código motor",
   vin: "bastidor (VIN)",
+  location: "provincia matriculación",
 };
 
 const MISSING_LABELS: Record<PlateLookupMissingKey, string> = {
@@ -83,7 +84,7 @@ export function buildPlateLookupMessage(
   if (status === "partial" && filled.length <= 2) {
     const partialFilled =
       filledLabels.length > 0 ? `Obtenido: ${filledLabels.join(", ")}.` : "";
-    return `${sourceText} ${partialFilled} Configura RAPIDAPI_KEY (Matriculas.org) para marca y modelo automáticos.`;
+    return `${sourceText} ${partialFilled} Marca y modelo no salen del registro gratis — pega la URL del anuncio o activa APIs de pago en el servidor.`;
   }
 
   const filledPart =

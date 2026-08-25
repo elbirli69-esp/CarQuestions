@@ -57,7 +57,8 @@ export type PlateLookupFieldKey =
   | "transmission"
   | "bodyType"
   | "engineCode"
-  | "vin";
+  | "vin"
+  | "location";
 
 export type PlateLookupMissingKey =
   | "mileage"

@@ -30,5 +30,8 @@ export function getServerEnv() {
     openapiAutomotiveBaseUrl:
       process.env.OPENAPI_AUTOMOTIVE_BASE_URL ?? "https://automotive.openapi.com",
     rapidApiKey: sanitizeAscii(process.env.RAPIDAPI_KEY),
+    platePaidProviders:
+      process.env.PLATE_PAID_PROVIDERS === "1" ||
+      process.env.PLATE_PAID_PROVIDERS === "true",
   };
 }

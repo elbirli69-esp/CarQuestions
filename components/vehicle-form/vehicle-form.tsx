@@ -435,7 +435,7 @@ export function VehicleForm({
           <Field
             label="Matrícula"
             htmlFor="registrationPlate"
-            hint="Matriculas.org (RapidAPI) primero: marca, modelo, VIN, motor, carrocería. Sin API: estimamos el año."
+            hint="Gratis: estimamos el año (europea) y la provincia (antigua). Marca/modelo: pega la URL del anuncio."
           >
             <div className="relative">
               <Input

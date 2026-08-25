@@ -16,10 +16,10 @@ export const HELP_STEPS: HelpStep[] = [
   {
     id: "form",
     title: "1. Rellena lo esencial",
-    body: "Con marca, modelo, año de matriculación, kilómetros y combustible ya podemos buscar comparables. Introduce la matrícula o pega la URL de un anuncio de coches.net: intentamos rellenar el formulario automáticamente. Versión, potencia (CV) y precio del anuncio afinan mucho el resultado.",
+    body: "Con marca, modelo, año de matriculación, kilómetros y combustible ya podemos buscar comparables. La matrícula gratis estima el año (y provincia en matrículas antiguas). Para marca, modelo, km y precio pega la URL del anuncio.",
     bullets: [
       "Marca y modelo del catálogo coches.net (búsqueda con filtro, no texto libre)",
-      "Atajo: matrícula española o URL del anuncio arriba del formulario",
+      "Matrícula: año estimado gratis · URL del anuncio: marca, modelo, km y precio",
       "Recomendado: versión, CV y precio del anuncio",
       "Opcional: estado, libro, propietarios… para ajustar y preparar preguntas",
     ],

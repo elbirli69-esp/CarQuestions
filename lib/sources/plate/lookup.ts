@@ -1,5 +1,4 @@
 import { getServerEnv } from "@/lib/config/env";
-import { estimateRegistrationYearFromPlate } from "@/lib/sources/plate/estimate-year";
 import {
   buildPlateLookupMessage,
   listFilledPlateFields,
@@ -7,6 +6,7 @@ import {
 } from "@/lib/sources/plate/field-report";
 import { formatSpanishPlateDisplay, normalizeSpanishPlate } from "@/lib/sources/plate/normalize";
 import { hasPlateIdentity, mergeVehiclePatches } from "@/lib/sources/plate/merge-vehicle";
+import { lookupPlateLocally } from "@/lib/sources/plate/providers/local";
 import { lookupPlateViaOpenApi } from "@/lib/sources/plate/providers/openapi-automotive";
 import { lookupPlateViaRapidApi } from "@/lib/sources/plate/providers/rapidapi-matriculas";
 import { lookupPlateViaVerifik } from "@/lib/sources/plate/providers/verifik";
@@ -21,7 +21,6 @@ function mergeVehicle(plate: string, patch: Partial<Vehicle>): Partial<Vehicle> 
 }
 
 function buildSuccessResult(
-  normalized: string,
   displayPlate: string,
   vehicle: Partial<Vehicle>,
   sources: string[],
@@ -56,47 +55,50 @@ export async function lookupVehicleByPlate(rawPlate: string): Promise<PlateLooku
   const env = getServerEnv();
   const displayPlate = formatSpanishPlateDisplay(normalized);
 
-  const providers: Array<{
+  let merged = mergeVehiclePatches(
+    { registrationPlate: displayPlate },
+    lookupPlateLocally(normalized),
+  );
+  const sources: string[] = ["estimación matrícula (gratis)"];
+
+  const paidProviders: Array<{
     id: string;
     name: string;
     run: () => Promise<Partial<Vehicle> | null>;
   }> = [];
 
-  // 1) Matriculas.org — más campos técnicos en España
-  if (env.rapidApiKey) {
-    providers.push({
-      id: "rapidapi-matriculas",
-      name: "Matriculas.org",
-      run: () => lookupPlateViaRapidApi(normalized, env.rapidApiKey!),
-    });
-  }
-  // 2) OpenAPI — versión comercial y CV
-  if (env.openapiAutomotiveToken) {
-    providers.push({
-      id: "openapi-automotive",
-      name: "OpenAPI ES-car",
-      run: () =>
-        lookupPlateViaOpenApi(
-          normalized,
-          env.openapiAutomotiveToken!,
-          env.openapiAutomotiveBaseUrl,
-        ),
-    });
-  }
-  // 3) Verifik — fallback simple
-  if (env.verifikApiToken) {
-    providers.push({
-      id: "verifik",
-      name: "Verifik",
-      run: () => lookupPlateViaVerifik(normalized, env.verifikApiToken!),
-    });
+  if (env.platePaidProviders) {
+    if (env.rapidApiKey) {
+      paidProviders.push({
+        id: "rapidapi-matriculas",
+        name: "Matriculas.org",
+        run: () => lookupPlateViaRapidApi(normalized, env.rapidApiKey!),
+      });
+    }
+    if (env.openapiAutomotiveToken) {
+      paidProviders.push({
+        id: "openapi-automotive",
+        name: "OpenAPI ES-car",
+        run: () =>
+          lookupPlateViaOpenApi(
+            normalized,
+            env.openapiAutomotiveToken!,
+            env.openapiAutomotiveBaseUrl,
+          ),
+      });
+    }
+    if (env.verifikApiToken) {
+      paidProviders.push({
+        id: "verifik",
+        name: "Verifik",
+        run: () => lookupPlateViaVerifik(normalized, env.verifikApiToken!),
+      });
+    }
   }
 
   const errors: string[] = [];
-  let merged: Partial<Vehicle> = { registrationPlate: displayPlate };
-  const sources: string[] = [];
 
-  for (const provider of providers) {
+  for (const provider of paidProviders) {
     try {
       const patch = await provider.run();
       if (!patch) continue;
@@ -112,21 +114,13 @@ export async function lookupVehicleByPlate(rawPlate: string): Promise<PlateLooku
   if (hasPlateIdentity(merged)) {
     const hasBrandModel = Boolean(merged.brand?.trim() && merged.model?.trim());
     const status: "extracted" | "partial" = hasBrandModel ? "extracted" : "partial";
-    return buildSuccessResult(normalized, displayPlate, merged, sources, status);
+    return buildSuccessResult(displayPlate, merged, sources, status);
   }
 
-  const estimatedYear = estimateRegistrationYearFromPlate(normalized);
-  if (estimatedYear != null) {
-    merged = mergeVehiclePatches(merged, { year: estimatedYear });
-    const yearSources = sources.length > 0 ? sources : ["estimación serie matrícula"];
-    return buildSuccessResult(normalized, displayPlate, merged, yearSources, "partial");
-  }
-
-  if (providers.length === 0) {
+  if (errors.length > 0) {
     return {
-      status: "provider_not_connected",
-      message:
-        `Matrícula ${displayPlate} reconocida. Configura RAPIDAPI_KEY (Matriculas.org) u OPENAPI_AUTOMOTIVE_TOKEN en el servidor para datos automáticos.`,
+      status: "not_found",
+      message: `No se encontraron datos para ${displayPlate}. ${errors.join(" · ")}`,
       isDemo: false,
       registrationPlate: displayPlate,
       missingFields: listMissingAfterPlate(merged),
@@ -134,13 +128,14 @@ export async function lookupVehicleByPlate(rawPlate: string): Promise<PlateLooku
   }
 
   return {
-    status: "not_found",
+    status: "partial",
     message:
-      errors.length > 0
-        ? `No se encontraron datos para ${displayPlate}. ${errors.join(" · ")}`
-        : `No se encontraron datos para la matrícula ${displayPlate}.`,
+      `Matrícula ${displayPlate} reconocida, pero no pudimos estimar datos. Para marca, modelo, km y precio pega la URL del anuncio.`,
     isDemo: false,
     registrationPlate: displayPlate,
+    vehicle: merged,
+    filledFields: listFilledPlateFields(merged),
     missingFields: listMissingAfterPlate(merged),
+    sources,
   };
 }
