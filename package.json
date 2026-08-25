@@ -10,6 +10,7 @@
     "rag:ingest": "tsx scripts/rag-ingest.ts",
     "rag:generate-packs": "tsx scripts/generate-knowledge-packs.ts",
     "rag:eval": "tsx scripts/rag-eval.ts",
+    "rag:gaps": "tsx scripts/rag-coverage-gaps.ts",
     "rag:coverage": "tsx scripts/rag-coverage.ts",
     "smoke:store": "tsx scripts/smoke-analysis-store.ts",
     "scraping:benchmark": "tsx scripts/scraping-benchmark.ts",
