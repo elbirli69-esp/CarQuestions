@@ -52,7 +52,7 @@ Marca `"brands": ["*"]` = aplicable a cualquier vehículo (tras filtros de combu
 4. Contrasta el patrón en foro técnico + manual + recall si existe.
 5. Redacta un chunk atómico con `source` y `sourceUrl` cuando haya enlace estable.
 6. Ejecuta `npm run rag:ingest` (o `npm run rag:generate-packs` si regeneras packs desde el script).
-7. Valida con `npm run rag:eval` y revisa backlog con `npm run rag:gaps`.
+7. Valida con `npm run rag:eval` y revisa backlog con `npm run rag:gaps` (prioriza modelos en `data/spain-market-priority.json` y catálogo trims).
 
 ```bash
 npm run rag:generate-packs   # regenera packs desde scripts/generate-knowledge-packs.ts

@@ -1,0 +1,28 @@
+{
+  "referenceYear": 2025,
+  "source": "ANFAC/Faconauto/Ganvam — matriculaciones turismos España",
+  "note": "Ranking usado para priorizar catálogo de trims y backlog rag:gaps. Actualizar anualmente.",
+  "models": [
+    { "rank": 1, "brandSlug": "dacia", "modelSlug": "sandero", "registrations": 38548 },
+    { "rank": 2, "brandSlug": "renault", "modelSlug": "clio", "registrations": 27104 },
+    { "rank": 3, "brandSlug": "mg", "modelSlug": "zs", "registrations": 23731 },
+    { "rank": 4, "brandSlug": "seat", "modelSlug": "ibiza", "registrations": 23201 },
+    { "rank": 5, "brandSlug": "hyundai", "modelSlug": "tucson", "registrations": 21974 },
+    { "rank": 6, "brandSlug": "toyota", "modelSlug": "corolla", "registrations": 20833 },
+    { "rank": 7, "brandSlug": "seat", "modelSlug": "arona", "registrations": 20294 },
+    { "rank": 8, "brandSlug": "peugeot", "modelSlug": "2008", "registrations": 20272 },
+    { "rank": 9, "brandSlug": "peugeot", "modelSlug": "208", "registrations": 20043 },
+    { "rank": 10, "brandSlug": "nissan", "modelSlug": "qashqai", "registrations": 19556 },
+    { "rank": 11, "brandSlug": "toyota", "modelSlug": "c-hr", "registrations": 19531 },
+    { "rank": 12, "brandSlug": "toyota", "modelSlug": "yaris-cross", "registrations": 19374 },
+    { "rank": 13, "brandSlug": "renault", "modelSlug": "captur", "registrations": 19011 },
+    { "rank": 14, "brandSlug": "volkswagen", "modelSlug": "t-roc", "registrations": 18740 },
+    { "rank": 15, "brandSlug": "opel", "modelSlug": "corsa", "registrations": 17440 },
+    { "rank": 16, "brandSlug": "seat", "modelSlug": "leon", "registrations": 16366 },
+    { "rank": 17, "brandSlug": "toyota", "modelSlug": "yaris", "registrations": 15947 },
+    { "rank": 18, "brandSlug": "volkswagen", "modelSlug": "golf", "registrations": 15700 },
+    { "rank": 19, "brandSlug": "dacia", "modelSlug": "duster", "registrations": 14576 },
+    { "rank": 20, "brandSlug": "kia", "modelSlug": "stonic", "registrations": 14306 },
+    { "rank": 28, "brandSlug": "bmw", "modelSlug": "x1", "registrations": 12167 }
+  ]
+}

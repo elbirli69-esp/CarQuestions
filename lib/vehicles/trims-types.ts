@@ -19,6 +19,10 @@ export interface TrimCatalogEntry {
   brandSlug: string;
   modelSlug: string;
   trims: CatalogTrim[];
+  /** Posición en ventas España (matriculaciones año ref). Menor = más prioritario para curación. */
+  spainMarketRank?: number;
+  /** Matriculaciones orientativas en España (año ref, ver data/spain-market-priority.json). */
+  spainRegistrations?: number;
 }
 
 export interface VehicleTrimCatalog {

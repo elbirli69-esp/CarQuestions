@@ -1,10 +1,609 @@
 {
-  "generatedAt": "2026-08-24T10:00:00.000Z",
-  "source": "curated-motorizations",
+  "generatedAt": "2026-08-25T10:00:00.000Z",
+  "source": "curated-motorizations-spain-priority",
   "entries": [
+    {
+      "brandSlug": "dacia",
+      "modelSlug": "sandero",
+      "spainMarketRank": 1,
+      "spainRegistrations": 38548,
+      "trims": [
+        {
+          "slug": "tce-90",
+          "name": "TCe 90",
+          "fuel": "petrol",
+          "powerHp": 90,
+          "yearFrom": 2021,
+          "yearTo": 2026,
+          "engineCode": "H4M",
+          "transmission": "manual",
+          "label": "TCe 90 · Gasolina"
+        },
+        {
+          "slug": "tce-100",
+          "name": "TCe 100",
+          "fuel": "petrol",
+          "powerHp": 100,
+          "yearFrom": 2021,
+          "yearTo": 2026,
+          "engineCode": "H4M",
+          "transmission": "manual",
+          "label": "TCe 100 · Gasolina"
+        },
+        {
+          "slug": "eco-g-100",
+          "name": "Eco-G 100",
+          "fuel": "lpg",
+          "powerHp": 100,
+          "yearFrom": 2022,
+          "yearTo": 2026,
+          "engineCode": "H4M",
+          "label": "Eco-G 100 · GLP"
+        },
+        {
+          "slug": "stepway-tce-100",
+          "name": "Stepway TCe 100",
+          "fuel": "petrol",
+          "powerHp": 100,
+          "yearFrom": 2021,
+          "yearTo": 2026,
+          "engineCode": "H4M",
+          "label": "Stepway TCe 100 · Gasolina"
+        }
+      ]
+    },
+    {
+      "brandSlug": "renault",
+      "modelSlug": "clio",
+      "spainMarketRank": 2,
+      "spainRegistrations": 27104,
+      "trims": [
+        {
+          "slug": "tce-100",
+          "name": "TCe 100",
+          "fuel": "petrol",
+          "powerHp": 100,
+          "yearFrom": 2019,
+          "yearTo": 2026,
+          "label": "TCe 100 · Gasolina"
+        },
+        {
+          "slug": "dci-100",
+          "name": "dCi 100",
+          "fuel": "diesel",
+          "powerHp": 100,
+          "yearFrom": 2019,
+          "yearTo": 2024,
+          "label": "dCi 100 · Diésel"
+        },
+        {
+          "slug": "e-tech-hybrid",
+          "name": "E-Tech Hybrid",
+          "fuel": "hybrid",
+          "powerHp": 140,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "label": "E-Tech Hybrid · 140 CV"
+        }
+      ]
+    },
+    {
+      "brandSlug": "mg",
+      "modelSlug": "zs",
+      "spainMarketRank": 3,
+      "spainRegistrations": 23731,
+      "trims": [
+        {
+          "slug": "1-5-tgdi",
+          "name": "1.5 T-GDI",
+          "fuel": "petrol",
+          "powerHp": 162,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "1.5 T-GDI · 162 CV · Gasolina"
+        },
+        {
+          "slug": "hybrid",
+          "name": "Hybrid+",
+          "fuel": "hybrid",
+          "powerHp": 197,
+          "yearFrom": 2022,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "Hybrid+ · 197 CV · Híbrido"
+        },
+        {
+          "slug": "electric",
+          "name": "Electric",
+          "fuel": "electric",
+          "powerHp": 177,
+          "yearFrom": 2021,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "Electric · 177 CV"
+        }
+      ]
+    },
+    {
+      "brandSlug": "seat",
+      "modelSlug": "ibiza",
+      "spainMarketRank": 4,
+      "spainRegistrations": 23201,
+      "trims": [
+        {
+          "slug": "1-0-tsi",
+          "name": "1.0 TSI",
+          "fuel": "petrol",
+          "powerHp": 95,
+          "yearFrom": 2017,
+          "yearTo": 2026,
+          "engineCode": "EA211",
+          "transmission": "manual",
+          "label": "1.0 TSI · 95 CV · Gasolina"
+        },
+        {
+          "slug": "1-5-tsi",
+          "name": "1.5 TSI",
+          "fuel": "petrol",
+          "powerHp": 150,
+          "yearFrom": 2017,
+          "yearTo": 2026,
+          "engineCode": "EA211",
+          "transmission": "automatic",
+          "gearboxCode": "DQ200",
+          "label": "1.5 TSI · 150 CV · Gasolina · DSG"
+        }
+      ]
+    },
+    {
+      "brandSlug": "hyundai",
+      "modelSlug": "tucson",
+      "spainMarketRank": 5,
+      "spainRegistrations": 21974,
+      "trims": [
+        {
+          "slug": "1-6-t-gdi",
+          "name": "1.6 T-GDI",
+          "fuel": "petrol",
+          "powerHp": 150,
+          "yearFrom": 2021,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "1.6 T-GDI · 150 CV · Gasolina"
+        },
+        {
+          "slug": "hybrid",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "powerHp": 230,
+          "yearFrom": 2021,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "Hybrid · 230 CV"
+        },
+        {
+          "slug": "plug-in-hybrid",
+          "name": "Plug-in Hybrid",
+          "fuel": "plugin_hybrid",
+          "powerHp": 265,
+          "yearFrom": 2021,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "Plug-in Hybrid · 265 CV"
+        }
+      ]
+    },
+    {
+      "brandSlug": "toyota",
+      "modelSlug": "corolla",
+      "spainMarketRank": 6,
+      "spainRegistrations": 20833,
+      "trims": [
+        {
+          "slug": "hybrid-122",
+          "name": "Hybrid 122",
+          "fuel": "hybrid",
+          "powerHp": 122,
+          "yearFrom": 2019,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "Hybrid · 122 CV"
+        },
+        {
+          "slug": "hybrid-140",
+          "name": "Hybrid 140",
+          "fuel": "hybrid",
+          "powerHp": 140,
+          "yearFrom": 2023,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "Hybrid · 140 CV"
+        },
+        {
+          "slug": "petrol-1-8",
+          "name": "1.8",
+          "fuel": "petrol",
+          "powerHp": 140,
+          "yearFrom": 2019,
+          "yearTo": 2023,
+          "transmission": "manual",
+          "label": "1.8 · 140 CV · Gasolina"
+        }
+      ]
+    },
+    {
+      "brandSlug": "seat",
+      "modelSlug": "arona",
+      "spainMarketRank": 7,
+      "spainRegistrations": 20294,
+      "trims": [
+        {
+          "slug": "1-0-tsi",
+          "name": "1.0 TSI",
+          "fuel": "petrol",
+          "powerHp": 95,
+          "yearFrom": 2017,
+          "yearTo": 2026,
+          "engineCode": "EA211",
+          "label": "1.0 TSI · 95 CV · Gasolina"
+        },
+        {
+          "slug": "1-5-tsi",
+          "name": "1.5 TSI",
+          "fuel": "petrol",
+          "powerHp": 150,
+          "yearFrom": 2017,
+          "yearTo": 2026,
+          "engineCode": "EA211",
+          "transmission": "automatic",
+          "gearboxCode": "DQ200",
+          "label": "1.5 TSI · 150 CV · Gasolina · DSG"
+        }
+      ]
+    },
+    {
+      "brandSlug": "peugeot",
+      "modelSlug": "2008",
+      "spainMarketRank": 8,
+      "spainRegistrations": 20272,
+      "trims": [
+        {
+          "slug": "puretech-100",
+          "name": "PureTech 100",
+          "fuel": "petrol",
+          "powerHp": 100,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "engineCode": "PureTech",
+          "label": "PureTech 100 · Gasolina"
+        },
+        {
+          "slug": "puretech-130",
+          "name": "PureTech 130",
+          "fuel": "petrol",
+          "powerHp": 130,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "engineCode": "PureTech",
+          "label": "PureTech 130 · Gasolina"
+        },
+        {
+          "slug": "e-2008",
+          "name": "e-2008",
+          "fuel": "electric",
+          "powerHp": 136,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "e-2008 · Eléctrico"
+        }
+      ]
+    },
+    {
+      "brandSlug": "peugeot",
+      "modelSlug": "208",
+      "spainMarketRank": 9,
+      "spainRegistrations": 20043,
+      "trims": [
+        {
+          "slug": "puretech-100",
+          "name": "PureTech 100",
+          "fuel": "petrol",
+          "powerHp": 100,
+          "yearFrom": 2019,
+          "yearTo": 2026,
+          "engineCode": "PureTech",
+          "label": "PureTech 100 · Gasolina"
+        },
+        {
+          "slug": "puretech-130",
+          "name": "PureTech 130",
+          "fuel": "petrol",
+          "powerHp": 130,
+          "yearFrom": 2019,
+          "yearTo": 2026,
+          "engineCode": "PureTech",
+          "label": "PureTech 130 · Gasolina"
+        },
+        {
+          "slug": "e-208",
+          "name": "e-208",
+          "fuel": "electric",
+          "powerHp": 136,
+          "yearFrom": 2019,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "e-208 · Eléctrico"
+        }
+      ]
+    },
+    {
+      "brandSlug": "nissan",
+      "modelSlug": "qashqai",
+      "spainMarketRank": 10,
+      "spainRegistrations": 19556,
+      "trims": [
+        {
+          "slug": "mild-hybrid-140",
+          "name": "Mild Hybrid 140",
+          "fuel": "petrol",
+          "powerHp": 140,
+          "yearFrom": 2021,
+          "yearTo": 2026,
+          "transmission": "manual",
+          "label": "Mild Hybrid · 140 CV · Gasolina"
+        },
+        {
+          "slug": "dig-t-160",
+          "name": "DIG-T 160",
+          "fuel": "petrol",
+          "powerHp": 160,
+          "yearFrom": 2021,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "DIG-T · 160 CV · Gasolina"
+        },
+        {
+          "slug": "e-power",
+          "name": "e-POWER",
+          "fuel": "hybrid",
+          "powerHp": 190,
+          "yearFrom": 2022,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "e-POWER · 190 CV"
+        }
+      ]
+    },
+    {
+      "brandSlug": "renault",
+      "modelSlug": "captur",
+      "spainMarketRank": 13,
+      "spainRegistrations": 19011,
+      "trims": [
+        {
+          "slug": "tce-100",
+          "name": "TCe 100",
+          "fuel": "petrol",
+          "powerHp": 100,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "label": "TCe 100 · Gasolina"
+        },
+        {
+          "slug": "tce-130",
+          "name": "TCe 130",
+          "fuel": "petrol",
+          "powerHp": 130,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "engineCode": "HR13",
+          "label": "TCe 130 · Gasolina"
+        },
+        {
+          "slug": "e-tech-hybrid",
+          "name": "E-Tech Hybrid",
+          "fuel": "hybrid",
+          "powerHp": 145,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "label": "E-Tech Hybrid · 145 CV"
+        }
+      ]
+    },
+    {
+      "brandSlug": "volkswagen",
+      "modelSlug": "t-roc",
+      "spainMarketRank": 14,
+      "spainRegistrations": 18740,
+      "trims": [
+        {
+          "slug": "1-5-tsi",
+          "name": "1.5 TSI",
+          "fuel": "petrol",
+          "powerHp": 150,
+          "yearFrom": 2017,
+          "yearTo": 2026,
+          "engineCode": "EA211",
+          "transmission": "automatic",
+          "gearboxCode": "DQ200",
+          "label": "1.5 TSI · 150 CV · Gasolina · DSG"
+        },
+        {
+          "slug": "2-0-tdi",
+          "name": "2.0 TDI",
+          "fuel": "diesel",
+          "powerHp": 150,
+          "yearFrom": 2017,
+          "yearTo": 2024,
+          "engineCode": "EA288",
+          "transmission": "automatic",
+          "gearboxCode": "DQ200",
+          "label": "2.0 TDI · 150 CV · Diésel · DSG"
+        }
+      ]
+    },
+    {
+      "brandSlug": "opel",
+      "modelSlug": "corsa",
+      "spainMarketRank": 15,
+      "spainRegistrations": 17440,
+      "trims": [
+        {
+          "slug": "puretech-100",
+          "name": "PureTech 100",
+          "fuel": "petrol",
+          "powerHp": 100,
+          "yearFrom": 2019,
+          "yearTo": 2026,
+          "engineCode": "PureTech",
+          "label": "PureTech 100 · Gasolina"
+        },
+        {
+          "slug": "1-5-diesel",
+          "name": "1.5 Diesel",
+          "fuel": "diesel",
+          "powerHp": 102,
+          "yearFrom": 2019,
+          "yearTo": 2026,
+          "label": "1.5 Diesel · 102 CV"
+        },
+        {
+          "slug": "electric",
+          "name": "Electric",
+          "fuel": "electric",
+          "powerHp": 136,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "Electric · 136 CV"
+        }
+      ]
+    },
+    {
+      "brandSlug": "seat",
+      "modelSlug": "leon",
+      "spainMarketRank": 16,
+      "spainRegistrations": 16366,
+      "trims": [
+        {
+          "slug": "1-5-tsi",
+          "name": "1.5 TSI",
+          "fuel": "petrol",
+          "powerHp": 150,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "engineCode": "EA211",
+          "transmission": "automatic",
+          "gearboxCode": "DQ200",
+          "label": "1.5 TSI · 150 CV · Gasolina · DSG"
+        },
+        {
+          "slug": "2-0-tdi",
+          "name": "2.0 TDI",
+          "fuel": "diesel",
+          "powerHp": 150,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "engineCode": "EA288",
+          "transmission": "automatic",
+          "gearboxCode": "DQ200",
+          "label": "2.0 TDI · 150 CV · Diésel · DSG"
+        }
+      ]
+    },
+    {
+      "brandSlug": "volkswagen",
+      "modelSlug": "golf",
+      "spainMarketRank": 18,
+      "spainRegistrations": 15700,
+      "trims": [
+        {
+          "slug": "1-5-tsi",
+          "name": "1.5 TSI",
+          "fuel": "petrol",
+          "powerHp": 130,
+          "yearFrom": 2017,
+          "yearTo": 2026,
+          "engineCode": "EA211",
+          "transmission": "automatic",
+          "gearboxCode": "DQ200",
+          "label": "1.5 TSI · 130 CV · Gasolina · DSG"
+        },
+        {
+          "slug": "2-0-tdi",
+          "name": "2.0 TDI",
+          "fuel": "diesel",
+          "powerHp": 150,
+          "yearFrom": 2013,
+          "yearTo": 2020,
+          "engineCode": "EA288",
+          "transmission": "automatic",
+          "gearboxCode": "DQ200",
+          "label": "2.0 TDI · 150 CV · Diésel · DSG"
+        },
+        {
+          "slug": "gti",
+          "name": "GTI",
+          "fuel": "petrol",
+          "powerHp": 245,
+          "yearFrom": 2013,
+          "yearTo": 2026,
+          "label": "GTI · 245 CV · Gasolina"
+        },
+        {
+          "slug": "gtd",
+          "name": "GTD",
+          "fuel": "diesel",
+          "powerHp": 200,
+          "yearFrom": 2013,
+          "yearTo": 2020,
+          "label": "GTD · 200 CV · Diésel"
+        }
+      ]
+    },
+    {
+      "brandSlug": "dacia",
+      "modelSlug": "duster",
+      "spainMarketRank": 19,
+      "spainRegistrations": 14576,
+      "trims": [
+        {
+          "slug": "tce-130",
+          "name": "TCe 130",
+          "fuel": "petrol",
+          "powerHp": 130,
+          "yearFrom": 2021,
+          "yearTo": 2026,
+          "engineCode": "HR13",
+          "label": "TCe 130 · Gasolina"
+        },
+        {
+          "slug": "dci-110",
+          "name": "dCi 110",
+          "fuel": "diesel",
+          "powerHp": 110,
+          "yearFrom": 2018,
+          "yearTo": 2026,
+          "label": "dCi 110 · Diésel"
+        },
+        {
+          "slug": "eco-g-100",
+          "name": "Eco-G 100",
+          "fuel": "lpg",
+          "powerHp": 100,
+          "yearFrom": 2022,
+          "yearTo": 2026,
+          "label": "Eco-G 100 · GLP"
+        }
+      ]
+    },
     {
       "brandSlug": "bmw",
       "modelSlug": "x1",
+      "spainMarketRank": 28,
+      "spainRegistrations": 12167,
       "trims": [
         {
           "slug": "sdrive18d",
@@ -59,78 +658,6 @@
           "yearTo": 2026,
           "transmission": "automatic",
           "label": "iX1 · 204 CV · Eléctrico"
-        }
-      ]
-    },
-    {
-      "brandSlug": "ebro",
-      "modelSlug": "s800",
-      "trims": [
-        {
-          "slug": "premium-ev",
-          "name": "Premium",
-          "fuel": "electric",
-          "powerHp": 220,
-          "yearFrom": 2024,
-          "yearTo": 2026,
-          "label": "Premium · 220 CV · Eléctrico"
-        },
-        {
-          "slug": "comfort-ev",
-          "name": "Comfort",
-          "fuel": "electric",
-          "powerHp": 180,
-          "yearFrom": 2024,
-          "yearTo": 2026,
-          "label": "Comfort · 180 CV · Eléctrico"
-        }
-      ]
-    },
-    {
-      "brandSlug": "volkswagen",
-      "modelSlug": "golf",
-      "trims": [
-        {
-          "slug": "1-5-tsi",
-          "name": "1.5 TSI",
-          "fuel": "petrol",
-          "powerHp": 130,
-          "yearFrom": 2017,
-          "yearTo": 2026,
-          "engineCode": "EA211",
-          "transmission": "automatic",
-          "gearboxCode": "DQ200",
-          "label": "1.5 TSI · 130 CV · Gasolina · DSG"
-        },
-        {
-          "slug": "2-0-tdi",
-          "name": "2.0 TDI",
-          "fuel": "diesel",
-          "powerHp": 150,
-          "yearFrom": 2013,
-          "yearTo": 2020,
-          "engineCode": "EA288",
-          "transmission": "automatic",
-          "gearboxCode": "DQ200",
-          "label": "2.0 TDI · 150 CV · Diésel · DSG"
-        },
-        {
-          "slug": "gti",
-          "name": "GTI",
-          "fuel": "petrol",
-          "powerHp": 245,
-          "yearFrom": 2013,
-          "yearTo": 2026,
-          "label": "GTI · 245 CV · Gasolina"
-        },
-        {
-          "slug": "gtd",
-          "name": "GTD",
-          "fuel": "diesel",
-          "powerHp": 200,
-          "yearFrom": 2013,
-          "yearTo": 2020,
-          "label": "GTD · 200 CV · Diésel"
         }
       ]
     },
@@ -225,69 +752,6 @@
       ]
     },
     {
-      "brandSlug": "seat",
-      "modelSlug": "leon",
-      "trims": [
-        {
-          "slug": "1-5-tsi",
-          "name": "1.5 TSI",
-          "fuel": "petrol",
-          "powerHp": 150,
-          "yearFrom": 2020,
-          "yearTo": 2026,
-          "engineCode": "EA211",
-          "transmission": "automatic",
-          "gearboxCode": "DQ200",
-          "label": "1.5 TSI · 150 CV · Gasolina · DSG"
-        },
-        {
-          "slug": "2-0-tdi",
-          "name": "2.0 TDI",
-          "fuel": "diesel",
-          "powerHp": 150,
-          "yearFrom": 2020,
-          "yearTo": 2026,
-          "engineCode": "EA288",
-          "transmission": "automatic",
-          "gearboxCode": "DQ200",
-          "label": "2.0 TDI · 150 CV · Diésel · DSG"
-        }
-      ]
-    },
-    {
-      "brandSlug": "renault",
-      "modelSlug": "clio",
-      "trims": [
-        {
-          "slug": "tce-100",
-          "name": "TCe 100",
-          "fuel": "petrol",
-          "powerHp": 100,
-          "yearFrom": 2019,
-          "yearTo": 2026,
-          "label": "TCe 100 · Gasolina"
-        },
-        {
-          "slug": "dci-100",
-          "name": "dCi 100",
-          "fuel": "diesel",
-          "powerHp": 100,
-          "yearFrom": 2019,
-          "yearTo": 2024,
-          "label": "dCi 100 · Diésel"
-        },
-        {
-          "slug": "e-tech-hybrid",
-          "name": "E-Tech Hybrid",
-          "fuel": "hybrid",
-          "powerHp": 140,
-          "yearFrom": 2020,
-          "yearTo": 2026,
-          "label": "E-Tech Hybrid · 140 CV"
-        }
-      ]
-    },
-    {
       "brandSlug": "mercedes-benz",
       "modelSlug": "clase-a",
       "trims": [
@@ -308,6 +772,30 @@
           "yearFrom": 2018,
           "yearTo": 2026,
           "label": "A 200 · Gasolina"
+        }
+      ]
+    },
+    {
+      "brandSlug": "ebro",
+      "modelSlug": "s800",
+      "trims": [
+        {
+          "slug": "premium-ev",
+          "name": "Premium",
+          "fuel": "electric",
+          "powerHp": 220,
+          "yearFrom": 2024,
+          "yearTo": 2026,
+          "label": "Premium · 220 CV · Eléctrico"
+        },
+        {
+          "slug": "comfort-ev",
+          "name": "Comfort",
+          "fuel": "electric",
+          "powerHp": 180,
+          "yearFrom": 2024,
+          "yearTo": 2026,
+          "label": "Comfort · 180 CV · Eléctrico"
         }
       ]
     }
