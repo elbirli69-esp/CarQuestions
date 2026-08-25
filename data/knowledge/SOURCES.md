@@ -57,4 +57,6 @@ Marca `"brands": ["*"]` = aplicable a cualquier vehículo (tras filtros de combu
 ```bash
 npm run rag:generate-packs   # regenera packs desde scripts/generate-knowledge-packs.ts
 npm run rag:ingest           # reconstruye vector-index.json
+npm run rag:curate-report    # backlog quitar isDemo (prioriza España)
+npm run rag:validate-curation # CI: reglas isDemo=false
 ```

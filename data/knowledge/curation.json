@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-08-25T10:15:00.000Z",
+  "updatedAt": "2026-08-25T12:00:00.000Z",
   "overlays": [
     {
       "id": "ford-powershift-recall-pattern",
@@ -57,6 +57,206 @@
       "verificationLevel": "reliability_report",
       "externalRef": "TÜV Report — puntos débiles en inspección técnica (publicaciones anuales)",
       "sourceUrl": "https://www.tuv.com/world/en/tuv-report/"
+    },
+    {
+      "id": "vw-ea189-intake",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "oem_recall",
+      "externalRef": "VW Group EA189 — acciones post-Dieselgate (software/hardware)",
+      "sourceUrl": "https://www.volkswagenag.com/en/news/archive/2015/09/volkswagen-diesel-issue.html"
+    },
+    {
+      "id": "vw-id-software-recalls",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "safety_gate_portal",
+      "externalRef": "Safety Gate — campañas software MEB (ID./Born/Enyaq/Q4)",
+      "sourceUrl": "https://ec.europa.eu/safety-gate"
+    },
+    {
+      "id": "theta2-vin-check-eu",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "oem_recall",
+      "externalRef": "Hyundai/Kia Theta II GDI — campañas motor UE (consulta VIN)",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/search"
+    },
+    {
+      "id": "ford-ecoboost-coolant",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "safety_gate_portal",
+      "externalRef": "Safety Gate — campañas Ford EcoBoost refrigerante",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/"
+    },
+    {
+      "id": "ford-ecoboost-coolant-intrusion",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "safety_gate_portal",
+      "externalRef": "Safety Gate / Ford — intrusion refrigerante EcoBoost",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/"
+    },
+    {
+      "id": "peugeot-308-puretech-belt",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "safety_gate_portal",
+      "externalRef": "Stellantis PureTech 1.2 — alertas correa en baño de aceite",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/"
+    },
+    {
+      "id": "mercedes-om651-chain",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "safety_gate_portal",
+      "externalRef": "Mercedes OM651 — campañas cadena de distribución",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/"
+    },
+    {
+      "id": "psa-puretech-wet-belt-detail",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "oem_recall",
+      "externalRef": "Stellantis PureTech 1.2 wet belt — campañas y extensiones garantía",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/search"
+    },
+    {
+      "id": "playbook-wet-belt-risk",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "safety_gate_portal",
+      "externalRef": "PureTech/EB2 wet belt — alertas Safety Gate Stellantis",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/search"
+    },
+    {
+      "id": "vag-dsg-dq200",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "oem_manual",
+      "externalRef": "VW Group — servicio y mantenimiento DSG (embrague seco DQ200)",
+      "sourceUrl": "https://www.volkswagen.es/posventa/servicios"
+    },
+    {
+      "id": "toyota-hybrid-inverter-coolant",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "oem_manual",
+      "externalRef": "Toyota Hybrid — mantenimiento líquido inversor y revisión HV",
+      "sourceUrl": "https://www.toyota.es/mantenimiento-y-reparacion/hybrid-health-check"
+    },
+    {
+      "id": "toyota-corolla-hybrid-hv-soh",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "oem_manual",
+      "externalRef": "Toyota Hybrid Health Check — SOH batería HV",
+      "sourceUrl": "https://www.toyota.es/mantenimiento-y-reparacion/hybrid-health-check"
+    },
+    {
+      "id": "playbook-hybrid-battery-soh",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "oem_manual",
+      "externalRef": "Toyota/Lexus — lectura SOH híbridos (procedimiento oficial)",
+      "sourceUrl": "https://www.toyota.es/mantenimiento-y-reparacion/hybrid-health-check"
+    },
+    {
+      "id": "dacia-sandero-iii-rust-suspension",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "oem_manual",
+      "externalRef": "Dacia — campañas rellamada VIN y servicios posventa España",
+      "sourceUrl": "https://www.dacia.es/rellamadas.html"
+    },
+    {
+      "id": "renault-tce-timing-chain",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "oem_recall",
+      "externalRef": "Renault — verificación campañas VIN (TCe/cadena)",
+      "sourceUrl": "https://www.renault.es/rellamadas.html"
+    },
+    {
+      "id": "renault-1-3-tce-hr13",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "oem_recall",
+      "externalRef": "Renault HR13 1.3 TCe — campañas distribución/cadena",
+      "sourceUrl": "https://www.renault.es/rellamadas.html"
+    },
+    {
+      "id": "renault-edc-dct",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "oem_recall",
+      "externalRef": "Renault EDC — verificación campañas transmisión",
+      "sourceUrl": "https://www.renault.es/rellamadas.html"
+    },
+    {
+      "id": "clio-tce-egr",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "oem_recall",
+      "externalRef": "Renault Clio TCe — campañas EGR/antipolución",
+      "sourceUrl": "https://www.renault.es/rellamadas.html"
+    },
+    {
+      "id": "seat-ibiza-arona-tsi",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "oem_manual",
+      "externalRef": "SEAT — servicios posventa y mantenimiento TSI/DSG",
+      "sourceUrl": "https://www.seat.es/servicios"
+    },
+    {
+      "id": "vw-t-roc-vag-platform",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "oem_manual",
+      "externalRef": "Volkswagen — servicios TSI/TDI y DSG",
+      "sourceUrl": "https://www.volkswagen.es/posventa/servicios"
+    },
+    {
+      "id": "hyundai-tucson-phev",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "oem_recall",
+      "externalRef": "Hyundai — verificación campañas VIN (PHEV/Tucson)",
+      "sourceUrl": "https://www.hyundai.com/es/es/servicios-al-cliente.html"
+    },
+    {
+      "id": "mg-zs-hybrid-12v-infotainment",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "oem_manual",
+      "externalRef": "MG España — posventa y asistencia cliente",
+      "sourceUrl": "https://www.mg.es/posventa"
+    },
+    {
+      "id": "paper-dpf-regeneration-science",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "technical_literature",
+      "externalRef": "Literatura post-tratamiento diésel DPF/FAP (regeneración)",
+      "sourceUrl": "https://ec.europa.eu/safety-gate"
+    },
+    {
+      "id": "playbook-dpf-clog-urban",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "safety_gate_portal",
+      "externalRef": "Safety Gate — alertas FAP/DPF diésel",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/search"
+    },
+    {
+      "id": "paper-emissions-tampering",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T12:00:00.000Z",
+      "verificationLevel": "regulatory",
+      "externalRef": "Normativa UE antipolución e inspección técnica emisiones",
+      "sourceUrl": "https://ec.europa.eu/growth/sectors/automotive/environment-protection_en"
     }
   ]
 }
