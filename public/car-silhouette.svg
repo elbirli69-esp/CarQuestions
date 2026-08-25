@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" fill="none" aria-hidden="true">
+  <path
+    d="M72 312h816"
+    stroke="currentColor"
+    stroke-width="6"
+    stroke-linecap="round"
+    opacity="0.35"
+  />
+  <path
+    d="M128 288h704v24H128v-24Z"
+    fill="currentColor"
+    opacity="0.08"
+  />
+  <path
+    d="M148 288c24-72 88-128 176-144 52-8 104-8 156 0 88 16 152 72 176 144H148Z"
+    fill="currentColor"
+    opacity="0.12"
+  />
+  <path
+    d="M196 240c32-40 72-64 120-72 44-8 88-8 132 0 48 8 88 32 120 72"
+    stroke="currentColor"
+    stroke-width="10"
+    stroke-linecap="round"
+    opacity="0.2"
+  />
+  <path
+    d="M248 216h88l28-48h120l36 48h88"
+    stroke="currentColor"
+    stroke-width="8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    opacity="0.25"
+  />
+  <circle cx="248" cy="312" r="52" fill="currentColor" opacity="0.1" />
+  <circle cx="248" cy="312" r="36" stroke="currentColor" stroke-width="8" opacity="0.22" />
+  <circle cx="712" cy="312" r="52" fill="currentColor" opacity="0.1" />
+  <circle cx="712" cy="312" r="36" stroke="currentColor" stroke-width="8" opacity="0.22" />
+  <path
+    d="M320 200h224"
+    stroke="currentColor"
+    stroke-width="6"
+    stroke-linecap="round"
+    opacity="0.15"
+  />
+</svg>

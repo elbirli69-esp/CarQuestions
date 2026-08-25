@@ -339,7 +339,7 @@ export function VehicleForm({
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-      <section className="rounded-2xl border bg-card p-4 shadow-sm sm:p-6">
+      <section className="content-panel p-4 sm:p-6">
         <div className="mb-5 flex flex-col gap-1">
           <h2 className="font-heading text-lg font-medium">Datos del coche</h2>
           <p className="text-sm text-muted-foreground">

@@ -2,6 +2,12 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
+import {
+  BadgeEuroIcon,
+  ClipboardCheckIcon,
+  MessageCircleQuestionIcon,
+  ShieldAlertIcon,
+} from "lucide-react";
 import { DemoBanner } from "@/components/demo-banner";
 import { ExpertCurationBar } from "@/components/expert/expert-curation-bar";
 import { AppHeaderToolbar } from "@/components/layout/app-header-toolbar";
@@ -83,30 +89,55 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
   const hasAlternatives = view ? view.alternatives.length > 0 : false;
   const identityBroken = view?.consistency?.status === "invalid";
 
+  const heroFeatures = [
+    { icon: BadgeEuroIcon, label: "Precio de mercado" },
+    { icon: ShieldAlertIcon, label: "Riesgos conocidos" },
+    { icon: MessageCircleQuestionIcon, label: "Preguntas al vendedor" },
+    { icon: ClipboardCheckIcon, label: "Checklist de compra" },
+  ] as const;
+
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-8 sm:py-12">
-      <header className="flex flex-col gap-4">
+      <header className="flex flex-col gap-5">
         <div className="flex items-center justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-2.5">
+          <div className="flex min-w-0 items-center gap-3">
             <Image
               src="/icon-512.png"
               alt="CarQuestions"
-              width={36}
-              height={36}
-              className="size-9 shrink-0 rounded-[9px] shadow-sm"
+              width={40}
+              height={40}
+              className="size-10 shrink-0 rounded-[10px] shadow-md ring-1 ring-border/50"
               priority
             />
-            <p className="truncate text-sm font-medium tracking-wide text-muted-foreground">CarQuestions</p>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium tracking-wide text-muted-foreground">CarQuestions</p>
+              <p className="truncate text-xs text-muted-foreground/80">Segunda mano en España</p>
+            </div>
           </div>
           <AppHeaderToolbar expertMode={expertMode} onExpertModeChange={setExpertMode} />
         </div>
-        <h1 className="font-heading max-w-xl text-3xl leading-tight font-medium tracking-tight sm:text-4xl">
-          CarQuestions
-        </h1>
-        <p className="max-w-xl text-base leading-7 text-muted-foreground">
-          Copiloto para comprar de segunda mano: cuánto pagar, qué riesgo tiene, qué preguntar y qué
-          comprobar antes de decidir.
-        </p>
+        <div className="max-w-xl space-y-4">
+          <h1 className="font-heading text-3xl leading-[1.15] font-medium tracking-tight sm:text-4xl">
+            ¿Cuánto vale realmente{" "}
+            <span className="text-foreground/75">este coche?</span>
+          </h1>
+          <p className="text-base leading-7 text-muted-foreground">
+            Copiloto para comprar con datos: tasación orientativa, fallos frecuentes del modelo,
+            preguntas al vendedor y qué revisar antes de pagar.
+          </p>
+          <ul className="flex flex-wrap gap-2" aria-label="Qué obtienes">
+            {heroFeatures.map(({ icon: Icon, label }) => (
+              <li key={label}>
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-card/70 px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-sm backdrop-blur-sm"
+                >
+                  <Icon className="size-3.5 shrink-0 opacity-70" aria-hidden />
+                  {label}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </header>
 
       {view ? <DemoBanner dataMode={view.dataMode} /> : null}
