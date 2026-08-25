@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { CircleHelpIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,10 +14,24 @@ import {
 import { HELP_STEPS, readHelpSeen, writeHelpSeen } from "@/lib/help/guide";
 import { cn } from "@/lib/utils";
 
-export function HelpGuide() {
+export type HelpGuideHandle = {
+  open: () => void;
+};
+
+export const HelpGuide = forwardRef<HelpGuideHandle, { showTrigger?: boolean }>(function HelpGuide(
+  { showTrigger = true },
+  ref,
+) {
   const [open, setOpen] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [ready, setReady] = useState(false);
+
+  useImperativeHandle(ref, () => ({
+    open: () => {
+      setStepIndex(0);
+      setOpen(true);
+    },
+  }));
 
   useEffect(() => {
     const seen = readHelpSeen();
@@ -52,17 +66,19 @@ export function HelpGuide() {
 
   return (
     <>
-      <Button
-        type="button"
-        variant="outline"
-        size="icon"
-        className="size-9"
-        aria-label="Cómo funciona CarQuestions"
-        onClick={openHelp}
-        disabled={!ready}
-      >
-        <CircleHelpIcon className="size-4" />
-      </Button>
+      {showTrigger ? (
+        <Button
+          type="button"
+          variant="outline"
+          className="min-h-11 min-w-11 shrink-0"
+          aria-label="Cómo funciona CarQuestions"
+          onClick={openHelp}
+          disabled={!ready}
+        >
+          <CircleHelpIcon className="size-5" aria-hidden />
+          <span className="hidden sm:inline">Ayuda</span>
+        </Button>
+      ) : null}
 
       <Sheet open={open} onOpenChange={handleOpenChange}>
         <SheetContent
@@ -95,8 +111,8 @@ export function HelpGuide() {
               </ul>
             ) : (
               <p className="text-sm leading-6 text-muted-foreground">
-                Puedes reabrir esta guía cuando quieras con el botón <span className="font-medium text-foreground">?</span>{" "}
-                de la cabecera.
+                Puedes reabrir esta guía desde el menú de la cabecera o el botón Ayuda en pantallas
+                grandes.
               </p>
             )}
 
@@ -115,20 +131,25 @@ export function HelpGuide() {
 
           <SheetFooter className="flex-row gap-2 border-t px-5 py-4 sm:px-6">
             {!isFirst ? (
-              <Button type="button" variant="outline" className="flex-1" onClick={() => setStepIndex((i) => i - 1)}>
+              <Button
+                type="button"
+                variant="outline"
+                className="min-h-11 flex-1"
+                onClick={() => setStepIndex((i) => i - 1)}
+              >
                 Atrás
               </Button>
             ) : (
-              <Button type="button" variant="ghost" className="flex-1" onClick={markSeenAndClose}>
+              <Button type="button" variant="ghost" className="min-h-11 flex-1" onClick={markSeenAndClose}>
                 Saltar
               </Button>
             )}
             {isLast ? (
-              <Button type="button" className="flex-1" onClick={markSeenAndClose}>
+              <Button type="button" className="min-h-11 flex-1" onClick={markSeenAndClose}>
                 Empezar
               </Button>
             ) : (
-              <Button type="button" className="flex-1" onClick={() => setStepIndex((i) => i + 1)}>
+              <Button type="button" className="min-h-11 flex-1" onClick={() => setStepIndex((i) => i + 1)}>
                 Siguiente
               </Button>
             )}
@@ -137,4 +158,4 @@ export function HelpGuide() {
       </Sheet>
     </>
   );
-}
+});

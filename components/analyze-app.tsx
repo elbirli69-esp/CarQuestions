@@ -4,9 +4,7 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { DemoBanner } from "@/components/demo-banner";
 import { ExpertCurationBar } from "@/components/expert/expert-curation-bar";
-import { ExpertModeToggle } from "@/components/expert/expert-mode-toggle";
-import { HelpGuide } from "@/components/help/help-guide";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { AppHeaderToolbar } from "@/components/layout/app-header-toolbar";
 import { AnalysisProgressCard } from "@/components/valuation/analysis-progress-card";
 import { AnalysisResultsTabs } from "@/components/valuation/analysis-results-tabs";
 import { ConsistencyAlert } from "@/components/valuation/consistency-alert";
@@ -88,23 +86,19 @@ export function AnalyzeApp({ initialAnalysis = null }: { initialAnalysis?: Analy
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-8 sm:py-12">
       <header className="flex flex-col gap-4">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-2.5">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-2.5">
             <Image
               src="/icon-512.png"
               alt="CarQuestions"
               width={36}
               height={36}
-              className="size-9 rounded-[9px] shadow-sm"
+              className="size-9 shrink-0 rounded-[9px] shadow-sm"
               priority
             />
-            <p className="text-sm font-medium tracking-wide text-muted-foreground">CarQuestions</p>
+            <p className="truncate text-sm font-medium tracking-wide text-muted-foreground">CarQuestions</p>
           </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <ExpertModeToggle enabled={expertMode} onChange={setExpertMode} />
-            <HelpGuide />
-            <ThemeToggle />
-          </div>
+          <AppHeaderToolbar expertMode={expertMode} onExpertModeChange={setExpertMode} />
         </div>
         <h1 className="font-heading max-w-xl text-3xl leading-tight font-medium tracking-tight sm:text-4xl">
           CarQuestions

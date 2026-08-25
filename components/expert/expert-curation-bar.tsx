@@ -33,16 +33,27 @@ export function ExpertCurationBar({
             original; marca el análisis como curado por experto.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button type="button" variant="outline" size="sm" onClick={onReset} disabled={!hasChanges}>
+        <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap">
+          <Button
+            type="button"
+            variant="outline"
+            className="min-h-11 w-full sm:w-auto"
+            onClick={onReset}
+            disabled={!hasChanges}
+          >
             <RotateCcwIcon className="size-4" aria-hidden />
             Restaurar original
           </Button>
-          <Button type="button" variant="outline" size="sm" onClick={onExport}>
+          <Button type="button" variant="outline" className="min-h-11 w-full sm:w-auto" onClick={onExport}>
             <DownloadIcon className="size-4" aria-hidden />
             Exportar JSON
           </Button>
-          <Button type="button" size="sm" onClick={onSave} disabled={!hasChanges || saveStatus === "saving"}>
+          <Button
+            type="button"
+            className="min-h-11 w-full sm:w-auto"
+            onClick={onSave}
+            disabled={!hasChanges || saveStatus === "saving"}
+          >
             <SaveIcon className="size-4" aria-hidden />
             {saveStatus === "saving" ? "Guardando…" : "Guardar curación"}
           </Button>
