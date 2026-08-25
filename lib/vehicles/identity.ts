@@ -22,6 +22,7 @@ export interface IdentityEvidenceChain {
   trimSlug?: string;
   trimName?: string;
   engineCode?: string;
+  gearboxCode?: string;
   fields: FieldEvidence[];
   summary: string;
 }
@@ -57,6 +58,7 @@ export function resolveVehicleIdentity(
   vehicle: Vehicle,
   options?: { trimSlug?: string },
 ): ResolveIdentityResult {
+  const trimSlugInput = options?.trimSlug ?? vehicle.trimSlug;
   const brand = findBrandByName(vehicle.brand);
   const model = brand ? findModelInBrand(brand, vehicle.model) : undefined;
 
@@ -69,7 +71,7 @@ export function resolveVehicleIdentity(
     trimResolution = resolveTrimSelection({
       brandSlug: brand.slug,
       modelSlug: model.slug,
-      trimSlug: options?.trimSlug,
+      trimSlug: trimSlugInput,
       versionText: vehicle.version,
       fuel: vehicle.fuel,
       power: vehicle.power,
@@ -86,6 +88,8 @@ export function resolveVehicleIdentity(
     fuel: trimResolution.fuel ?? vehicle.fuel,
     power: trimResolution.power ?? vehicle.power,
     transmission: trimResolution.transmission ?? vehicle.transmission,
+    engineCode: trimResolution.engineCode ?? trimResolution.trim?.engineCode ?? vehicle.engineCode,
+    gearboxCode: trimResolution.gearboxCode ?? trimResolution.trim?.gearboxCode ?? vehicle.gearboxCode,
   };
 
   const trimMatchedFuel =
@@ -158,6 +162,44 @@ export function resolveVehicleIdentity(
     );
   }
 
+  const trimMatchedEngineCode =
+    trimResolution.trimCatalogMatch &&
+    trimResolution.trim != null &&
+    trimResolution.trim.engineCode != null &&
+    trimResolution.trim.engineCode === resolved.engineCode;
+
+  if (resolved.engineCode) {
+    fields.push(
+      prov(
+        "engineCode",
+        "Código motor",
+        resolved.engineCode,
+        trimMatchedEngineCode ? "catalog" : "inferred",
+        trimMatchedEngineCode ? "high" : "medium",
+        trimMatchedEngineCode,
+      ),
+    );
+  }
+
+  const trimMatchedGearboxCode =
+    trimResolution.trimCatalogMatch &&
+    trimResolution.trim != null &&
+    trimResolution.trim.gearboxCode != null &&
+    trimResolution.trim.gearboxCode === resolved.gearboxCode;
+
+  if (resolved.gearboxCode) {
+    fields.push(
+      prov(
+        "gearboxCode",
+        "Código caja",
+        resolved.gearboxCode,
+        trimMatchedGearboxCode ? "catalog" : "inferred",
+        trimMatchedGearboxCode ? "high" : "medium",
+        trimMatchedGearboxCode,
+      ),
+    );
+  }
+
   fields.push(
     prov("year", "Año", resolved.year, "user", "high", false),
     prov("mileage", "Kilometraje", `${resolved.mileage} km`, "user", "high", false),
@@ -192,7 +234,8 @@ export function resolveVehicleIdentity(
       trimCatalogMatch: trimResolution.trimCatalogMatch,
       trimSlug: trimResolution.trimSlug,
       trimName: trimResolution.trim?.name,
-      engineCode: trimResolution.engineCode ?? trimResolution.trim?.engineCode,
+      engineCode: resolved.engineCode,
+      gearboxCode: resolved.gearboxCode,
       fields,
       summary,
     },

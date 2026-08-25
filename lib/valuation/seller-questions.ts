@@ -4,6 +4,7 @@ import type {
   SellerQuestion,
   SellerQuestionCategory,
   SellerQuestionPriority,
+  SharedComponentIssue,
 } from "@/types/valuation";
 import type { Vehicle } from "@/types/vehicle";
 
@@ -55,7 +56,10 @@ export function buildSellerQuestions(
   vehicle: Vehicle,
   issues: KnownIssue[],
   knowledgeChunks: KnowledgeChunk[] = [],
-  options?: { blockModelSpecific?: boolean },
+  options?: {
+    blockModelSpecific?: boolean;
+    sharedComponentIssues?: SharedComponentIssue[];
+  },
 ): SellerQuestion[] {
   const blockModel = options?.blockModelSpecific ?? false;
   const questions: RankedQuestion[] = [
@@ -230,6 +234,25 @@ export function buildSellerQuestions(
       if (isIrrelevantForFuel(question, vehicle.fuel)) continue;
       seen.add(key);
       questions.push(q(question, issue.detail, "alta", "modelo", 12, issue.title));
+    }
+
+    const sharedIssues = options?.sharedComponentIssues ?? [];
+    for (const issue of sharedIssues.filter((i) => i.matchConfidence === "confirmed").slice(0, 2)) {
+      const question = `Si lleva ${issue.componentCodes.join("/")}: respecto a ${issue.title.toLowerCase()}, ¿hay historial de reparación o avisos?`;
+      const key = question.toLowerCase();
+      if (seen.has(key)) continue;
+      if (isIrrelevantForFuel(question, vehicle.fuel)) continue;
+      seen.add(key);
+      questions.push(
+        q(
+          question,
+          `${issue.matchReason} ${issue.detail}`,
+          "media",
+          "mecanica",
+          58,
+          issue.title,
+        ),
+      );
     }
   }
 

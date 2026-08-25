@@ -98,7 +98,9 @@
           "yearFrom": 2017,
           "yearTo": 2026,
           "engineCode": "EA211",
-          "label": "1.5 TSI · 130 CV · Gasolina"
+          "transmission": "automatic",
+          "gearboxCode": "DQ200",
+          "label": "1.5 TSI · 130 CV · Gasolina · DSG"
         },
         {
           "slug": "2-0-tdi",
@@ -108,7 +110,9 @@
           "yearFrom": 2013,
           "yearTo": 2020,
           "engineCode": "EA288",
-          "label": "2.0 TDI · 150 CV · Diésel"
+          "transmission": "automatic",
+          "gearboxCode": "DQ200",
+          "label": "2.0 TDI · 150 CV · Diésel · DSG"
         },
         {
           "slug": "gti",
@@ -231,7 +235,10 @@
           "powerHp": 150,
           "yearFrom": 2020,
           "yearTo": 2026,
-          "label": "1.5 TSI · 150 CV · Gasolina"
+          "engineCode": "EA211",
+          "transmission": "automatic",
+          "gearboxCode": "DQ200",
+          "label": "1.5 TSI · 150 CV · Gasolina · DSG"
         },
         {
           "slug": "2-0-tdi",
@@ -240,7 +247,10 @@
           "powerHp": 150,
           "yearFrom": 2020,
           "yearTo": 2026,
-          "label": "2.0 TDI · 150 CV · Diésel"
+          "engineCode": "EA288",
+          "transmission": "automatic",
+          "gearboxCode": "DQ200",
+          "label": "2.0 TDI · 150 CV · Diésel · DSG"
         }
       ]
     },

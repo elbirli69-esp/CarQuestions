@@ -41,6 +41,7 @@ export function IdentityEvidenceCard({
           <div className="flex flex-wrap gap-2">
             <Badge variant="secondary">Versión en catálogo</Badge>
             {evidence.engineCode ? <Badge variant="outline">Motor {evidence.engineCode}</Badge> : null}
+            {evidence.gearboxCode ? <Badge variant="outline">Caja {evidence.gearboxCode}</Badge> : null}
           </div>
         ) : (
           <Badge variant="outline">Versión no verificada en catálogo</Badge>

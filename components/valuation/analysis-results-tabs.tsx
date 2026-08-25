@@ -15,7 +15,15 @@ import { EditableListField } from "@/components/expert/editable-field";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { ExpertAnalysisPatch } from "@/lib/expert-mode/patch-analysis";
-import type { AnalyzeResponse } from "@/types/valuation";
+import type { AnalyzeResponse, SharedComponentSummary } from "@/types/valuation";
+
+const EMPTY_SHARED_COMPONENTS: SharedComponentSummary = {
+  available: false,
+  issues: [],
+  notes: [],
+  isDemo: false,
+  codesResolved: false,
+};
 
 export function AnalysisResultsTabs({
   analysis,
@@ -123,12 +131,19 @@ export function AnalysisResultsTabs({
         <ListingAnalysisCard
           analysis={analysis.listingAnalysis}
           reliability={analysis.reliability}
+          sharedComponents={analysis.sharedComponents ?? EMPTY_SHARED_COMPONENTS}
           maintenance={analysis.maintenance}
           expertMode={expertMode}
           onAnalysisChange={(patch) => curate({ type: "listingAnalysis", patch })}
           onListChange={(field, value) => curate({ type: "listingList", field, value })}
           onKnownIssueChange={(index, patch) => curate({ type: "knownIssue", index, patch })}
           onReliabilityNoteChange={(index, value) => curate({ type: "reliabilityNote", index, value })}
+          onSharedComponentIssueChange={(index, patch) =>
+            curate({ type: "sharedComponentIssue", index, patch })
+          }
+          onSharedComponentNoteChange={(index, value) =>
+            curate({ type: "sharedComponentNote", index, value })
+          }
         />
       </TabsContent>
 

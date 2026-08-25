@@ -5,9 +5,11 @@ import type { Vehicle } from "@/types/vehicle";
 import { indicatesAccident, valueVehicle } from "@/lib/valuation/engine";
 import { buildSellerQuestions } from "@/lib/valuation/seller-questions";
 import { analyzeListing } from "@/lib/valuation/listing-analysis";
-import { chunkMatchesModel, chunkMatchesVehicle } from "@/lib/rag/knowledge/filters";
+import { chunkMatchesModel, chunkMatchesVehicle, chunkIsPlatformComponent } from "@/lib/rag/knowledge/filters";
 import { chunksToReliability } from "@/lib/rag/knowledge/to-reliability";
+import { chunksToSharedComponents } from "@/lib/rag/knowledge/shared-components";
 import type { KnowledgeChunk } from "@/types/knowledge";
+import { motorCodesMatch, resolveVehicleComponentCodes } from "@/lib/vehicles/component-codes";
 import { validateVehicleConsistency } from "@/lib/vehicles/consistency";
 import { resolveVehicleIdentity } from "@/lib/vehicles/identity";
 import { detectMissingData } from "@/lib/vehicles/missing-data";
@@ -353,6 +355,113 @@ describe("RAG isolation", () => {
     assert.equal(reliability.available, true);
     assert.equal(reliability.isDemo, true);
     assert.ok(reliability.knownIssues.every((i) => i.isDemo === true));
+  });
+});
+
+describe("Shared component issues (nivel B)", () => {
+  const dq200Chunk: KnowledgeChunk = {
+    id: "vag-dsg-dq200",
+    type: "issue",
+    brands: ["volkswagen", "vw", "seat", "skoda", "audi"],
+    fuels: ["petrol", "diesel"],
+    yearFrom: 2010,
+    yearTo: 2018,
+    motorCodes: ["DQ200"],
+    title: "Caja DSG DQ200 (embrague seco)",
+    content: "Tirones y patinaje en urbano.",
+    severity: "high",
+    source: "foros VAG",
+    isDemo: true,
+  };
+
+  it("chunkIsPlatformComponent identifies motor-code chunks without models", () => {
+    assert.equal(chunkIsPlatformComponent(dq200Chunk), true);
+    assert.equal(
+      chunkIsPlatformComponent({
+        ...dq200Chunk,
+        id: "model-specific",
+        models: ["golf"],
+      }),
+      false,
+    );
+  });
+
+  it("motorCodesMatch links DQ200 across normalized forms", () => {
+    assert.equal(motorCodesMatch(["DQ200"], ["dq200"]), true);
+    assert.equal(motorCodesMatch(["B47"], ["DQ200"]), false);
+  });
+
+  it("Seat Leon with catalog DQ200 gets confirmed shared issue", () => {
+    const identity = resolveVehicleIdentity(
+      baseVehicle({
+        brand: "Seat",
+        model: "Leon",
+        version: "1.5 TSI",
+        fuel: "petrol",
+        power: 150,
+        year: 2018,
+        transmission: "automatic",
+        trimSlug: "1-5-tsi",
+      }),
+    );
+    const codes = resolveVehicleComponentCodes(identity.vehicle, {
+      identity: identity.evidence,
+      trim: identity.trimResolution.trim,
+    });
+    assert.equal(codes.gearboxCode, "DQ200");
+    const summary = chunksToSharedComponents([dq200Chunk], identity.vehicle, codes);
+    assert.equal(summary.available, true);
+    assert.equal(summary.issues.length, 1);
+    assert.equal(summary.issues[0].matchConfidence, "confirmed");
+    assert.equal(summary.issues[0].evidenceLevel, "B");
+  });
+
+  it("BMW X1 with B47 does not get DQ200 when codes are resolved", () => {
+    const vehicle = baseVehicle();
+    const codes = resolveVehicleComponentCodes(vehicle, {
+      identity: { trimCatalogMatch: true, engineCode: "B47", fields: [], summary: "" },
+    });
+    const summary = chunksToSharedComponents([dq200Chunk], vehicle, codes);
+    assert.equal(summary.issues.length, 0);
+  });
+
+  it("VAG without resolved codes may show DQ200 as possible", () => {
+    const vehicle = baseVehicle({
+      brand: "Seat",
+      model: "Leon",
+      fuel: "petrol",
+      year: 2015,
+    });
+    const codes = resolveVehicleComponentCodes(vehicle);
+    const summary = chunksToSharedComponents([dq200Chunk], vehicle, codes);
+    assert.equal(summary.issues.length, 1);
+    assert.equal(summary.issues[0].matchConfidence, "possible");
+  });
+
+  it("buildSellerQuestions adds medium-priority question for confirmed shared issues", () => {
+    const identity = resolveVehicleIdentity(
+      baseVehicle({
+        brand: "Seat",
+        model: "Leon",
+        version: "1.5 TSI",
+        fuel: "petrol",
+        power: 150,
+        year: 2018,
+        transmission: "automatic",
+        trimSlug: "1-5-tsi",
+      }),
+    );
+    const shared = chunksToSharedComponents(
+      [dq200Chunk],
+      identity.vehicle,
+      resolveVehicleComponentCodes(identity.vehicle, {
+        identity: identity.evidence,
+        trim: identity.trimResolution.trim,
+      }),
+    ).issues;
+    assert.ok(shared.length >= 1);
+    const qs = buildSellerQuestions(identity.vehicle, [], [], { sharedComponentIssues: shared });
+    assert.ok(qs.some((q) => q.priority === "media" && /DQ200|dsg/i.test(q.question)));
   });
 });
 

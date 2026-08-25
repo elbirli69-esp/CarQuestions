@@ -69,12 +69,27 @@ export class MockAIProvider implements AIProvider {
         .filter(Boolean)
         .join("\n\n");
     } else if (intent === "reliability") {
-      if (context.reliabilityData.knownIssues.length === 0 && snippets.length === 0) {
+      const shared = context.sharedComponentsData?.issues ?? [];
+      if (context.reliabilityData.knownIssues.length === 0 && shared.length === 0 && snippets.length === 0) {
         text = `No tenemos evidencia suficiente para afirmar problemas conocidos específicos de ${v.brand} ${v.model}. No invento averías. Conviene buscar boletines del fabricante y un informe de un taller especialista.`;
       } else {
         text = [
-          `Para un ${v.brand} ${v.model} ${v.year} ${v.fuel}, el conocimiento técnico señala (solo patrones con evidencia de modelo):`,
-          ...context.reliabilityData.knownIssues.map((issue) => `- ${issue.title}: ${issue.detail}`),
+          `Para un ${v.brand} ${v.model} ${v.year} ${v.fuel}, el conocimiento técnico señala:`,
+          context.reliabilityData.knownIssues.length
+            ? "Problemas con evidencia de modelo:\n" +
+              context.reliabilityData.knownIssues
+                .map((issue) => `- ${issue.title}: ${issue.detail}`)
+                .join("\n")
+            : "",
+          shared.length
+            ? "Componentes compartidos (nivel B, confirma versión):\n" +
+              shared
+                .map(
+                  (issue) =>
+                    `- [${issue.matchConfidence}] ${issue.title} (${issue.componentCodes.join("/")}): ${issue.detail}`,
+                )
+                .join("\n")
+            : "",
           snippets.length ? `Fragmentos RAG adicionales:\n${snippets.join("\n")}` : "",
           "No significa que este coche concreto las tenga. Hay que contrastarlo con historial y una inspección.",
         ]

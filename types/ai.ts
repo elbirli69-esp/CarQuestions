@@ -5,6 +5,7 @@ import type {
   AnalyzeResponse,
   MaintenanceSummary,
   ReliabilitySummary,
+  SharedComponentSummary,
   ValuationResult,
 } from "@/types/valuation";
 import type { Vehicle } from "@/types/vehicle";
@@ -15,6 +16,7 @@ export interface VehicleContext {
   comparableListings: VehicleListing[];
   alternatives: VehicleListing[];
   reliabilityData: ReliabilitySummary;
+  sharedComponentsData?: SharedComponentSummary;
   maintenanceData: MaintenanceSummary;
   sourceData: SourceCitation[];
   retrievedDocuments?: RetrievedDocument[];

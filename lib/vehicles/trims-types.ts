@@ -8,6 +8,8 @@ export interface CatalogTrim {
   yearFrom?: number;
   yearTo?: number;
   engineCode?: string;
+  /** Código de caja (ej. DQ200) para conocimiento de plataforma compartida. */
+  gearboxCode?: string;
   transmission?: TransmissionType;
   /** Human label for dropdown, e.g. "sDrive18d · 150 CV · Diésel" */
   label?: string;

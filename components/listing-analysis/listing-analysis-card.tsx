@@ -1,20 +1,24 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { EditableField, EditableListField } from "@/components/expert/editable-field";
-import type { ListingAnalysis, MaintenanceSummary, ReliabilitySummary } from "@/types/valuation";
+import type { ListingAnalysis, MaintenanceSummary, ReliabilitySummary, SharedComponentSummary } from "@/types/valuation";
 
 export function ListingAnalysisCard({
   analysis,
   reliability,
+  sharedComponents,
   maintenance,
   expertMode = false,
   onAnalysisChange,
   onListChange,
   onKnownIssueChange,
   onReliabilityNoteChange,
+  onSharedComponentIssueChange,
+  onSharedComponentNoteChange,
 }: {
   analysis: ListingAnalysis;
   reliability: ReliabilitySummary;
+  sharedComponents: SharedComponentSummary;
   maintenance: MaintenanceSummary;
   expertMode?: boolean;
   onAnalysisChange?: (patch: Partial<ListingAnalysis>) => void;
@@ -24,6 +28,11 @@ export function ListingAnalysisCard({
   ) => void;
   onKnownIssueChange?: (index: number, patch: { title?: string; detail?: string }) => void;
   onReliabilityNoteChange?: (index: number, value: string) => void;
+  onSharedComponentIssueChange?: (
+    index: number,
+    patch: { title?: string; detail?: string; matchReason?: string },
+  ) => void;
+  onSharedComponentNoteChange?: (index: number, value: string) => void;
 }) {
   return (
     <div className="flex flex-col gap-4">
@@ -184,6 +193,89 @@ export function ListingAnalysisCard({
               ) : null}
             </div>
           ) : null}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Componentes compartidos (nivel B)</CardTitle>
+          <CardDescription>
+            {sharedComponents.available
+              ? `Motor o caja usados en varios modelos${sharedComponents.codesResolved ? ` · motor ${sharedComponents.resolvedEngineCode ?? "—"} · caja ${sharedComponents.resolvedGearboxCode ?? "—"}` : ""}${sharedComponents.isDemo ? " · corpus demo" : ""}. No sustituye confirmar la versión exacta.`
+              : "Sin patrones de plataforma identificados para este vehículo."}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-5 text-sm">
+          {sharedComponents.available ? (
+            <>
+              {sharedComponents.notes.length > 0 ? (
+                <ul className="space-y-1 text-muted-foreground">
+                  {sharedComponents.notes.map((note, noteIndex) => (
+                    <li key={`shared-note-${noteIndex}`}>
+                      <EditableField
+                        expertMode={expertMode}
+                        value={note}
+                        label={`Nota componente ${noteIndex + 1}`}
+                        multiline
+                        onChange={(value) => onSharedComponentNoteChange?.(noteIndex, value)}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              <ul className="space-y-3">
+                {sharedComponents.issues.map((issue, index) => (
+                  <li key={`${issue.title}-${index}`} className="space-y-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <EditableField
+                        expertMode={expertMode}
+                        value={issue.title}
+                        label={`Componente ${index + 1}`}
+                        className="font-medium"
+                        onChange={(value) => onSharedComponentIssueChange?.(index, { title: value })}
+                      />
+                      <Badge variant={issue.severity === "high" ? "destructive" : "secondary"}>
+                        {issue.severity === "high" ? "alto" : issue.severity === "medium" ? "medio" : "bajo"}
+                      </Badge>
+                      <Badge variant="outline">Nivel B</Badge>
+                      <Badge variant={issue.matchConfidence === "confirmed" ? "default" : "outline"}>
+                        {issue.matchConfidence === "confirmed" ? "código confirmado" : "posible"}
+                      </Badge>
+                      {issue.isDemo ? <Badge variant="outline">demo</Badge> : null}
+                    </div>
+                    <EditableField
+                      expertMode={expertMode}
+                      value={issue.detail}
+                      label={`Detalle componente ${index + 1}`}
+                      multiline
+                      className="text-muted-foreground"
+                      onChange={(value) => onSharedComponentIssueChange?.(index, { detail: value })}
+                    />
+                    <EditableField
+                      expertMode={expertMode}
+                      value={issue.matchReason}
+                      label={`Motivo match ${index + 1}`}
+                      multiline
+                      className="text-xs text-muted-foreground"
+                      onChange={(value) => onSharedComponentIssueChange?.(index, { matchReason: value })}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Códigos corpus: {issue.componentCodes.join(", ")} · Fuente: {issue.source}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <EditableField
+              expertMode={expertMode}
+              value={sharedComponents.notes[0] ?? ""}
+              label="Nota componentes compartidos"
+              multiline
+              className="text-muted-foreground"
+              onChange={(value) => onSharedComponentNoteChange?.(0, value)}
+            />
+          )}
         </CardContent>
       </Card>
     </div>

@@ -67,6 +67,8 @@ export const vehicleInputSchema = z.object({
   fuel: z.enum(FUEL_TYPES, { error: "Selecciona un combustible" }),
   power: z.number().int().min(20).max(2000).optional(),
   transmission: z.enum(TRANSMISSION_TYPES).optional(),
+  engineCode: z.string().trim().max(40).optional(),
+  gearboxCode: z.string().trim().max(40).optional(),
   bodyType: z.enum(BODY_TYPES).optional(),
   advertisedPrice: z.number().min(200).max(10_000_000).optional(),
   location: optionalText,

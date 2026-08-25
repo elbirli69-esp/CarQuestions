@@ -79,3 +79,14 @@ export function chunkIsModelSpecific(chunk: KnowledgeChunk): boolean {
   if (chunkAppliesToAllBrands(chunk)) return false;
   return Boolean(chunk.models && chunk.models.length > 0);
 }
+
+/**
+ * Platform / shared component chunk: motor or gearbox code scoped, not tied to a single model.
+ * Used for nivel B (shared drivetrain issues across models).
+ */
+export function chunkIsPlatformComponent(chunk: KnowledgeChunk): boolean {
+  if (chunkAppliesToAllBrands(chunk)) return false;
+  if (chunkIsModelSpecific(chunk)) return false;
+  if (!chunk.motorCodes || chunk.motorCodes.length === 0) return false;
+  return chunk.type === "issue" || chunk.type === "recall";
+}

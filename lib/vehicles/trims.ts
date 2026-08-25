@@ -69,6 +69,7 @@ export interface ResolvedTrimFields {
   engineCode?: string;
   trimSlug?: string;
   trimCatalogMatch: boolean;
+  gearboxCode?: string;
 }
 
 /**
@@ -106,6 +107,7 @@ export function resolveTrimSelection(options: {
     power: options.power ?? trim.powerHp,
     transmission: options.transmission ?? trim.transmission,
     engineCode: trim.engineCode,
+    gearboxCode: trim.gearboxCode,
     trimSlug: trim.slug,
     trimCatalogMatch: true,
     trim,

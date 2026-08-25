@@ -58,6 +58,10 @@ export interface Vehicle {
   fuel: FuelType;
   power?: number;
   transmission?: TransmissionType;
+  /** Código de motor del catálogo o anuncio (ej. B47, EA888). */
+  engineCode?: string;
+  /** Código de caja del catálogo o anuncio (ej. DQ200). */
+  gearboxCode?: string;
   bodyType?: BodyType;
   advertisedPrice?: number;
   location?: string;

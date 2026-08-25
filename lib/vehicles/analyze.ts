@@ -13,6 +13,8 @@ import { validateVehicleConsistency } from "@/lib/vehicles/consistency";
 import { resolveVehicleIdentity } from "@/lib/vehicles/identity";
 import { buildInspectionChecklist } from "@/lib/vehicles/inspection-checklist";
 import { lookupKnowledge } from "@/lib/vehicles/knowledge-base";
+import { resolveVehicleComponentCodes } from "@/lib/vehicles/component-codes";
+import { emptySharedComponentsSummary } from "@/lib/rag/knowledge/shared-components";
 import { detectMissingData } from "@/lib/vehicles/missing-data";
 import { buildPurchaseVerdict } from "@/lib/vehicles/purchase-verdict";
 import { vehicleInputSchema } from "@/lib/vehicles/schema";
@@ -89,7 +91,7 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
     }
   }
 
-  const identity = resolveVehicleIdentity(vehicle, { trimSlug: trimSlugInput });
+  const identity = resolveVehicleIdentity(vehicle, { trimSlug: trimSlugInput ?? vehicle.trimSlug });
   vehicle = { ...identity.vehicle, trimSlug: identity.trimResolution.trimSlug ?? trimSlugInput };
 
   const effectiveConsistency = validateVehicleConsistency(vehicle, {
@@ -169,6 +171,11 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
     });
   }
 
+  const componentCodes = resolveVehicleComponentCodes(vehicle, {
+    identity: identity.evidence,
+    trim: identity.trimResolution.trim,
+  });
+
   const knowledge = effectiveConsistency.blockModelKnowledge
     ? {
         reliability: {
@@ -182,6 +189,9 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
           isDemo: false,
           source: "Bloqueado por validación de coherencia",
         },
+        sharedComponents: emptySharedComponentsSummary(
+          "Componentes compartidos bloqueados hasta corregir marca/modelo/versión/combustible.",
+        ),
         maintenance: {
           available: false,
           notes: [
@@ -193,13 +203,14 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
         },
         knowledgeChunks: [],
       }
-    : lookupKnowledge(vehicle);
+    : lookupKnowledge(vehicle, componentCodes);
 
   analysisLog.ragRetrieval({
     blocked: effectiveConsistency.blockModelKnowledge,
     chunkCount: knowledge.knowledgeChunks.length,
     reliabilityAvailable: knowledge.reliability.available,
     issues: knowledge.reliability.knownIssues.length,
+    sharedComponents: knowledge.sharedComponents.issues.length,
   });
   analysisLog.ragConfidence({
     isDemo: knowledge.reliability.isDemo,
@@ -224,7 +235,10 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
     vehicle,
     knowledge.reliability.knownIssues,
     knowledge.knowledgeChunks,
-    { blockModelSpecific: effectiveConsistency.blockModelKnowledge },
+    {
+      blockModelSpecific: effectiveConsistency.blockModelKnowledge,
+      sharedComponentIssues: knowledge.sharedComponents.issues,
+    },
   );
   const missingData = detectMissingData(vehicle);
   const inspectionChecklist = buildInspectionChecklist(vehicle);
@@ -302,6 +316,7 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
     listingAnalysis,
     sellerQuestions,
     reliability: knowledge.reliability,
+    sharedComponents: knowledge.sharedComponents,
     maintenance: knowledge.maintenance,
     limitations: Array.from(new Set(limitations)),
     consistency: effectiveConsistency,
@@ -322,6 +337,7 @@ export function toVehicleContext(analysis: AnalyzeResponse): VehicleContext {
     comparableListings: analysis.comparables,
     alternatives: analysis.alternatives,
     reliabilityData: analysis.reliability,
+    sharedComponentsData: analysis.sharedComponents,
     maintenanceData: analysis.maintenance,
     sourceData: analysis.sources,
   };

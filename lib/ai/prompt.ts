@@ -50,6 +50,21 @@ function compactReliability(context: VehicleContext): string {
   return `Score orientativo ${r.score ?? "n/d"}.${demoNote} Fuente: ${r.source}.\n${issues || "Sin issues listados."}`;
 }
 
+function compactSharedComponents(context: VehicleContext): string {
+  const s = context.sharedComponentsData;
+  if (!s?.available || s.issues.length === 0) {
+    return "Sin patrones de componentes compartidos (nivel B) para citar. NO inventes fallos de caja/motor compartidos.";
+  }
+  const lines = s.issues
+    .slice(0, 4)
+    .map(
+      (issue) =>
+        `- [nivel B][${issue.matchConfidence}]${issue.isDemo ? "[demo]" : ""} ${issue.title} (${issue.componentCodes.join("/")}): ${issue.detail}`,
+    )
+    .join("\n");
+  return `Componentes compartidos (NO son fallos confirmados de este bastidor):\n${lines}`;
+}
+
 function compactMaintenance(context: VehicleContext): string {
   const m = context.maintenanceData;
   if (!m.available) return "Sin ficha de mantenimiento específica. NO inventes intervalos ni costes.";
@@ -96,6 +111,7 @@ export function buildVehiclePrompt(question: string, context: VehicleContext): s
     `Vehículo: ${compactVehicle(context)}`,
     `Mercado: ${compactMarket(context)}`,
     `Fiabilidad:\n${compactReliability(context)}`,
+    `Componentes compartidos:\n${compactSharedComponents(context)}`,
     `Mantenimiento: ${compactMaintenance(context)}`,
     `Conocimiento técnico recuperado (RAG):\n${retrievedKnowledge}`,
   ].join("\n\n");

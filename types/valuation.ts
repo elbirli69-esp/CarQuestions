@@ -107,6 +107,27 @@ export interface KnownIssue {
   confidence?: "high" | "medium" | "low";
 }
 
+export type SharedComponentMatchConfidence = "confirmed" | "possible";
+
+/** Nivel B: fallo de motor/caja compartido entre modelos, no específico del bastidor. */
+export interface SharedComponentIssue extends KnownIssue {
+  evidenceLevel: "B";
+  componentCodes: string[];
+  matchConfidence: SharedComponentMatchConfidence;
+  matchReason: string;
+}
+
+export interface SharedComponentSummary {
+  available: boolean;
+  issues: SharedComponentIssue[];
+  notes: string[];
+  isDemo: boolean;
+  /** Motor/caja resueltos desde catálogo o campos del vehículo. */
+  codesResolved: boolean;
+  resolvedEngineCode?: string;
+  resolvedGearboxCode?: string;
+}
+
 export interface ReliabilitySummary {
   available: boolean;
   score: number | null;
@@ -179,6 +200,7 @@ export interface AnalyzeResponse {
   listingAnalysis: ListingAnalysis;
   sellerQuestions: SellerQuestion[];
   reliability: ReliabilitySummary;
+  sharedComponents?: SharedComponentSummary;
   maintenance: MaintenanceSummary;
   limitations: string[];
   consistency?: ConsistencyReport;

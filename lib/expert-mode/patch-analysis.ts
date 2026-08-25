@@ -18,7 +18,13 @@ export type ExpertAnalysisPatch =
   | { type: "listingAnalysis"; patch: Partial<AnalyzeResponse["listingAnalysis"]> }
   | { type: "listingList"; field: "likes" | "concerns" | "askSeller" | "inspectBeforeBuying"; value: string[] }
   | { type: "reliabilityNote"; index: number; value: string }
-  | { type: "knownIssue"; index: number; patch: { title?: string; detail?: string } };
+  | { type: "knownIssue"; index: number; patch: { title?: string; detail?: string } }
+  | { type: "sharedComponentNote"; index: number; value: string }
+  | {
+      type: "sharedComponentIssue";
+      index: number;
+      patch: { title?: string; detail?: string; matchReason?: string };
+    };
 
 export function applyExpertPatch(analysis: AnalyzeResponse, patch: ExpertAnalysisPatch): AnalyzeResponse {
   const next: AnalyzeResponse = structuredClone(analysis);
@@ -98,6 +104,19 @@ export function applyExpertPatch(analysis: AnalyzeResponse, patch: ExpertAnalysi
       if (next.reliability.knownIssues[patch.index]) {
         next.reliability.knownIssues[patch.index] = {
           ...next.reliability.knownIssues[patch.index],
+          ...patch.patch,
+        };
+      }
+      break;
+    case "sharedComponentNote":
+      if (next.sharedComponents?.notes[patch.index] !== undefined) {
+        next.sharedComponents.notes[patch.index] = patch.value;
+      }
+      break;
+    case "sharedComponentIssue":
+      if (next.sharedComponents?.issues[patch.index]) {
+        next.sharedComponents.issues[patch.index] = {
+          ...next.sharedComponents.issues[patch.index],
           ...patch.patch,
         };
       }

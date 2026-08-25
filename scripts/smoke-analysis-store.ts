@@ -83,6 +83,13 @@ async function main() {
       isDemo: true,
       source: "smoke",
     },
+    sharedComponents: {
+      available: false,
+      issues: [],
+      notes: [],
+      isDemo: true,
+      codesResolved: false,
+    },
     maintenance: {
       available: false,
       notes: [],
