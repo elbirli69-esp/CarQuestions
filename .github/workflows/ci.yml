@@ -17,5 +17,6 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      - run: npm run rag:validate-curation
       - run: npm run rag:eval
       - run: npm run build

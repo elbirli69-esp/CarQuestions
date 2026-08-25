@@ -42,7 +42,7 @@ Marca `"brands": ["*"]` = aplicable a cualquier vehículo (tras filtros de combu
 
 - No es un informe de este bastidor concreto.
 - No sustituye una inspección mecánica ni la consulta de recalls por VIN en fuentes oficiales.
-- Los chunks están marcados `isDemo: true` hasta revisión uno a uno con documentación primaria o mecánico.
+- Los chunks están marcados `isDemo: true` hasta revisión uno a uno con documentación primaria o mecánico. Ver **`data/knowledge/CURATION.md`** para quitar `isDemo` con fuentes verificables (Safety Gate, OEM, ADAC/TÜV) y `data/knowledge/curation.json` para overlays de curación.
 
 ## Cómo ampliar
 

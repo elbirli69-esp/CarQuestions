@@ -1,5 +1,10 @@
 import { FUEL_TYPES } from "@/types/vehicle";
-import { KNOWLEDGE_CHUNK_TYPES, type KnowledgeChunk, type KnowledgeVectorIndex } from "@/types/knowledge";
+import {
+  KNOWLEDGE_CHUNK_TYPES,
+  KNOWLEDGE_VERIFICATION_LEVELS,
+  type KnowledgeChunk,
+  type KnowledgeVectorIndex,
+} from "@/types/knowledge";
 import { z } from "zod";
 
 const fuelSchema = z.enum(FUEL_TYPES);
@@ -34,6 +39,9 @@ export const knowledgeChunkSchema = z.object({
   typicalKmFrom: z.number().int().optional(),
   typicalKmTo: z.number().int().optional(),
   isDemo: z.boolean(),
+  curatedAt: z.string().datetime().optional(),
+  verificationLevel: z.enum(KNOWLEDGE_VERIFICATION_LEVELS).optional(),
+  externalRef: z.string().min(1).optional(),
 });
 
 export const knowledgeCorpusSchema = z.object({

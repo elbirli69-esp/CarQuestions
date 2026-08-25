@@ -39,6 +39,12 @@ export function chunkToKnownIssue(chunk: KnowledgeChunk): KnownIssue | null {
     .filter(Boolean)
     .join(" ");
 
+  const official =
+    chunk.verificationLevel === "safety_gate_alert" ||
+    chunk.verificationLevel === "safety_gate_portal" ||
+    chunk.verificationLevel === "oem_recall" ||
+    chunk.verificationLevel === "regulatory";
+
   return {
     title: chunk.title,
     detail: extra ? `${chunk.content} ${extra}` : chunk.content,
@@ -47,8 +53,12 @@ export function chunkToKnownIssue(chunk: KnowledgeChunk): KnownIssue | null {
     source: chunk.source,
     isDemo: chunk.isDemo,
     evidenceLevel,
-    sourceClass: chunk.isDemo ? "community" : "technical",
-    confidence: chunk.isDemo ? "low" : "medium",
+    sourceClass: chunk.isDemo ? "community" : official ? "official" : "technical",
+    confidence: chunk.isDemo
+      ? "low"
+      : chunk.verificationLevel === "safety_gate_alert" || chunk.verificationLevel === "oem_recall"
+        ? "high"
+        : "medium",
   };
 }
 

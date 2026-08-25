@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "updatedAt": "2026-08-25T10:15:00.000Z",
+  "overlays": [
+    {
+      "id": "ford-powershift-recall-pattern",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T10:15:00.000Z",
+      "verificationLevel": "oem_recall",
+      "externalRef": "Ford Powershift campañas UE 2011-2016 (Focus/Fiesta/C-Max)",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/search"
+    },
+    {
+      "id": "recall-method-vin-check",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T10:15:00.000Z",
+      "verificationLevel": "safety_gate_portal",
+      "externalRef": "Safety Gate EU — búsqueda alertas y recalls",
+      "sourceUrl": "https://ec.europa.eu/safety-gate"
+    },
+    {
+      "id": "recall-airbag-takata-check",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T10:15:00.000Z",
+      "verificationLevel": "safety_gate_portal",
+      "externalRef": "Safety Gate — campañas airbag Takata multi-marca",
+      "sourceUrl": "https://ec.europa.eu/safety-gate"
+    },
+    {
+      "id": "recall-software-ota-ev",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T10:15:00.000Z",
+      "verificationLevel": "safety_gate_portal",
+      "externalRef": "Safety Gate — recalls software/OTA vehículos eléctricos",
+      "sourceUrl": "https://ec.europa.eu/safety-gate"
+    },
+    {
+      "id": "safety-recall-airbag-vin",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T10:15:00.000Z",
+      "verificationLevel": "safety_gate_portal",
+      "externalRef": "Safety Gate + portales OEM VIN recall",
+      "sourceUrl": "https://ec.europa.eu/safety-gate"
+    },
+    {
+      "id": "paper-adac-breakdown-patterns",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T10:15:00.000Z",
+      "verificationLevel": "reliability_report",
+      "externalRef": "ADAC Breakdown Statistics — síntesis de informes públicos anuales",
+      "sourceUrl": "https://www.adac.de/rund-ums-fahrzeug/tests/adac-pannenstatistik/"
+    },
+    {
+      "id": "paper-tuv-report-weak-points",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T10:15:00.000Z",
+      "verificationLevel": "reliability_report",
+      "externalRef": "TÜV Report — puntos débiles en inspección técnica (publicaciones anuales)",
+      "sourceUrl": "https://www.tuv.com/world/en/tuv-report/"
+    }
+  ]
+}

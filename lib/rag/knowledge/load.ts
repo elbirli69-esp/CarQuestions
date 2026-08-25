@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { mergeKnowledgeChunks } from "@/lib/rag/knowledge/merge";
+import { loadCurationOverlays } from "@/lib/rag/curation/overlays";
 import {
   assertUniqueChunkIds,
   knowledgeChunkSchema,
@@ -68,7 +69,10 @@ export function loadKnowledgeCorpus(): KnowledgeCorpus {
   const merged = knowledgeCorpusSchema.parse({
     version: 1 as const,
     updatedAt: new Date().toISOString(),
-    chunks: mergeKnowledgeChunks(combined, loadEnrichmentOverlays()),
+    chunks: mergeKnowledgeChunks(
+      mergeKnowledgeChunks(combined, loadEnrichmentOverlays()),
+      loadCurationOverlays(),
+    ),
   });
   assertUniqueChunkIds(merged.chunks);
   cachedCorpus = merged;
