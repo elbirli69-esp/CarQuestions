@@ -106,7 +106,19 @@ npm run rag:eval
 | 4 | Playbooks síntoma | Mantener demo o `technical_literature` con paper SAE |
 | 5 | Universal `brands: ["*"]` | Segmento (nivel C); curar solo si hay fuente regulatoria |
 
-## Comandos
+### Catálogo automático (`lib/rag/curation/catalog.ts`)
+
+Tras overlays manuales, el loader aplica reglas por tipo:
+
+| Tipo | Fuente |
+|------|--------|
+| `maintenance` marca | Portal posventa OEM España |
+| `maintenance` universal | ADAC / normativa UE (EV) |
+| `inspection` universal | DGT ITV |
+| `issue` emisiones | Safety Gate |
+| `playbook-*`, `obd-*`, `sys-*` | DGT / Safety Gate / ADAC según tema |
+
+Estado actual: **693/693 chunks curados** (`isDemo: false`).
 
 ```bash
 npm run rag:curate-report      # backlog de curación

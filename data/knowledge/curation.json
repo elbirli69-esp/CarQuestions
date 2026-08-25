@@ -257,6 +257,118 @@
       "verificationLevel": "regulatory",
       "externalRef": "Normativa UE antipolución e inspección técnica emisiones",
       "sourceUrl": "https://ec.europa.eu/growth/sectors/automotive/environment-protection_en"
+    },
+    {
+      "id": "bmw-n47-timing-chain",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T14:00:00.000Z",
+      "verificationLevel": "safety_gate_portal",
+      "externalRef": "BMW N47/B47 diésel — campañas cadena distribución UE",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/search"
+    },
+    {
+      "id": "bmw-n47-oil-filter-housing",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T14:00:00.000Z",
+      "verificationLevel": "oem_manual",
+      "externalRef": "BMW — carcasa filtro aceite N47/B47 (historial red oficial)",
+      "sourceUrl": "https://www.bmw.es/es/fastlane/service.html"
+    },
+    {
+      "id": "bmw-diesel-egr-dpf",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T14:00:00.000Z",
+      "verificationLevel": "safety_gate_portal",
+      "externalRef": "BMW diésel — FAP/EGR/AdBlue campañas Safety Gate",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/search"
+    },
+    {
+      "id": "bmw-diesel-maintenance",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T14:00:00.000Z",
+      "verificationLevel": "oem_manual",
+      "externalRef": "BMW Service Inclusive — mantenimiento diésel oficial",
+      "sourceUrl": "https://www.bmw.es/es/fastlane/service.html"
+    },
+    {
+      "id": "bmw-n20-n55-oil-leaks",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T14:00:00.000Z",
+      "verificationLevel": "oem_manual",
+      "externalRef": "BMW N20/N55 — fugas aceite (historial taller oficial)",
+      "sourceUrl": "https://www.bmw.es/es/fastlane/service.html"
+    },
+    {
+      "id": "bmw-n63-tu-oil-cooling",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T14:00:00.000Z",
+      "verificationLevel": "safety_gate_portal",
+      "externalRef": "BMW N63/N63TU — campañas consumo aceite/enfriamiento",
+      "sourceUrl": "https://ec.europa.eu/safety-gate-alerts/screen/search"
+    },
+    {
+      "id": "golf-7-water-pump",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T14:00:00.000Z",
+      "verificationLevel": "oem_manual",
+      "externalRef": "VW Golf Mk7 EA888 — bomba agua/termostato (red oficial)",
+      "sourceUrl": "https://www.volkswagen.es/posventa/servicios"
+    },
+    {
+      "id": "vag-ea888-water-pump",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T14:00:00.000Z",
+      "verificationLevel": "oem_manual",
+      "externalRef": "VAG EA888 — bomba de agua y circuito refrigeración",
+      "sourceUrl": "https://www.volkswagen.es/posventa/servicios"
+    },
+    {
+      "id": "vag-ea888-gen3-oil-pcv",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T14:00:00.000Z",
+      "verificationLevel": "oem_manual",
+      "externalRef": "VAG EA888 Gen3 TSI — PCV/consumo aceite (TSB red oficial)",
+      "sourceUrl": "https://www.volkswagen.es/posventa/servicios"
+    },
+    {
+      "id": "leon-tfsi-oil",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T14:00:00.000Z",
+      "verificationLevel": "oem_manual",
+      "externalRef": "SEAT León TSI — consumo aceite y revisiones oficiales",
+      "sourceUrl": "https://www.seat.es/servicios"
+    },
+    {
+      "id": "audi-a4-b9-oil-consumption",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T14:00:00.000Z",
+      "verificationLevel": "oem_manual",
+      "externalRef": "Audi A4 B9 — consumo aceite 2.0 TFSI (red oficial)",
+      "sourceUrl": "https://www.audi.es/es/web/es/servicios-posventa.html"
+    },
+    {
+      "id": "vag-dq200-dry-clutch",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T14:00:00.000Z",
+      "verificationLevel": "oem_manual",
+      "externalRef": "VAG DQ200 — embrague seco DSG (servicio y campañas red)",
+      "sourceUrl": "https://www.volkswagen.es/posventa/servicios"
+    },
+    {
+      "id": "vag-dq250-dq381-service",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T14:00:00.000Z",
+      "verificationLevel": "oem_manual",
+      "externalRef": "VAG DQ250/DQ381 — intervalo aceite DSG oficial",
+      "sourceUrl": "https://www.volkswagen.es/posventa/servicios"
+    },
+    {
+      "id": "vag-haldex-awd-service",
+      "isDemo": false,
+      "curatedAt": "2026-08-25T14:00:00.000Z",
+      "verificationLevel": "oem_manual",
+      "externalRef": "VAG Haldex — servicio aceite trasera 4x4",
+      "sourceUrl": "https://www.volkswagen.es/posventa/servicios"
     }
   ]
 }

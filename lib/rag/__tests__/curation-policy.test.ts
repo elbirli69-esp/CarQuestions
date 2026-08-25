@@ -62,7 +62,8 @@ describe("curation policy", () => {
   it("loaded corpus passes curation validation", () => {
     const chunks = loadKnowledgeChunks();
     const curated = chunks.filter((c) => !c.isDemo);
-    assert.ok(curated.length >= 25, `expected curated batch, got ${curated.length}`);
+    assert.ok(curated.length >= 650, `expected mass curation, got ${curated.length}`);
+    assert.equal(chunks.filter((c) => c.isDemo).length, 0);
     for (const chunk of curated) {
       const errors = validateChunkCuration(chunk);
       assert.equal(errors.length, 0, `${chunk.id}: ${errors.map((e) => e.message).join(", ")}`);

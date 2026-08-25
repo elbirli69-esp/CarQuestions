@@ -11,7 +11,7 @@ export interface KnowledgeCurationFile {
   overlays: Partial<KnowledgeChunk>[];
 }
 
-export function loadCurationOverlays(): Partial<KnowledgeChunk>[] {
+export function loadManualCurationOverlays(): Partial<KnowledgeChunk>[] {
   try {
     const raw = JSON.parse(readFileSync(CURATION_PATH, "utf8")) as KnowledgeCurationFile;
     if (!raw.overlays || !Array.isArray(raw.overlays)) return [];
@@ -21,4 +21,9 @@ export function loadCurationOverlays(): Partial<KnowledgeChunk>[] {
   } catch {
     return [];
   }
+}
+
+/** Overlays manuales (curation.json). Usar loadAllCurationOverlays en load.ts. */
+export function loadCurationOverlays(): Partial<KnowledgeChunk>[] {
+  return loadManualCurationOverlays();
 }
