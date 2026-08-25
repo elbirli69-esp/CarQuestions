@@ -6,8 +6,10 @@ import {
   expandAutomotiveQuery,
   intentRetrievalBoost,
 } from "@/lib/rag/query/expand";
+import { buildVehicleKnowledgeQuery } from "@/lib/rag/knowledge/retrieval-query";
 import { getKnowledgeVectorStore } from "@/lib/rag/vector/store";
 import { tokenize } from "@/lib/utils/math";
+import type { VehicleComponentCodes } from "@/lib/vehicles/component-codes";
 
 export class InMemoryKeywordIndex {
   private documents: VehicleDocument[] = [];
@@ -50,6 +52,7 @@ export function createDocumentIndex(documents: VehicleDocument[]): InMemoryKeywo
 export async function retrieveDocuments(
   input: RetrievalQuery,
   dynamicDocuments: VehicleDocument[] = [],
+  options?: { pinnedDocumentIds?: string[]; pinnedMinScore?: number },
 ): Promise<RetrievedDocument[]> {
   const limit = input.limit ?? 8;
   const intent = classifyQuestionIntent(input.text);
@@ -77,39 +80,26 @@ export async function retrieveDocuments(
     return 0;
   };
 
+  const pinned = new Set(options?.pinnedDocumentIds ?? []);
+  const pinnedMin = options?.pinnedMinScore ?? 0.82;
+
   return [...merged.values()]
     .map((hit) => ({
       ...hit,
-      score: Math.min(1, hit.score + intentBoost(hit.document)),
+      score: Math.min(
+        1,
+        hit.score + intentBoost(hit.document) + (pinned.has(hit.document.id) ? pinnedMin : 0),
+      ),
     }))
     .sort((a, b) => b.score - a.score)
     .slice(0, limit);
 }
 
-export function retrieveKnowledgeForVehicle(vehicle: Vehicle, limit = 16): KnowledgeChunk[] {
-  const queryText = [
-    vehicle.brand,
-    vehicle.model,
-    vehicle.version,
-    String(vehicle.year),
-    vehicle.fuel,
-    vehicle.transmission,
-    "fiabilidad mantenimiento fallos averías sintomas soluciones foros tecnicos",
-  ]
-    .filter(Boolean)
-    .join(" ");
-
-  return getKnowledgeVectorStore()
-    .queryChunks({
-      text: expandAutomotiveQuery(queryText),
-      vehicle: {
-        brand: vehicle.brand,
-        model: vehicle.model,
-        year: vehicle.year,
-        fuel: vehicle.fuel,
-        version: vehicle.version,
-      },
-      limit,
-    })
-    .filter(Boolean);
+export function retrieveKnowledgeForVehicle(
+  vehicle: Vehicle,
+  limit = 16,
+  componentCodes?: VehicleComponentCodes,
+): KnowledgeChunk[] {
+  const query = buildVehicleKnowledgeQuery(vehicle, { limit, componentCodes });
+  return getKnowledgeVectorStore().queryChunks(query).filter(Boolean);
 }

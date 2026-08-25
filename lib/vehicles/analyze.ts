@@ -324,6 +324,12 @@ export async function analyzeVehicle(input: VehicleInput): Promise<AnalyzeRespon
     purchaseVerdict,
     missingData,
     inspectionChecklist,
+    knowledgeContext: effectiveConsistency.blockModelKnowledge
+      ? undefined
+      : {
+          chunkIds: knowledge.knowledgeChunks.map((chunk) => chunk.id),
+          capturedAt: new Date().toISOString(),
+        },
   };
 
   await saveAnalysis(analysis);

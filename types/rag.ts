@@ -23,6 +23,10 @@ export interface RetrievalQuery {
     version?: string;
     year?: number;
     fuel?: string;
+    engineCode?: string;
+    gearboxCode?: string;
+    /** Normalized motor/gearbox codes for metadata boost. */
+    componentCodes?: string[];
   };
   limit?: number;
 }

@@ -1,10 +1,21 @@
 import type { VehicleListing } from "@/types/listing";
 import type { VehicleDocument } from "@/types/rag";
-import type { KnownIssue, ValuationResult } from "@/types/valuation";
+import type { KnownIssue, SharedComponentIssue, ValuationResult } from "@/types/valuation";
 import type { Vehicle } from "@/types/vehicle";
 import type { ParsedCochesNetDetail } from "@/lib/sources/coches-net/parse-listing";
+import { getKnowledgeChunkById } from "@/lib/rag/knowledge/load";
+import { chunkToDocument } from "@/lib/rag/knowledge/to-documents";
 
 const CHUNK_SIZE = 400;
+
+export function knowledgeChunkIdsToDocuments(vehicle: Vehicle, chunkIds: string[]): VehicleDocument[] {
+  const docs: VehicleDocument[] = [];
+  for (const id of chunkIds) {
+    const chunk = getKnowledgeChunkById(id);
+    if (chunk) docs.push(chunkToDocument(chunk, vehicle));
+  }
+  return docs;
+}
 
 function chunkText(text: string, size = CHUNK_SIZE): string[] {
   const chunks: string[] = [];
@@ -172,18 +183,49 @@ export function listingDetailDocuments(
   return docs;
 }
 
-export function issueToDocument(vehicle: Vehicle, issue: KnownIssue): VehicleDocument {
+export function issueToDocument(vehicle: Vehicle, issue: KnownIssue, index = 0): VehicleDocument {
   return {
-    id: `issue_${issue.title}`,
+    id: `issue_model_${index}_${issue.title.slice(0, 40)}`,
     source: issue.source,
     vehicle: {
       brand: vehicle.brand,
       model: vehicle.model,
       year: vehicle.year,
     },
-    content: `${issue.title}. ${issue.detail} Aplica cuando: ${issue.appliesWhen}.`,
+    content: `[Nivel ${issue.evidenceLevel ?? "A"}] ${issue.title}. ${issue.detail} Aplica cuando: ${issue.appliesWhen}.`,
     metadata: {
+      docKind: "model_known_issue",
       severity: issue.severity,
+      evidenceLevel: issue.evidenceLevel,
+      isDemo: issue.isDemo,
+      confidence: issue.confidence,
+    },
+    timestamp: new Date().toISOString(),
+    kind: "static",
+    isDemo: issue.isDemo,
+  };
+}
+
+export function sharedComponentToDocument(
+  vehicle: Vehicle,
+  issue: SharedComponentIssue,
+  index: number,
+): VehicleDocument {
+  return {
+    id: `shared_component_${index}_${issue.title.slice(0, 40)}`,
+    source: issue.source,
+    vehicle: {
+      brand: vehicle.brand,
+      model: vehicle.model,
+      year: vehicle.year,
+    },
+    content: `[Nivel B · ${issue.matchConfidence}] ${issue.title}. ${issue.detail} Códigos: ${issue.componentCodes.join(", ")}.`,
+    metadata: {
+      docKind: "shared_component_issue",
+      severity: issue.severity,
+      evidenceLevel: issue.evidenceLevel,
+      matchConfidence: issue.matchConfidence,
+      componentCodes: issue.componentCodes,
       isDemo: issue.isDemo,
     },
     timestamp: new Date().toISOString(),

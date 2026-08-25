@@ -3,6 +3,7 @@ import type { RetrievedDocument, RetrievalQuery } from "@/types/rag";
 import { loadKnowledgeChunks, loadKnowledgeVectorIndex } from "@/lib/rag/knowledge/load";
 import { chunkToDocument } from "@/lib/rag/knowledge/to-documents";
 import { expandAutomotiveQuery } from "@/lib/rag/query/expand";
+import { motorCodesMatch } from "@/lib/vehicles/component-codes";
 import {
   buildTfidfVector,
   chunkSearchText,
@@ -47,7 +48,15 @@ export class KnowledgeVectorStore {
   query(input: RetrievalQuery): RetrievedDocument[] {
     const limit = input.limit ?? 6;
     const queryText = expandAutomotiveQuery(
-      [input.text, input.vehicle?.brand, input.vehicle?.model, String(input.vehicle?.year ?? "")]
+      [
+        input.text,
+        input.vehicle?.brand,
+        input.vehicle?.model,
+        input.vehicle?.engineCode,
+        input.vehicle?.gearboxCode,
+        input.vehicle?.componentCodes?.join(" "),
+        String(input.vehicle?.year ?? ""),
+      ]
         .filter(Boolean)
         .join(" "),
     );
@@ -80,6 +89,19 @@ export class KnowledgeVectorStore {
               : -0.04
             : 0;
 
+        const vehicleCodes = [
+          ...(input.vehicle?.componentCodes ?? []),
+          input.vehicle?.engineCode,
+          input.vehicle?.gearboxCode,
+        ].filter(Boolean) as string[];
+        const motorCodeBoost =
+          chunk.motorCodes &&
+          chunk.motorCodes.length > 0 &&
+          vehicleCodes.length > 0 &&
+          motorCodesMatch(vehicleCodes, chunk.motorCodes)
+            ? 0.12
+            : 0;
+
         const metadataBoost =
           (chunk.type === "issue" || chunk.type === "recall" ? 0.05 : 0) +
           (brand &&
@@ -90,7 +112,8 @@ export class KnowledgeVectorStore {
           (isUniversal ? 0.02 : 0) +
           (chunk.symptoms && chunk.symptoms.length > 0 ? 0.03 : 0) +
           typeBoost +
-          fuelBoost;
+          fuelBoost +
+          motorCodeBoost;
         return {
           chunk,
           score: semanticScore + metadataBoost,

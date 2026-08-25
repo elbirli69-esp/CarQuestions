@@ -183,6 +183,12 @@ export interface SellerQuestion {
 
 export type DataMode = "demo" | "live" | "mixed" | "knowledge";
 
+export interface KnowledgeRetrievalContext {
+  /** Chunk IDs retrieved during analysis (pinned in chat RAG). */
+  chunkIds: string[];
+  capturedAt: string;
+}
+
 export interface AnalyzeResponse {
   id: string;
   generatedAt: string;
@@ -208,6 +214,8 @@ export interface AnalyzeResponse {
   purchaseVerdict?: PurchaseVerdict;
   missingData?: MissingDataReport;
   inspectionChecklist?: InspectionChecklist;
+  /** IDs de chunks RAG usados en el análisis (para chat coherente). */
+  knowledgeContext?: KnowledgeRetrievalContext;
   /** Curado manualmente en modo experto. */
   expertCurated?: boolean;
   expertCuratedAt?: string;

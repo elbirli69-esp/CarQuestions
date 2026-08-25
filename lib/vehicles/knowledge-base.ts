@@ -12,7 +12,7 @@ export function lookupKnowledge(
   componentCodes?: VehicleComponentCodes,
 ) {
   const codes = componentCodes ?? resolveVehicleComponentCodes(vehicle);
-  const chunks = retrieveKnowledgeForVehicle(vehicle, 24);
+  const chunks = retrieveKnowledgeForVehicle(vehicle, 28, codes);
 
   return {
     reliability: chunksToReliability(chunks, vehicle),

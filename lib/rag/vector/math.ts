@@ -89,7 +89,16 @@ export function cosineSimilarity(
 
 export function matchesVehicleFilters(
   chunk: KnowledgeChunk,
-  vehicle?: { brand?: string; model?: string; year?: number; fuel?: string; version?: string },
+  vehicle?: {
+    brand?: string;
+    model?: string;
+    year?: number;
+    fuel?: string;
+    version?: string;
+    engineCode?: string;
+    gearboxCode?: string;
+    componentCodes?: string[];
+  },
 ): boolean {
   if (!vehicle) return true;
 

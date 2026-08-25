@@ -1,6 +1,7 @@
 import type { KnowledgeChunk } from "@/types/knowledge";
 import type { VehicleDocument } from "@/types/rag";
 import type { Vehicle } from "@/types/vehicle";
+import { classifyChunkEvidenceLevel } from "@/lib/vehicles/evidence";
 
 export function chunkToDocument(chunk: KnowledgeChunk, vehicle?: Vehicle): VehicleDocument {
   const cost =
@@ -44,10 +45,17 @@ export function chunkToDocument(chunk: KnowledgeChunk, vehicle?: Vehicle): Vehic
       tags: chunk.tags,
       brands: chunk.brands,
       models: chunk.models,
+      motorCodes: chunk.motorCodes,
       fuels: chunk.fuels,
       yearFrom: chunk.yearFrom,
       yearTo: chunk.yearTo,
       isDemo: chunk.isDemo,
+      evidenceLevel: classifyChunkEvidenceLevel({
+        brands: chunk.brands,
+        models: chunk.models,
+        motorCodes: chunk.motorCodes,
+      }),
+      docKind: "knowledge_chunk",
     },
     timestamp: new Date().toISOString(),
     kind: "static",
