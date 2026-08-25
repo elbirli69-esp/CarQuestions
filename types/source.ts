@@ -36,11 +36,35 @@ export interface PlateLookupResult {
     | "invalid_plate"
     | "not_found";
   source?: string;
+  /** Proveedores que aportaron datos (puede ser varios tras merge). */
+  sources?: string[];
   vehicle?: Partial<Vehicle>;
   message: string;
   isDemo: boolean;
   registrationPlate?: string;
+  filledFields?: PlateLookupFieldKey[];
+  missingFields?: PlateLookupMissingKey[];
 }
+
+export type PlateLookupFieldKey =
+  | "registrationPlate"
+  | "brand"
+  | "model"
+  | "version"
+  | "year"
+  | "fuel"
+  | "power"
+  | "transmission"
+  | "bodyType"
+  | "engineCode"
+  | "vin";
+
+export type PlateLookupMissingKey =
+  | "mileage"
+  | "advertisedPrice"
+  | "listingUrl"
+  | "equipment"
+  | "generalCondition";
 
 export interface StaticVehicleInfo {
   source: string;

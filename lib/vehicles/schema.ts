@@ -91,6 +91,12 @@ export const vehicleInputSchema = z.object({
     .max(12)
     .optional()
     .transform((value) => (value ? value : undefined)),
+  vin: z
+    .string()
+    .trim()
+    .max(32)
+    .optional()
+    .transform((value) => (value ? value.toUpperCase() : undefined)),
 });
 
 export type VehicleInputSchema = z.infer<typeof vehicleInputSchema>;

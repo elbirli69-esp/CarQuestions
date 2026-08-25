@@ -80,6 +80,8 @@ export interface Vehicle {
   description?: string;
   /** Matrícula española (europea o provincial). */
   registrationPlate?: string;
+  /** Bastidor (VIN) cuando se obtiene de consulta por matrícula. */
+  vin?: string;
 }
 
 export type VehicleInput = Omit<Vehicle, "id">;

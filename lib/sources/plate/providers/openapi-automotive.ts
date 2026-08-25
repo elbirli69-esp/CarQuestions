@@ -23,16 +23,20 @@ export async function lookupPlateViaOpenApi(
   }
 
   const data = (await response.json()) as Record<string, unknown>;
-  const brand = pickString(data, ["CarMake", "MakeDescription", "make"]);
-  const model = pickString(data, ["CarModel", "ModelDescription", "model"]);
-  const version = pickString(data, ["Version", "Description"]);
+  const nested =
+    data.data && typeof data.data === "object" ? (data.data as Record<string, unknown>) : data;
+  const brand = pickString(nested, ["CarMake", "MakeDescription", "make"]);
+  const model = pickString(nested, ["CarModel", "ModelDescription", "model"]);
+  const version = pickString(nested, ["Version", "Description", "Variation"]);
   const year = parseYearValue(
-    pickString(data, ["RegistrationYear", "FirstRegistrationYear", "registrationYear"]),
+    pickString(nested, ["RegistrationYear", "FirstRegistrationYear", "registrationYear"]),
   );
-  const fuel = mapFuelLabel(pickString(data, ["FuelType", "Fuel", "fuelType"]));
-  const power = pickNumber(data, ["PowerCV", "powerCV", "Power"]);
+  const fuel = mapFuelLabel(pickString(nested, ["FuelType", "Fuel", "fuelType"]));
+  const power = pickNumber(nested, ["PowerCV", "powerCV", "Power", "DynamicPower"]);
 
   if (!brand && !model && !year) return null;
+
+  const vin = pickString(nested, ["Vin", "VIN", "VehicleIdentificationNumber"]);
 
   return {
     brand: brand ?? undefined,
@@ -41,6 +45,7 @@ export async function lookupPlateViaOpenApi(
     year,
     fuel,
     power: power != null ? Math.round(power) : undefined,
-    registrationPlate: pickString(data, ["LicensePlate", "plate"]) ?? plate,
+    registrationPlate: pickString(nested, ["LicensePlate", "plate"]) ?? plate,
+    vin: vin?.toUpperCase(),
   };
 }

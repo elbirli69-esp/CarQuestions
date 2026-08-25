@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { CatalogSelect } from "@/components/vehicle-form/catalog-select";
 import { Field } from "@/components/vehicle-form/field";
+import { PlateLookupSummary } from "@/components/vehicle-form/plate-lookup-summary";
 import { CUSTOM_TRIM_SLUG, findTrimByVersionText } from "@/lib/vehicles/trims";
 import {
   BODY_LABELS,
@@ -19,7 +20,7 @@ import {
 } from "@/lib/vehicles/labels";
 import type { VehicleCatalog } from "@/lib/vehicles/catalog-types";
 import { BODY_TYPES, CONDITION_LEVELS, FUEL_TYPES, TRANSMISSION_TYPES, type VehicleInput } from "@/types/vehicle";
-import type { ListingExtractResult, PlateLookupResult } from "@/types/source";
+import type { ListingExtractResult, PlateLookupResult, PlateLookupFieldKey, PlateLookupMissingKey } from "@/types/source";
 import type { Vehicle } from "@/types/vehicle";
 
 type TrimOptionsPayload = {
@@ -76,6 +77,13 @@ export function VehicleForm({
   const [error, setError] = useState<string | null>(null);
   const [urlStatus, setUrlStatus] = useState<string | null>(null);
   const [plateStatus, setPlateStatus] = useState<string | null>(null);
+  const [plateLookupMeta, setPlateLookupMeta] = useState<{
+    filledFields?: PlateLookupFieldKey[];
+    missingFields?: PlateLookupMissingKey[];
+    sources?: string[];
+    message?: string;
+  } | null>(null);
+  const [plateEnrichment, setPlateEnrichment] = useState<Partial<Vehicle>>({});
   const [extractingUrl, setExtractingUrl] = useState(false);
   const [extractingPlate, setExtractingPlate] = useState(false);
   const [catalog, setCatalog] = useState<VehicleCatalog | null>(null);
@@ -254,6 +262,7 @@ export function VehicleForm({
       fuel: vehicle.fuel || current.fuel,
       power: vehicle.power != null ? String(vehicle.power) : current.power,
       transmission: vehicle.transmission || current.transmission,
+      bodyType: vehicle.bodyType || current.bodyType,
       advertisedPrice:
         vehicle.advertisedPrice != null ? String(vehicle.advertisedPrice) : current.advertisedPrice,
       location: vehicle.location?.trim() || current.location,
@@ -304,6 +313,7 @@ export function VehicleForm({
     const plate = rawPlate.trim();
     if (!plate || plate.length < 4) {
       setPlateStatus(null);
+      setPlateLookupMeta(null);
       return;
     }
     setExtractingPlate(true);
@@ -320,10 +330,26 @@ export function VehicleForm({
         throw new Error(result.error ?? "No se ha podido consultar la matrícula.");
       }
       if (result.status === "extracted" || result.status === "partial") {
-        if (result.vehicle) applyPartialVehicle(result.vehicle);
-        setPlateStatus(result.message);
+        if (result.vehicle) {
+          applyPartialVehicle(result.vehicle);
+          setPlateEnrichment({
+            vin: result.vehicle.vin,
+            engineCode: result.vehicle.engineCode,
+          });
+        }
+        setPlateLookupMeta({
+          filledFields: result.filledFields,
+          missingFields: result.missingFields,
+          sources: result.sources,
+          message: result.message,
+        });
+        setPlateStatus(null);
         return;
       }
+      setPlateLookupMeta({
+        message: result.message,
+        missingFields: result.missingFields,
+      });
       setPlateStatus(result.message);
     } catch (err) {
       setPlateStatus(err instanceof Error ? err.message : "No se ha podido consultar la matrícula.");
@@ -381,6 +407,8 @@ export function VehicleForm({
       interiorCondition: (form.interiorCondition || undefined) as VehicleInput["interiorCondition"],
       listingUrl: form.listingUrl.trim() || undefined,
       registrationPlate: form.registrationPlate.trim() || undefined,
+      vin: plateEnrichment.vin?.trim() || undefined,
+      engineCode: plateEnrichment.engineCode?.trim() || undefined,
     };
     await onSubmit(vehicle);
   }
@@ -407,7 +435,7 @@ export function VehicleForm({
           <Field
             label="Matrícula"
             htmlFor="registrationPlate"
-            hint="Con API configurada: marca, modelo, año y combustible. Sin API: estimamos el año por la serie."
+            hint="Matriculas.org (RapidAPI) primero: marca, modelo, VIN, motor, carrocería. Sin API: estimamos el año."
           >
             <div className="relative">
               <Input
@@ -418,6 +446,8 @@ export function VehicleForm({
                 onChange={(event) => {
                   update("registrationPlate", event.target.value);
                   setPlateStatus(null);
+                  setPlateLookupMeta(null);
+                  setPlateEnrichment({});
                 }}
                 onBlur={(event) => {
                   void extractFromPlate(event.target.value);
@@ -440,6 +470,14 @@ export function VehicleForm({
           </Field>
           {plateStatus ? (
             <p className="text-xs text-muted-foreground sm:col-span-2">{plateStatus}</p>
+          ) : null}
+          {plateLookupMeta ? (
+            <PlateLookupSummary
+              filledFields={plateLookupMeta.filledFields}
+              missingFields={plateLookupMeta.missingFields}
+              sources={plateLookupMeta.sources}
+              message={plateLookupMeta.message}
+            />
           ) : null}
         </div>
 
