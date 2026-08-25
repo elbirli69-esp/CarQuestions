@@ -23,5 +23,12 @@ export function getServerEnv() {
     deepseekApiKey: sanitizeAscii(process.env.DEEPSEEK_API_KEY),
     aiGatewayApiKey: sanitizeAscii(process.env.AI_GATEWAY_API_KEY),
     aiGatewayModel: process.env.AI_GATEWAY_MODEL ?? "deepseek/deepseek-v4-flash",
+    verifikApiToken: sanitizeAscii(process.env.VERIFIK_API_TOKEN),
+    openapiAutomotiveToken: sanitizeAscii(
+      process.env.OPENAPI_AUTOMOTIVE_TOKEN ?? process.env.OPENAPI_COM_API_KEY,
+    ),
+    openapiAutomotiveBaseUrl:
+      process.env.OPENAPI_AUTOMOTIVE_BASE_URL ?? "https://automotive.openapi.com",
+    rapidApiKey: sanitizeAscii(process.env.RAPIDAPI_KEY),
   };
 }

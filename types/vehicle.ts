@@ -78,6 +78,8 @@ export interface Vehicle {
   interiorCondition?: ConditionLevel;
   listingUrl?: string;
   description?: string;
+  /** Matrícula española (europea o provincial). */
+  registrationPlate?: string;
 }
 
 export type VehicleInput = Omit<Vehicle, "id">;

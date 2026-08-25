@@ -28,6 +28,20 @@ export interface ListingExtractResult {
   isDemo: boolean;
 }
 
+export interface PlateLookupResult {
+  status:
+    | "extracted"
+    | "partial"
+    | "provider_not_connected"
+    | "invalid_plate"
+    | "not_found";
+  source?: string;
+  vehicle?: Partial<Vehicle>;
+  message: string;
+  isDemo: boolean;
+  registrationPlate?: string;
+}
+
 export interface StaticVehicleInfo {
   source: string;
   isDemo: boolean;

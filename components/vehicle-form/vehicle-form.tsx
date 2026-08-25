@@ -19,7 +19,8 @@ import {
 } from "@/lib/vehicles/labels";
 import type { VehicleCatalog } from "@/lib/vehicles/catalog-types";
 import { BODY_TYPES, CONDITION_LEVELS, FUEL_TYPES, TRANSMISSION_TYPES, type VehicleInput } from "@/types/vehicle";
-import type { ListingExtractResult } from "@/types/source";
+import type { ListingExtractResult, PlateLookupResult } from "@/types/source";
+import type { Vehicle } from "@/types/vehicle";
 
 type TrimOptionsPayload = {
   slug: string;
@@ -31,6 +32,7 @@ type TrimOptionsPayload = {
 };
 
 const emptyForm = {
+  registrationPlate: "",
   listingUrl: "",
   brandSlug: "",
   modelSlug: "",
@@ -73,7 +75,9 @@ export function VehicleForm({
   const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState<string | null>(null);
   const [urlStatus, setUrlStatus] = useState<string | null>(null);
+  const [plateStatus, setPlateStatus] = useState<string | null>(null);
   const [extractingUrl, setExtractingUrl] = useState(false);
+  const [extractingPlate, setExtractingPlate] = useState(false);
   const [catalog, setCatalog] = useState<VehicleCatalog | null>(null);
   const [catalogError, setCatalogError] = useState<string | null>(null);
   const [trimOptions, setTrimOptions] = useState<TrimOptionsPayload[]>([]);
@@ -199,10 +203,7 @@ export function VehicleForm({
     setForm((current) => ({ ...current, [name]: value }));
   }
 
-  function applyExtractedVehicle(result: ListingExtractResult) {
-    const vehicle = result.vehicle;
-    if (!vehicle) return;
-
+  function applyPartialVehicle(vehicle: Partial<Vehicle>) {
     let brandSlug = form.brandSlug;
     let modelSlug = form.modelSlug;
     if (catalog && vehicle.brand && vehicle.model) {
@@ -216,21 +217,28 @@ export function VehicleForm({
         const model = brand.models.find(
           (m) =>
             m.name.toLowerCase() === vehicle.model!.toLowerCase() ||
-            m.slug === vehicle.model!.toLowerCase().replace(/\s+/g, "-"),
+            m.slug === vehicle.model!.toLowerCase().replace(/\s+/g, "-") ||
+            vehicle.model!.toLowerCase().includes(m.name.toLowerCase()) ||
+            m.name.toLowerCase().includes(vehicle.model!.toLowerCase().split(/\s+/)[0] ?? ""),
         );
         if (model) modelSlug = model.slug;
       }
     }
 
     const versionText = vehicle.version?.trim() ?? "";
-    let trimSlug = "";
-    let versionCustom = versionText;
-    if (brandSlug && modelSlug && versionText) {
-      const match = findTrimByVersionText(brandSlug, modelSlug, versionText);
-      if (match) {
-        trimSlug = match.slug;
-        versionCustom = match.name;
-      } else if (versionText) {
+    let trimSlug = form.trimSlug;
+    let versionCustom = form.versionCustom;
+    if (versionText) {
+      versionCustom = versionText;
+      if (brandSlug && modelSlug) {
+        const match = findTrimByVersionText(brandSlug, modelSlug, versionText);
+        if (match) {
+          trimSlug = match.slug;
+          versionCustom = match.name;
+        } else {
+          trimSlug = CUSTOM_TRIM_SLUG;
+        }
+      } else {
         trimSlug = CUSTOM_TRIM_SLUG;
       }
     }
@@ -245,11 +253,18 @@ export function VehicleForm({
       mileage: vehicle.mileage != null ? String(vehicle.mileage) : current.mileage,
       fuel: vehicle.fuel || current.fuel,
       power: vehicle.power != null ? String(vehicle.power) : current.power,
+      transmission: vehicle.transmission || current.transmission,
       advertisedPrice:
         vehicle.advertisedPrice != null ? String(vehicle.advertisedPrice) : current.advertisedPrice,
       location: vehicle.location?.trim() || current.location,
       listingUrl: vehicle.listingUrl?.trim() || current.listingUrl,
+      registrationPlate: vehicle.registrationPlate?.trim() || current.registrationPlate,
     }));
+  }
+
+  function applyExtractedVehicle(result: ListingExtractResult) {
+    if (!result.vehicle) return;
+    applyPartialVehicle(result.vehicle);
   }
 
   async function extractFromUrl(rawUrl: string) {
@@ -282,6 +297,38 @@ export function VehicleForm({
       setUrlStatus(err instanceof Error ? err.message : "No se ha podido leer la URL.");
     } finally {
       setExtractingUrl(false);
+    }
+  }
+
+  async function extractFromPlate(rawPlate: string) {
+    const plate = rawPlate.trim();
+    if (!plate || plate.length < 4) {
+      setPlateStatus(null);
+      return;
+    }
+    setExtractingPlate(true);
+    setPlateStatus("Consultando matrícula…");
+    setError(null);
+    try {
+      const response = await fetch("/api/vehicle/by-plate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plate }),
+      });
+      const result = (await response.json()) as PlateLookupResult & { error?: string };
+      if (!response.ok) {
+        throw new Error(result.error ?? "No se ha podido consultar la matrícula.");
+      }
+      if (result.status === "extracted" || result.status === "partial") {
+        if (result.vehicle) applyPartialVehicle(result.vehicle);
+        setPlateStatus(result.message);
+        return;
+      }
+      setPlateStatus(result.message);
+    } catch (err) {
+      setPlateStatus(err instanceof Error ? err.message : "No se ha podido consultar la matrícula.");
+    } finally {
+      setExtractingPlate(false);
     }
   }
 
@@ -333,6 +380,7 @@ export function VehicleForm({
       bodyCondition: (form.bodyCondition || undefined) as VehicleInput["bodyCondition"],
       interiorCondition: (form.interiorCondition || undefined) as VehicleInput["interiorCondition"],
       listingUrl: form.listingUrl.trim() || undefined,
+      registrationPlate: form.registrationPlate.trim() || undefined,
     };
     await onSubmit(vehicle);
   }
@@ -343,7 +391,8 @@ export function VehicleForm({
         <div className="mb-5 flex flex-col gap-1">
           <h2 className="font-heading text-lg font-medium">Datos del coche</h2>
           <p className="text-sm text-muted-foreground">
-            Pega un anuncio de coches.net o AutoScout24, o rellena lo esencial. Versión y CV afinan el precio.
+            Pega la matrícula o un anuncio de coches.net / AutoScout24, o rellena lo esencial. Versión y CV
+            afinan el precio.
           </p>
         </div>
 
@@ -353,6 +402,46 @@ export function VehicleForm({
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         ) : null}
+
+        <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Field
+            label="Matrícula"
+            htmlFor="registrationPlate"
+            hint="Con API configurada: marca, modelo, año y combustible. Sin API: estimamos el año por la serie."
+          >
+            <div className="relative">
+              <Input
+                id="registrationPlate"
+                autoComplete="off"
+                placeholder="1234 BCD o M-1234-AB"
+                value={form.registrationPlate}
+                onChange={(event) => {
+                  update("registrationPlate", event.target.value);
+                  setPlateStatus(null);
+                }}
+                onBlur={(event) => {
+                  void extractFromPlate(event.target.value);
+                }}
+                onPaste={(event) => {
+                  const pasted = event.clipboardData.getData("text");
+                  if (pasted) {
+                    window.setTimeout(() => {
+                      void extractFromPlate(pasted);
+                    }, 0);
+                  }
+                }}
+              />
+              {extractingPlate ? (
+                <LoaderCircleIcon
+                  className="absolute top-1/2 right-3 size-4 -translate-y-1/2 animate-spin text-muted-foreground"
+                />
+              ) : null}
+            </div>
+          </Field>
+          {plateStatus ? (
+            <p className="text-xs text-muted-foreground sm:col-span-2">{plateStatus}</p>
+          ) : null}
+        </div>
 
         <div className="mb-4">
           <Field

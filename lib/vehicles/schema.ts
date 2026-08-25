@@ -85,6 +85,12 @@ export const vehicleInputSchema = z.object({
   interiorCondition: z.enum(CONDITION_LEVELS).optional(),
   listingUrl: optionalUrl,
   description: optionalText,
+  registrationPlate: z
+    .string()
+    .trim()
+    .max(12)
+    .optional()
+    .transform((value) => (value ? value : undefined)),
 });
 
 export type VehicleInputSchema = z.infer<typeof vehicleInputSchema>;
@@ -120,4 +126,12 @@ export const listingSearchSchema = z.object({
 
 export const listingExtractSchema = z.object({
   url: z.string().trim().url("Introduce una URL válida"),
+});
+
+export const plateLookupSchema = z.object({
+  plate: z
+    .string()
+    .trim()
+    .min(4, "Introduce una matrícula válida")
+    .max(12, "Matrícula demasiado larga"),
 });
