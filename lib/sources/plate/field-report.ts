@@ -45,6 +45,7 @@ export function listFilledPlateFields(vehicle: Partial<Vehicle>): PlateLookupFie
   if (vehicle.bodyType) filled.push("bodyType");
   if (vehicle.engineCode?.trim()) filled.push("engineCode");
   if (vehicle.vin?.trim()) filled.push("vin");
+  if (vehicle.location?.trim()) filled.push("location");
   return filled;
 }
 

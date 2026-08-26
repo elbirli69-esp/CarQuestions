@@ -43,6 +43,19 @@ export interface BrandCoverageSummary {
   spainCoreGaps: number;
 }
 
+export interface ModelKmCoverage {
+  brandSlug: string;
+  modelSlug: string;
+  displayName: string;
+  spainMarketRank?: number;
+  spainCore: boolean;
+  issueChunkCount: number;
+  issuesWithKmCount: number;
+  kmCoveragePct: number;
+  status: "sin_km" | "bajo" | "ok";
+  issueIdsWithoutKm: string[];
+}
+
 export interface CoverageGapReport {
   generatedAt: string;
   corpusChunks: number;
@@ -51,6 +64,7 @@ export interface CoverageGapReport {
   minIssuesThreshold: number;
   modelGaps: ModelCoverageGap[];
   brandSummaries: BrandCoverageSummary[];
+  kmCoverage: ModelKmCoverage[];
   evalFailures: string[];
 }
 
@@ -101,6 +115,33 @@ function gapSortKey(gap: ModelCoverageGap): number {
   const rank = gap.spainMarketRank ?? 9999;
   const priorityRank = gap.priority === "high" ? 0 : gap.priority === "medium" ? 1 : 2;
   return rank * 10 + priorityRank;
+}
+
+function buildKmCoverageForModel(
+  chunks: KnowledgeChunk[],
+  entry: { brandSlug: string; modelSlug: string; spainMarketRank?: number; spainRegistrations?: number },
+): ModelKmCoverage {
+  const spain = resolveSpainMeta(entry);
+  const issues = chunks.filter(
+    (c) => isIssueOrRecall(c) && chunkMatchesCatalogModel(c, entry.brandSlug, entry.modelSlug),
+  );
+  const withKm = issues.filter((c) => c.typicalKmFrom != null || c.typicalKmTo != null);
+  const pct = issues.length ? Math.round((100 * withKm.length) / issues.length) : 0;
+  const status: ModelKmCoverage["status"] = pct === 0 ? "sin_km" : pct < 50 ? "bajo" : "ok";
+  const withoutKm = issues.filter((c) => c.typicalKmFrom == null && c.typicalKmTo == null).map((c) => c.id);
+
+  return {
+    brandSlug: entry.brandSlug,
+    modelSlug: entry.modelSlug,
+    displayName: `${entry.brandSlug} ${entry.modelSlug}`,
+    spainMarketRank: spain.spainMarketRank,
+    spainCore: spain.spainCore,
+    issueChunkCount: issues.length,
+    issuesWithKmCount: withKm.length,
+    kmCoveragePct: pct,
+    status,
+    issueIdsWithoutKm: withoutKm,
+  };
 }
 
 export function buildCoverageGapReport(options?: {
@@ -191,6 +232,15 @@ export function buildCoverageGapReport(options?: {
     (a, b) => b.spainCoreGaps - a.spainCoreGaps || b.modelsWithoutIssues - a.modelsWithoutIssues,
   );
 
+  const kmCoverage = trimCatalog.entries
+    .map((entry) => buildKmCoverageForModel(chunks, entry))
+    .filter((row) => row.spainCore && row.issueChunkCount > 0)
+    .sort(
+      (a, b) =>
+        (a.spainMarketRank ?? 9999) - (b.spainMarketRank ?? 9999) ||
+        a.kmCoveragePct - b.kmCoveragePct,
+    );
+
   return {
     generatedAt: new Date().toISOString(),
     corpusChunks: chunks.length,
@@ -199,6 +249,7 @@ export function buildCoverageGapReport(options?: {
     minIssuesThreshold: minIssues,
     modelGaps,
     brandSummaries,
+    kmCoverage,
     evalFailures: options?.evalFailureNames ?? [],
   };
 }
@@ -249,6 +300,29 @@ export function formatCoverageGapReport(report: CoverageGapReport): string {
     lines.push("", "=== Fallos rag-eval (añadir corpus) ===");
     for (const name of report.evalFailures) {
       lines.push(`- ${name}`);
+    }
+  }
+
+  const kmSpain = report.kmCoverage.filter((k) => k.spainCore);
+  lines.push("", "=== Cobertura km (typicalKm) — top ventas España ===");
+  if (kmSpain.length === 0) {
+    lines.push("(sin modelos top con issues)");
+  } else {
+    const sinKm = kmSpain.filter((k) => k.status === "sin_km");
+    const bajo = kmSpain.filter((k) => k.status === "bajo");
+    const ok = kmSpain.filter((k) => k.status === "ok");
+    lines.push(
+      `OK ≥50%: ${ok.length} · BAJO <50%: ${bajo.length} · SIN_KM: ${sinKm.length} (de ${kmSpain.length} modelos con issues)`,
+    );
+    for (const row of kmSpain) {
+      const rank = row.spainMarketRank != null ? `#${row.spainMarketRank}` : "?";
+      const label = row.status === "sin_km" ? "SIN_KM" : row.status === "bajo" ? "BAJO" : "OK";
+      lines.push(
+        `[${label}] ${rank} ${row.displayName}: ${row.issuesWithKmCount}/${row.issueChunkCount} issues con km (${row.kmCoveragePct}%)`,
+      );
+      if (row.issueIdsWithoutKm.length > 0 && row.status !== "ok") {
+        lines.push(`  sin km: ${row.issueIdsWithoutKm.slice(0, 4).join(", ")}${row.issueIdsWithoutKm.length > 4 ? "…" : ""}`);
+      }
     }
   }
 

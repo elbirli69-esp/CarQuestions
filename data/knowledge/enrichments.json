@@ -1124,6 +1124,168 @@
       "askSeller": ["¿Aceite DSG cambiado?", "¿Historial aceite motor top-ups?", "¿Ruidos en curvas cerradas?"],
       "inspectSteps": ["Maniobras lento aparcamiento escuchando quattro", "Revisar nivel aceite tras prueba dinámica", "Escaneo DSG y lectura adaptaciones embrague"],
       "source": "AudiSport Q3 threads y manual Audi Q3 FY"
+    },
+    {
+      "id": "toyota-corolla-hybrid-hv-soh",
+      "typicalKmFrom": 80000,
+      "typicalKmTo": 180000,
+      "source": "ClubToyota / foros Corolla Hybrid España — degradación SOH en taxi y mucho urbano"
+    },
+    {
+      "id": "toyota-hybrid-battery-refurb",
+      "typicalKmFrom": 100000,
+      "typicalKmTo": 200000,
+      "source": "Guías VO híbridos Toyota — batería HV y reacondicionados tras km altos"
+    },
+    {
+      "id": "vw-t-roc-vag-platform",
+      "typicalKmFrom": 60000,
+      "typicalKmTo": 150000,
+      "source": "Foros T-Roc/GolfMK7 — DSG, FAP urbano y silentblocks en km medios-altos"
+    },
+    {
+      "id": "mg-zs-hybrid-12v-infotainment",
+      "typicalKmFrom": 25000,
+      "typicalKmTo": 90000,
+      "source": "Foros MG España — 12V e infotainment pueden fallar antes de km altos"
+    },
+    {
+      "id": "mg-zs-ev-early",
+      "typicalKmFrom": 50000,
+      "typicalKmTo": 120000,
+      "source": "Owners MG ZS EV — SOH y electrónica en unidades con uso intensivo"
+    },
+    {
+      "id": "mg4-mgzs-ev-notes",
+      "typicalKmFrom": 40000,
+      "typicalKmTo": 100000,
+      "source": "MG EV Club — SOH y suspensión en km medios"
+    },
+    {
+      "id": "dacia-sandero-iii-rust-suspension",
+      "typicalKmFrom": 60000,
+      "typicalKmTo": 150000,
+      "source": "Foros Dacia Sandero III — óxido costero, GLP Eco-G y suspensión Stepway"
+    },
+    {
+      "id": "renault-captur-dci-hybrid",
+      "typicalKmFrom": 70000,
+      "typicalKmTo": 140000,
+      "source": "Manual Captur II — FAP dCi urbano y batería E-Tech en km medios"
+    },
+    {
+      "id": "renault-edc-dct",
+      "typicalKmFrom": 50000,
+      "typicalKmTo": 120000,
+      "source": "Renault EDC — tirones y campañas transmisión en uso urbano"
+    },
+    {
+      "id": "renault-tce-timing-chain",
+      "typicalKmFrom": 90000,
+      "typicalKmTo": 150000,
+      "source": "Foros Renault TCe — cadena/correa y consumo aceite en km altos"
+    },
+    {
+      "id": "renault-1-3-tce-hr13",
+      "typicalKmFrom": 60000,
+      "typicalKmTo": 120000,
+      "source": "Renault HR13 1.3 TCe — carbonilla y EGR en km medios"
+    },
+    {
+      "id": "renault-dci-1-5-k9k",
+      "typicalKmFrom": 80000,
+      "typicalKmTo": 160000,
+      "source": "K9K dCi 1.5 — FAP/EGR en uso urbano España"
+    },
+    {
+      "id": "renault-clio5-tce-electronics",
+      "typicalKmFrom": 40000,
+      "typicalKmTo": 100000,
+      "source": "Foros Clio V TCe — electrónica y centralitas en km medios"
+    },
+    {
+      "id": "hyundai-tucson-phev",
+      "typicalKmFrom": 60000,
+      "typicalKmTo": 120000,
+      "source": "Manual Tucson PHEV — SOH batería y uso mixto en km medios"
+    },
+    {
+      "id": "hyundai-kia-theta2-engine",
+      "typicalKmFrom": 100000,
+      "typicalKmTo": 180000,
+      "source": "Theta II GDI — consumo aceite y cadena en km altos"
+    },
+    {
+      "id": "kia-sportage-ql-diesel",
+      "typicalKmFrom": 80000,
+      "typicalKmTo": 150000,
+      "source": "Sportage/Tucson diésel — FAP y bimasa en km medios-altos"
+    },
+    {
+      "id": "vag-dq200-dry-clutch",
+      "typicalKmFrom": 60000,
+      "typicalKmTo": 120000,
+      "source": "VAG DQ200 — embrague seco DSG en urbano"
+    },
+    {
+      "id": "vag-1-5-tsi-evo-carbon",
+      "typicalKmFrom": 70000,
+      "typicalKmTo": 130000,
+      "source": "EA211 1.5 TSI evo — carbonilla y PCV en km medios"
+    },
+    {
+      "id": "vag-ea888-gen3-oil-pcv",
+      "typicalKmFrom": 70000,
+      "typicalKmTo": 130000,
+      "source": "EA888 Gen3 — consumo aceite y PCV en km medios-altos"
+    },
+    {
+      "id": "vw-golf-gte-phev",
+      "typicalKmFrom": 60000,
+      "typicalKmTo": 120000,
+      "source": "GTE PHEV — SOH y sistema híbrido en km medios"
+    },
+    {
+      "id": "skoda-mqb-octavia-camshaft",
+      "typicalKmFrom": 100000,
+      "typicalKmTo": 160000,
+      "source": "MQB levas — desfase distribución en km altos"
+    },
+    {
+      "id": "seat-cupra-dsg-launch",
+      "typicalKmFrom": 50000,
+      "typicalKmTo": 110000,
+      "source": "Cupra/Leon DSG — embrague y launch control en km medios"
+    },
+    {
+      "id": "nissan-qashqai-j11-cvt",
+      "typicalKmFrom": 70000,
+      "typicalKmTo": 140000,
+      "source": "Qashqai J11 CVT — patinaje y sobrecalentamiento en km medios"
+    },
+    {
+      "id": "nissan-vr38-qr25-timing",
+      "typicalKmFrom": 90000,
+      "typicalKmTo": 150000,
+      "source": "Nissan QR25 — cadena y consumo aceite en km altos"
+    },
+    {
+      "id": "psa-1-5-bluehdi",
+      "typicalKmFrom": 70000,
+      "typicalKmTo": 150000,
+      "source": "BlueHDi 1.5 — FAP/SCR/AdBlue en km medios"
+    },
+    {
+      "id": "peugeot-2008-second-gen",
+      "typicalKmFrom": 60000,
+      "typicalKmTo": 120000,
+      "source": "2008 II — PureTech/BlueHDi y suspensión en km medios"
+    },
+    {
+      "id": "opel-1-2-turbo-puretech-shared",
+      "typicalKmFrom": 60000,
+      "typicalKmTo": 120000,
+      "source": "Opel 1.2 turbo PSA — correa bañada y consumo aceite"
     }
   ]
 }
