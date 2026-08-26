@@ -3,6 +3,7 @@
  * Uso: npm run rag:curate-report
  */
 import trimsData from "../data/vehicle-trims.json";
+import usedPriority from "../data/spain-used-market-priority.json";
 import { suggestVerificationLevel, validateChunkCuration } from "../lib/rag/curation/policy";
 import { loadKnowledgeChunks } from "../lib/rag/knowledge/load";
 import type { KnowledgeChunk } from "../types/knowledge";
@@ -10,20 +11,25 @@ import type { VehicleTrimCatalog } from "../lib/vehicles/trims-types";
 import { normalizeKey } from "../lib/utils/math";
 
 const trimCatalog = trimsData as VehicleTrimCatalog;
-const SPAIN_CORE_MAX = 20;
+const VO_CORE_MAX = 100;
 
-function spainRankForChunk(chunk: KnowledgeChunk): number | undefined {
+const USED_RANK = new Map(
+  (usedPriority.models ?? []).map((m) => [`${m.brandSlug}/${m.modelSlug}`, m.rank]),
+);
+
+function voRankForChunk(chunk: KnowledgeChunk): number | undefined {
   if (!chunk.models?.length) return undefined;
   let best: number | undefined;
   for (const entry of trimCatalog.entries) {
-    if (entry.spainMarketRank == null || entry.spainMarketRank > SPAIN_CORE_MAX) continue;
+    const rank = entry.spainUsedMarketRank ?? USED_RANK.get(`${entry.brandSlug}/${entry.modelSlug}`);
+    if (rank == null || rank > VO_CORE_MAX) continue;
     const modelKey = normalizeKey(entry.modelSlug.replace(/-/g, " "));
     const matches = chunk.models.some((m) => {
       const k = normalizeKey(m);
       return k === modelKey || k.includes(modelKey) || modelKey.includes(k);
     });
     if (matches && chunk.brands.some((b) => normalizeKey(b) === normalizeKey(entry.brandSlug))) {
-      best = best == null ? entry.spainMarketRank : Math.min(best, entry.spainMarketRank);
+      best = best == null ? rank : Math.min(best, rank);
     }
   }
   return best;
@@ -58,21 +64,21 @@ console.log("");
 const ranked = demo
   .map((chunk) => ({
     chunk,
-    spainRank: spainRankForChunk(chunk),
+    voRank: voRankForChunk(chunk),
     type: chunk.type,
   }))
   .sort((a, b) => {
-    const ar = a.spainRank ?? 9999;
-    const br = b.spainRank ?? 9999;
+    const ar = a.voRank ?? 9999;
+    const br = b.voRank ?? 9999;
     if (ar !== br) return ar - br;
     const typeOrder = { recall: 0, issue: 1, maintenance: 2, inspection: 3 };
     return typeOrder[a.type] - typeOrder[b.type];
   });
 
-console.log("=== Top 30 chunks demo — prioridad España (recall/issue primero) ===");
+console.log("=== Top 30 chunks demo — prioridad top 100 VO (recall/issue primero) ===");
 for (const row of ranked.slice(0, 30)) {
-  const { chunk, spainRank } = row;
-  const rankLabel = spainRank != null ? `#${spainRank} España` : "sin rank España";
+  const { chunk, voRank } = row;
+  const rankLabel = voRank != null ? `#${voRank} VO` : "sin rank VO";
   const suggested = suggestVerificationLevel(chunk);
   console.log(
     `[${chunk.type}] ${chunk.id} · ${rankLabel} · url=${chunk.sourceUrl ? "sí" : "no"} · sug=${suggested ?? "—"}`,

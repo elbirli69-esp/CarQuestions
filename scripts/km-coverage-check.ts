@@ -1,5 +1,5 @@
 import { loadKnowledgeChunks } from "../lib/rag/knowledge/load";
-import spain from "../data/spain-market-priority.json";
+import used from "../data/spain-used-market-priority.json";
 import {
   chunkMatchesBrand,
   chunkMatchesModel,
@@ -20,7 +20,7 @@ function chunkMatchesCatalogModel(
   });
 }
 
-const top = spain.models.filter((m) => m.rank <= 16);
+const top = used.models.filter((m) => m.rank <= 100);
 const chunks = loadKnowledgeChunks();
 const isIssue = (c: { type: string }) => c.type === "issue" || c.type === "recall";
 

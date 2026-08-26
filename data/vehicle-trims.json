@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-25T10:00:00.000Z",
-  "source": "curated-motorizations-spain-priority",
+  "generatedAt": "2026-08-26T15:02:28.407Z",
+  "source": "curated-motorizations-spain-used-vo-top100",
   "entries": [
     {
       "brandSlug": "dacia",
@@ -50,7 +50,10 @@
           "engineCode": "H4M",
           "label": "Stepway TCe 100 · Gasolina"
         }
-      ]
+      ],
+      "spainUsedMarketRank": 1,
+      "voYearFrom": 2013,
+      "voYearTo": 2025
     },
     {
       "brandSlug": "renault",
@@ -85,433 +88,10 @@
           "yearTo": 2026,
           "label": "E-Tech Hybrid · 140 CV"
         }
-      ]
-    },
-    {
-      "brandSlug": "mg",
-      "modelSlug": "zs",
-      "spainMarketRank": 3,
-      "spainRegistrations": 23731,
-      "trims": [
-        {
-          "slug": "1-5-tgdi",
-          "name": "1.5 T-GDI",
-          "fuel": "petrol",
-          "powerHp": 162,
-          "yearFrom": 2020,
-          "yearTo": 2026,
-          "transmission": "automatic",
-          "label": "1.5 T-GDI · 162 CV · Gasolina"
-        },
-        {
-          "slug": "hybrid",
-          "name": "Hybrid+",
-          "fuel": "hybrid",
-          "powerHp": 197,
-          "yearFrom": 2022,
-          "yearTo": 2026,
-          "transmission": "automatic",
-          "label": "Hybrid+ · 197 CV · Híbrido"
-        },
-        {
-          "slug": "electric",
-          "name": "Electric",
-          "fuel": "electric",
-          "powerHp": 177,
-          "yearFrom": 2021,
-          "yearTo": 2026,
-          "transmission": "automatic",
-          "label": "Electric · 177 CV"
-        }
-      ]
-    },
-    {
-      "brandSlug": "seat",
-      "modelSlug": "ibiza",
-      "spainMarketRank": 4,
-      "spainRegistrations": 23201,
-      "trims": [
-        {
-          "slug": "1-0-tsi",
-          "name": "1.0 TSI",
-          "fuel": "petrol",
-          "powerHp": 95,
-          "yearFrom": 2017,
-          "yearTo": 2026,
-          "engineCode": "EA211",
-          "transmission": "manual",
-          "label": "1.0 TSI · 95 CV · Gasolina"
-        },
-        {
-          "slug": "1-5-tsi",
-          "name": "1.5 TSI",
-          "fuel": "petrol",
-          "powerHp": 150,
-          "yearFrom": 2017,
-          "yearTo": 2026,
-          "engineCode": "EA211",
-          "transmission": "automatic",
-          "gearboxCode": "DQ200",
-          "label": "1.5 TSI · 150 CV · Gasolina · DSG"
-        }
-      ]
-    },
-    {
-      "brandSlug": "hyundai",
-      "modelSlug": "tucson",
-      "spainMarketRank": 5,
-      "spainRegistrations": 21974,
-      "trims": [
-        {
-          "slug": "1-6-t-gdi",
-          "name": "1.6 T-GDI",
-          "fuel": "petrol",
-          "powerHp": 150,
-          "yearFrom": 2021,
-          "yearTo": 2026,
-          "transmission": "automatic",
-          "label": "1.6 T-GDI · 150 CV · Gasolina"
-        },
-        {
-          "slug": "hybrid",
-          "name": "Hybrid",
-          "fuel": "hybrid",
-          "powerHp": 230,
-          "yearFrom": 2021,
-          "yearTo": 2026,
-          "transmission": "automatic",
-          "label": "Hybrid · 230 CV"
-        },
-        {
-          "slug": "plug-in-hybrid",
-          "name": "Plug-in Hybrid",
-          "fuel": "plugin_hybrid",
-          "powerHp": 265,
-          "yearFrom": 2021,
-          "yearTo": 2026,
-          "transmission": "automatic",
-          "label": "Plug-in Hybrid · 265 CV"
-        }
-      ]
-    },
-    {
-      "brandSlug": "toyota",
-      "modelSlug": "corolla",
-      "spainMarketRank": 6,
-      "spainRegistrations": 20833,
-      "trims": [
-        {
-          "slug": "hybrid-122",
-          "name": "Hybrid 122",
-          "fuel": "hybrid",
-          "powerHp": 122,
-          "yearFrom": 2019,
-          "yearTo": 2026,
-          "transmission": "automatic",
-          "label": "Hybrid · 122 CV"
-        },
-        {
-          "slug": "hybrid-140",
-          "name": "Hybrid 140",
-          "fuel": "hybrid",
-          "powerHp": 140,
-          "yearFrom": 2023,
-          "yearTo": 2026,
-          "transmission": "automatic",
-          "label": "Hybrid · 140 CV"
-        },
-        {
-          "slug": "petrol-1-8",
-          "name": "1.8",
-          "fuel": "petrol",
-          "powerHp": 140,
-          "yearFrom": 2019,
-          "yearTo": 2023,
-          "transmission": "manual",
-          "label": "1.8 · 140 CV · Gasolina"
-        }
-      ]
-    },
-    {
-      "brandSlug": "seat",
-      "modelSlug": "arona",
-      "spainMarketRank": 7,
-      "spainRegistrations": 20294,
-      "trims": [
-        {
-          "slug": "1-0-tsi",
-          "name": "1.0 TSI",
-          "fuel": "petrol",
-          "powerHp": 95,
-          "yearFrom": 2017,
-          "yearTo": 2026,
-          "engineCode": "EA211",
-          "label": "1.0 TSI · 95 CV · Gasolina"
-        },
-        {
-          "slug": "1-5-tsi",
-          "name": "1.5 TSI",
-          "fuel": "petrol",
-          "powerHp": 150,
-          "yearFrom": 2017,
-          "yearTo": 2026,
-          "engineCode": "EA211",
-          "transmission": "automatic",
-          "gearboxCode": "DQ200",
-          "label": "1.5 TSI · 150 CV · Gasolina · DSG"
-        }
-      ]
-    },
-    {
-      "brandSlug": "peugeot",
-      "modelSlug": "2008",
-      "spainMarketRank": 8,
-      "spainRegistrations": 20272,
-      "trims": [
-        {
-          "slug": "puretech-100",
-          "name": "PureTech 100",
-          "fuel": "petrol",
-          "powerHp": 100,
-          "yearFrom": 2020,
-          "yearTo": 2026,
-          "engineCode": "PureTech",
-          "label": "PureTech 100 · Gasolina"
-        },
-        {
-          "slug": "puretech-130",
-          "name": "PureTech 130",
-          "fuel": "petrol",
-          "powerHp": 130,
-          "yearFrom": 2020,
-          "yearTo": 2026,
-          "engineCode": "PureTech",
-          "label": "PureTech 130 · Gasolina"
-        },
-        {
-          "slug": "e-2008",
-          "name": "e-2008",
-          "fuel": "electric",
-          "powerHp": 136,
-          "yearFrom": 2020,
-          "yearTo": 2026,
-          "transmission": "automatic",
-          "label": "e-2008 · Eléctrico"
-        }
-      ]
-    },
-    {
-      "brandSlug": "peugeot",
-      "modelSlug": "208",
-      "spainMarketRank": 9,
-      "spainRegistrations": 20043,
-      "trims": [
-        {
-          "slug": "puretech-100",
-          "name": "PureTech 100",
-          "fuel": "petrol",
-          "powerHp": 100,
-          "yearFrom": 2019,
-          "yearTo": 2026,
-          "engineCode": "PureTech",
-          "label": "PureTech 100 · Gasolina"
-        },
-        {
-          "slug": "puretech-130",
-          "name": "PureTech 130",
-          "fuel": "petrol",
-          "powerHp": 130,
-          "yearFrom": 2019,
-          "yearTo": 2026,
-          "engineCode": "PureTech",
-          "label": "PureTech 130 · Gasolina"
-        },
-        {
-          "slug": "e-208",
-          "name": "e-208",
-          "fuel": "electric",
-          "powerHp": 136,
-          "yearFrom": 2019,
-          "yearTo": 2026,
-          "transmission": "automatic",
-          "label": "e-208 · Eléctrico"
-        }
-      ]
-    },
-    {
-      "brandSlug": "nissan",
-      "modelSlug": "qashqai",
-      "spainMarketRank": 10,
-      "spainRegistrations": 19556,
-      "trims": [
-        {
-          "slug": "mild-hybrid-140",
-          "name": "Mild Hybrid 140",
-          "fuel": "petrol",
-          "powerHp": 140,
-          "yearFrom": 2021,
-          "yearTo": 2026,
-          "transmission": "manual",
-          "label": "Mild Hybrid · 140 CV · Gasolina"
-        },
-        {
-          "slug": "dig-t-160",
-          "name": "DIG-T 160",
-          "fuel": "petrol",
-          "powerHp": 160,
-          "yearFrom": 2021,
-          "yearTo": 2026,
-          "transmission": "automatic",
-          "label": "DIG-T · 160 CV · Gasolina"
-        },
-        {
-          "slug": "e-power",
-          "name": "e-POWER",
-          "fuel": "hybrid",
-          "powerHp": 190,
-          "yearFrom": 2022,
-          "yearTo": 2026,
-          "transmission": "automatic",
-          "label": "e-POWER · 190 CV"
-        }
-      ]
-    },
-    {
-      "brandSlug": "renault",
-      "modelSlug": "captur",
-      "spainMarketRank": 13,
-      "spainRegistrations": 19011,
-      "trims": [
-        {
-          "slug": "tce-100",
-          "name": "TCe 100",
-          "fuel": "petrol",
-          "powerHp": 100,
-          "yearFrom": 2020,
-          "yearTo": 2026,
-          "label": "TCe 100 · Gasolina"
-        },
-        {
-          "slug": "tce-130",
-          "name": "TCe 130",
-          "fuel": "petrol",
-          "powerHp": 130,
-          "yearFrom": 2020,
-          "yearTo": 2026,
-          "engineCode": "HR13",
-          "label": "TCe 130 · Gasolina"
-        },
-        {
-          "slug": "e-tech-hybrid",
-          "name": "E-Tech Hybrid",
-          "fuel": "hybrid",
-          "powerHp": 145,
-          "yearFrom": 2020,
-          "yearTo": 2026,
-          "label": "E-Tech Hybrid · 145 CV"
-        }
-      ]
-    },
-    {
-      "brandSlug": "volkswagen",
-      "modelSlug": "t-roc",
-      "spainMarketRank": 14,
-      "spainRegistrations": 18740,
-      "trims": [
-        {
-          "slug": "1-5-tsi",
-          "name": "1.5 TSI",
-          "fuel": "petrol",
-          "powerHp": 150,
-          "yearFrom": 2017,
-          "yearTo": 2026,
-          "engineCode": "EA211",
-          "transmission": "automatic",
-          "gearboxCode": "DQ200",
-          "label": "1.5 TSI · 150 CV · Gasolina · DSG"
-        },
-        {
-          "slug": "2-0-tdi",
-          "name": "2.0 TDI",
-          "fuel": "diesel",
-          "powerHp": 150,
-          "yearFrom": 2017,
-          "yearTo": 2024,
-          "engineCode": "EA288",
-          "transmission": "automatic",
-          "gearboxCode": "DQ200",
-          "label": "2.0 TDI · 150 CV · Diésel · DSG"
-        }
-      ]
-    },
-    {
-      "brandSlug": "opel",
-      "modelSlug": "corsa",
-      "spainMarketRank": 15,
-      "spainRegistrations": 17440,
-      "trims": [
-        {
-          "slug": "puretech-100",
-          "name": "PureTech 100",
-          "fuel": "petrol",
-          "powerHp": 100,
-          "yearFrom": 2019,
-          "yearTo": 2026,
-          "engineCode": "PureTech",
-          "label": "PureTech 100 · Gasolina"
-        },
-        {
-          "slug": "1-5-diesel",
-          "name": "1.5 Diesel",
-          "fuel": "diesel",
-          "powerHp": 102,
-          "yearFrom": 2019,
-          "yearTo": 2026,
-          "label": "1.5 Diesel · 102 CV"
-        },
-        {
-          "slug": "electric",
-          "name": "Electric",
-          "fuel": "electric",
-          "powerHp": 136,
-          "yearFrom": 2020,
-          "yearTo": 2026,
-          "transmission": "automatic",
-          "label": "Electric · 136 CV"
-        }
-      ]
-    },
-    {
-      "brandSlug": "seat",
-      "modelSlug": "leon",
-      "spainMarketRank": 16,
-      "spainRegistrations": 16366,
-      "trims": [
-        {
-          "slug": "1-5-tsi",
-          "name": "1.5 TSI",
-          "fuel": "petrol",
-          "powerHp": 150,
-          "yearFrom": 2020,
-          "yearTo": 2026,
-          "engineCode": "EA211",
-          "transmission": "automatic",
-          "gearboxCode": "DQ200",
-          "label": "1.5 TSI · 150 CV · Gasolina · DSG"
-        },
-        {
-          "slug": "2-0-tdi",
-          "name": "2.0 TDI",
-          "fuel": "diesel",
-          "powerHp": 150,
-          "yearFrom": 2020,
-          "yearTo": 2026,
-          "engineCode": "EA288",
-          "transmission": "automatic",
-          "gearboxCode": "DQ200",
-          "label": "2.0 TDI · 150 CV · Diésel · DSG"
-        }
-      ]
+      ],
+      "spainUsedMarketRank": 2,
+      "voYearFrom": 2013,
+      "voYearTo": 2025
     },
     {
       "brandSlug": "volkswagen",
@@ -561,7 +141,734 @@
           "yearTo": 2020,
           "label": "GTD · 200 CV · Diésel"
         }
+      ],
+      "spainUsedMarketRank": 3,
+      "voYearFrom": 2013,
+      "voYearTo": 2025
+    },
+    {
+      "brandSlug": "seat",
+      "modelSlug": "ibiza",
+      "spainMarketRank": 4,
+      "spainRegistrations": 23201,
+      "trims": [
+        {
+          "slug": "1-0-tsi",
+          "name": "1.0 TSI",
+          "fuel": "petrol",
+          "powerHp": 95,
+          "yearFrom": 2017,
+          "yearTo": 2026,
+          "engineCode": "EA211",
+          "transmission": "manual",
+          "label": "1.0 TSI · 95 CV · Gasolina"
+        },
+        {
+          "slug": "1-5-tsi",
+          "name": "1.5 TSI",
+          "fuel": "petrol",
+          "powerHp": 150,
+          "yearFrom": 2017,
+          "yearTo": 2026,
+          "engineCode": "EA211",
+          "transmission": "automatic",
+          "gearboxCode": "DQ200",
+          "label": "1.5 TSI · 150 CV · Gasolina · DSG"
+        }
+      ],
+      "spainUsedMarketRank": 4,
+      "voYearFrom": 2015,
+      "voYearTo": 2025
+    },
+    {
+      "brandSlug": "ford",
+      "modelSlug": "focus",
+      "spainUsedMarketRank": 5,
+      "voYearFrom": 2012,
+      "voYearTo": 2024,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2012,
+          "yearTo": 2024,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2012,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        }
       ]
+    },
+    {
+      "brandSlug": "renault",
+      "modelSlug": "megane",
+      "spainUsedMarketRank": 6,
+      "voYearFrom": 2013,
+      "voYearTo": 2024,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2013,
+          "yearTo": 2024,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2013,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "peugeot",
+      "modelSlug": "208",
+      "spainMarketRank": 9,
+      "spainRegistrations": 20043,
+      "trims": [
+        {
+          "slug": "puretech-100",
+          "name": "PureTech 100",
+          "fuel": "petrol",
+          "powerHp": 100,
+          "yearFrom": 2019,
+          "yearTo": 2026,
+          "engineCode": "PureTech",
+          "label": "PureTech 100 · Gasolina"
+        },
+        {
+          "slug": "puretech-130",
+          "name": "PureTech 130",
+          "fuel": "petrol",
+          "powerHp": 130,
+          "yearFrom": 2019,
+          "yearTo": 2026,
+          "engineCode": "PureTech",
+          "label": "PureTech 130 · Gasolina"
+        },
+        {
+          "slug": "e-208",
+          "name": "e-208",
+          "fuel": "electric",
+          "powerHp": 136,
+          "yearFrom": 2019,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "e-208 · Eléctrico"
+        }
+      ],
+      "spainUsedMarketRank": 7,
+      "voYearFrom": 2015,
+      "voYearTo": 2025
+    },
+    {
+      "brandSlug": "opel",
+      "modelSlug": "corsa",
+      "spainMarketRank": 15,
+      "spainRegistrations": 17440,
+      "trims": [
+        {
+          "slug": "puretech-100",
+          "name": "PureTech 100",
+          "fuel": "petrol",
+          "powerHp": 100,
+          "yearFrom": 2019,
+          "yearTo": 2026,
+          "engineCode": "PureTech",
+          "label": "PureTech 100 · Gasolina"
+        },
+        {
+          "slug": "1-5-diesel",
+          "name": "1.5 Diesel",
+          "fuel": "diesel",
+          "powerHp": 102,
+          "yearFrom": 2019,
+          "yearTo": 2026,
+          "label": "1.5 Diesel · 102 CV"
+        },
+        {
+          "slug": "electric",
+          "name": "Electric",
+          "fuel": "electric",
+          "powerHp": 136,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "Electric · 136 CV"
+        }
+      ],
+      "spainUsedMarketRank": 8,
+      "voYearFrom": 2015,
+      "voYearTo": 2025
+    },
+    {
+      "brandSlug": "nissan",
+      "modelSlug": "qashqai",
+      "spainMarketRank": 10,
+      "spainRegistrations": 19556,
+      "trims": [
+        {
+          "slug": "mild-hybrid-140",
+          "name": "Mild Hybrid 140",
+          "fuel": "petrol",
+          "powerHp": 140,
+          "yearFrom": 2021,
+          "yearTo": 2026,
+          "transmission": "manual",
+          "label": "Mild Hybrid · 140 CV · Gasolina"
+        },
+        {
+          "slug": "dig-t-160",
+          "name": "DIG-T 160",
+          "fuel": "petrol",
+          "powerHp": 160,
+          "yearFrom": 2021,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "DIG-T · 160 CV · Gasolina"
+        },
+        {
+          "slug": "e-power",
+          "name": "e-POWER",
+          "fuel": "hybrid",
+          "powerHp": 190,
+          "yearFrom": 2022,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "e-POWER · 190 CV"
+        }
+      ],
+      "spainUsedMarketRank": 9,
+      "voYearFrom": 2014,
+      "voYearTo": 2025
+    },
+    {
+      "brandSlug": "toyota",
+      "modelSlug": "yaris",
+      "spainUsedMarketRank": 10,
+      "voYearFrom": 2014,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2014,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "volkswagen",
+      "modelSlug": "polo",
+      "spainUsedMarketRank": 11,
+      "voYearFrom": 2014,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2014,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "ford",
+      "modelSlug": "fiesta",
+      "spainUsedMarketRank": 12,
+      "voYearFrom": 2012,
+      "voYearTo": 2022,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2012,
+          "yearTo": 2022,
+          "label": "Gasolina · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "peugeot",
+      "modelSlug": "308",
+      "spainUsedMarketRank": 13,
+      "voYearFrom": 2014,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2014,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2014,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "citroen",
+      "modelSlug": "c3",
+      "spainUsedMarketRank": 14,
+      "voYearFrom": 2014,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2014,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "hyundai",
+      "modelSlug": "i30",
+      "spainUsedMarketRank": 15,
+      "voYearFrom": 2015,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2015,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2015,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "seat",
+      "modelSlug": "leon",
+      "spainMarketRank": 16,
+      "spainRegistrations": 16366,
+      "trims": [
+        {
+          "slug": "1-5-tsi",
+          "name": "1.5 TSI",
+          "fuel": "petrol",
+          "powerHp": 150,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "engineCode": "EA211",
+          "transmission": "automatic",
+          "gearboxCode": "DQ200",
+          "label": "1.5 TSI · 150 CV · Gasolina · DSG"
+        },
+        {
+          "slug": "2-0-tdi",
+          "name": "2.0 TDI",
+          "fuel": "diesel",
+          "powerHp": 150,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "engineCode": "EA288",
+          "transmission": "automatic",
+          "gearboxCode": "DQ200",
+          "label": "2.0 TDI · 150 CV · Diésel · DSG"
+        }
+      ],
+      "spainUsedMarketRank": 16,
+      "voYearFrom": 2013,
+      "voYearTo": 2025
+    },
+    {
+      "brandSlug": "renault",
+      "modelSlug": "captur",
+      "spainMarketRank": 13,
+      "spainRegistrations": 19011,
+      "trims": [
+        {
+          "slug": "tce-100",
+          "name": "TCe 100",
+          "fuel": "petrol",
+          "powerHp": 100,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "label": "TCe 100 · Gasolina"
+        },
+        {
+          "slug": "tce-130",
+          "name": "TCe 130",
+          "fuel": "petrol",
+          "powerHp": 130,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "engineCode": "HR13",
+          "label": "TCe 130 · Gasolina"
+        },
+        {
+          "slug": "e-tech-hybrid",
+          "name": "E-Tech Hybrid",
+          "fuel": "hybrid",
+          "powerHp": 145,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "label": "E-Tech Hybrid · 145 CV"
+        }
+      ],
+      "spainUsedMarketRank": 17,
+      "voYearFrom": 2014,
+      "voYearTo": 2025
+    },
+    {
+      "brandSlug": "volkswagen",
+      "modelSlug": "passat",
+      "spainUsedMarketRank": 18,
+      "voYearFrom": 2012,
+      "voYearTo": 2024,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2012,
+          "yearTo": 2024,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2012,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "skoda",
+      "modelSlug": "octavia",
+      "spainUsedMarketRank": 19,
+      "voYearFrom": 2013,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2013,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2013,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "ford",
+      "modelSlug": "kuga",
+      "spainUsedMarketRank": 20,
+      "voYearFrom": 2013,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2013,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2013,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "toyota",
+      "modelSlug": "corolla",
+      "spainMarketRank": 6,
+      "spainRegistrations": 20833,
+      "trims": [
+        {
+          "slug": "hybrid-122",
+          "name": "Hybrid 122",
+          "fuel": "hybrid",
+          "powerHp": 122,
+          "yearFrom": 2019,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "Hybrid · 122 CV"
+        },
+        {
+          "slug": "hybrid-140",
+          "name": "Hybrid 140",
+          "fuel": "hybrid",
+          "powerHp": 140,
+          "yearFrom": 2023,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "Hybrid · 140 CV"
+        },
+        {
+          "slug": "petrol-1-8",
+          "name": "1.8",
+          "fuel": "petrol",
+          "powerHp": 140,
+          "yearFrom": 2019,
+          "yearTo": 2023,
+          "transmission": "manual",
+          "label": "1.8 · 140 CV · Gasolina"
+        }
+      ],
+      "spainUsedMarketRank": 21,
+      "voYearFrom": 2016,
+      "voYearTo": 2025
+    },
+    {
+      "brandSlug": "hyundai",
+      "modelSlug": "tucson",
+      "spainMarketRank": 5,
+      "spainRegistrations": 21974,
+      "trims": [
+        {
+          "slug": "1-6-t-gdi",
+          "name": "1.6 T-GDI",
+          "fuel": "petrol",
+          "powerHp": 150,
+          "yearFrom": 2021,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "1.6 T-GDI · 150 CV · Gasolina"
+        },
+        {
+          "slug": "hybrid",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "powerHp": 230,
+          "yearFrom": 2021,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "Hybrid · 230 CV"
+        },
+        {
+          "slug": "plug-in-hybrid",
+          "name": "Plug-in Hybrid",
+          "fuel": "plugin_hybrid",
+          "powerHp": 265,
+          "yearFrom": 2021,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "Plug-in Hybrid · 265 CV"
+        }
+      ],
+      "spainUsedMarketRank": 22,
+      "voYearFrom": 2015,
+      "voYearTo": 2025
+    },
+    {
+      "brandSlug": "peugeot",
+      "modelSlug": "2008",
+      "spainMarketRank": 8,
+      "spainRegistrations": 20272,
+      "trims": [
+        {
+          "slug": "puretech-100",
+          "name": "PureTech 100",
+          "fuel": "petrol",
+          "powerHp": 100,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "engineCode": "PureTech",
+          "label": "PureTech 100 · Gasolina"
+        },
+        {
+          "slug": "puretech-130",
+          "name": "PureTech 130",
+          "fuel": "petrol",
+          "powerHp": 130,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "engineCode": "PureTech",
+          "label": "PureTech 130 · Gasolina"
+        },
+        {
+          "slug": "e-2008",
+          "name": "e-2008",
+          "fuel": "electric",
+          "powerHp": 136,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "e-2008 · Eléctrico"
+        }
+      ],
+      "spainUsedMarketRank": 23,
+      "voYearFrom": 2016,
+      "voYearTo": 2025
+    },
+    {
+      "brandSlug": "audi",
+      "modelSlug": "a3",
+      "trims": [
+        {
+          "slug": "35-tfsi",
+          "name": "35 TFSI",
+          "fuel": "petrol",
+          "powerHp": 150,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "label": "35 TFSI · 150 CV · Gasolina"
+        },
+        {
+          "slug": "35-tdi",
+          "name": "35 TDI",
+          "fuel": "diesel",
+          "powerHp": 150,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "label": "35 TDI · 150 CV · Diésel"
+        },
+        {
+          "slug": "40-tfsi-quattro",
+          "name": "40 TFSI quattro",
+          "fuel": "petrol",
+          "powerHp": 190,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "label": "40 TFSI quattro · 190 CV · Gasolina"
+        }
+      ],
+      "spainUsedMarketRank": 24,
+      "voYearFrom": 2013,
+      "voYearTo": 2025
+    },
+    {
+      "brandSlug": "bmw",
+      "modelSlug": "serie-3",
+      "spainUsedMarketRank": 25,
+      "voYearFrom": 2012,
+      "voYearTo": 2024,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2012,
+          "yearTo": 2024,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2012,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "mercedes-benz",
+      "modelSlug": "clase-c",
+      "spainUsedMarketRank": 26,
+      "voYearFrom": 2012,
+      "voYearTo": 2024,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2012,
+          "yearTo": 2024,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2012,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "seat",
+      "modelSlug": "arona",
+      "spainMarketRank": 7,
+      "spainRegistrations": 20294,
+      "trims": [
+        {
+          "slug": "1-0-tsi",
+          "name": "1.0 TSI",
+          "fuel": "petrol",
+          "powerHp": 95,
+          "yearFrom": 2017,
+          "yearTo": 2026,
+          "engineCode": "EA211",
+          "label": "1.0 TSI · 95 CV · Gasolina"
+        },
+        {
+          "slug": "1-5-tsi",
+          "name": "1.5 TSI",
+          "fuel": "petrol",
+          "powerHp": 150,
+          "yearFrom": 2017,
+          "yearTo": 2026,
+          "engineCode": "EA211",
+          "transmission": "automatic",
+          "gearboxCode": "DQ200",
+          "label": "1.5 TSI · 150 CV · Gasolina · DSG"
+        }
+      ],
+      "spainUsedMarketRank": 27,
+      "voYearFrom": 2017,
+      "voYearTo": 2025
     },
     {
       "brandSlug": "dacia",
@@ -596,6 +903,550 @@
           "yearFrom": 2022,
           "yearTo": 2026,
           "label": "Eco-G 100 · GLP"
+        }
+      ],
+      "spainUsedMarketRank": 28,
+      "voYearFrom": 2013,
+      "voYearTo": 2025
+    },
+    {
+      "brandSlug": "kia",
+      "modelSlug": "sportage",
+      "spainUsedMarketRank": 29,
+      "voYearFrom": 2014,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2014,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2014,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "mg",
+      "modelSlug": "zs",
+      "spainMarketRank": 3,
+      "spainRegistrations": 23731,
+      "trims": [
+        {
+          "slug": "1-5-tgdi",
+          "name": "1.5 T-GDI",
+          "fuel": "petrol",
+          "powerHp": 162,
+          "yearFrom": 2020,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "1.5 T-GDI · 162 CV · Gasolina"
+        },
+        {
+          "slug": "hybrid",
+          "name": "Hybrid+",
+          "fuel": "hybrid",
+          "powerHp": 197,
+          "yearFrom": 2022,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "Hybrid+ · 197 CV · Híbrido"
+        },
+        {
+          "slug": "electric",
+          "name": "Electric",
+          "fuel": "electric",
+          "powerHp": 177,
+          "yearFrom": 2021,
+          "yearTo": 2026,
+          "transmission": "automatic",
+          "label": "Electric · 177 CV"
+        }
+      ],
+      "spainUsedMarketRank": 30,
+      "voYearFrom": 2018,
+      "voYearTo": 2025
+    },
+    {
+      "brandSlug": "volkswagen",
+      "modelSlug": "t-roc",
+      "spainMarketRank": 14,
+      "spainRegistrations": 18740,
+      "trims": [
+        {
+          "slug": "1-5-tsi",
+          "name": "1.5 TSI",
+          "fuel": "petrol",
+          "powerHp": 150,
+          "yearFrom": 2017,
+          "yearTo": 2026,
+          "engineCode": "EA211",
+          "transmission": "automatic",
+          "gearboxCode": "DQ200",
+          "label": "1.5 TSI · 150 CV · Gasolina · DSG"
+        },
+        {
+          "slug": "2-0-tdi",
+          "name": "2.0 TDI",
+          "fuel": "diesel",
+          "powerHp": 150,
+          "yearFrom": 2017,
+          "yearTo": 2024,
+          "engineCode": "EA288",
+          "transmission": "automatic",
+          "gearboxCode": "DQ200",
+          "label": "2.0 TDI · 150 CV · Diésel · DSG"
+        }
+      ],
+      "spainUsedMarketRank": 31,
+      "voYearFrom": 2017,
+      "voYearTo": 2025
+    },
+    {
+      "brandSlug": "opel",
+      "modelSlug": "astra",
+      "spainUsedMarketRank": 32,
+      "voYearFrom": 2015,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2015,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2015,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "peugeot",
+      "modelSlug": "3008",
+      "spainUsedMarketRank": 33,
+      "voYearFrom": 2016,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2016,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2016,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "citroen",
+      "modelSlug": "c4",
+      "spainUsedMarketRank": 34,
+      "voYearFrom": 2014,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2014,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2014,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "renault",
+      "modelSlug": "scenic",
+      "spainUsedMarketRank": 35,
+      "voYearFrom": 2013,
+      "voYearTo": 2022,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2013,
+          "yearTo": 2022,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2013,
+          "yearTo": 2022,
+          "label": "Diésel · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "ford",
+      "modelSlug": "puma",
+      "spainUsedMarketRank": 36,
+      "voYearFrom": 2019,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2019,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "toyota",
+      "modelSlug": "rav4",
+      "spainUsedMarketRank": 37,
+      "voYearFrom": 2013,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2013,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2013,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "nissan",
+      "modelSlug": "juke",
+      "spainUsedMarketRank": 38,
+      "voYearFrom": 2014,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2014,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2014,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "kia",
+      "modelSlug": "ceed",
+      "spainUsedMarketRank": 39,
+      "voYearFrom": 2015,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2015,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2015,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "kia",
+      "modelSlug": "stonic",
+      "spainUsedMarketRank": 40,
+      "voYearFrom": 2017,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2017,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2017,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "hyundai",
+      "modelSlug": "kona",
+      "spainUsedMarketRank": 41,
+      "voYearFrom": 2017,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2017,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2017,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "toyota",
+      "modelSlug": "c-hr",
+      "spainUsedMarketRank": 42,
+      "voYearFrom": 2017,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2017,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2017,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "toyota",
+      "modelSlug": "yaris-cross",
+      "spainUsedMarketRank": 43,
+      "voYearFrom": 2021,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2021,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2021,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2021,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "audi",
+      "modelSlug": "a4",
+      "spainUsedMarketRank": 44,
+      "voYearFrom": 2012,
+      "voYearTo": 2024,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2012,
+          "yearTo": 2024,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2012,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "audi",
+      "modelSlug": "q3",
+      "spainUsedMarketRank": 45,
+      "voYearFrom": 2014,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2014,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2014,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
         }
       ]
     },
@@ -659,62 +1510,564 @@
           "transmission": "automatic",
           "label": "iX1 · 204 CV · Eléctrico"
         }
-      ]
+      ],
+      "spainUsedMarketRank": 46,
+      "voYearFrom": 2015,
+      "voYearTo": 2025
     },
     {
-      "brandSlug": "audi",
-      "modelSlug": "a3",
+      "brandSlug": "bmw",
+      "modelSlug": "x3",
+      "spainUsedMarketRank": 47,
+      "voYearFrom": 2014,
+      "voYearTo": 2025,
       "trims": [
         {
-          "slug": "35-tfsi",
-          "name": "35 TFSI",
+          "slug": "petrol-vo",
+          "name": "Gasolina",
           "fuel": "petrol",
-          "powerHp": 150,
-          "yearFrom": 2020,
-          "yearTo": 2026,
-          "label": "35 TFSI · 150 CV · Gasolina"
+          "yearFrom": 2014,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
         },
         {
-          "slug": "35-tdi",
-          "name": "35 TDI",
+          "slug": "diesel-vo",
+          "name": "Diésel",
           "fuel": "diesel",
-          "powerHp": 150,
-          "yearFrom": 2020,
-          "yearTo": 2026,
-          "label": "35 TDI · 150 CV · Diésel"
+          "yearFrom": 2014,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
         },
         {
-          "slug": "40-tfsi-quattro",
-          "name": "40 TFSI quattro",
-          "fuel": "petrol",
-          "powerHp": 190,
-          "yearFrom": 2020,
-          "yearTo": 2026,
-          "label": "40 TFSI quattro · 190 CV · Gasolina"
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
         }
       ]
     },
     {
-      "brandSlug": "toyota",
-      "modelSlug": "prius",
+      "brandSlug": "mercedes-benz",
+      "modelSlug": "clase-a",
       "trims": [
         {
-          "slug": "hybrid",
-          "name": "Hybrid",
-          "fuel": "hybrid",
-          "powerHp": 122,
-          "yearFrom": 2016,
+          "slug": "a180d",
+          "name": "A 180 d",
+          "fuel": "diesel",
+          "powerHp": 116,
+          "yearFrom": 2018,
           "yearTo": 2026,
-          "label": "Hybrid · 122 CV · Híbrido"
+          "label": "A 180 d · Diésel"
         },
         {
-          "slug": "plugin-hybrid",
-          "name": "Plug-in Hybrid",
-          "fuel": "plugin_hybrid",
-          "powerHp": 220,
-          "yearFrom": 2019,
+          "slug": "a200",
+          "name": "A 200",
+          "fuel": "petrol",
+          "powerHp": 163,
+          "yearFrom": 2018,
           "yearTo": 2026,
-          "label": "Plug-in Hybrid · 220 CV"
+          "label": "A 200 · Gasolina"
+        }
+      ],
+      "spainUsedMarketRank": 48,
+      "voYearFrom": 2015,
+      "voYearTo": 2025
+    },
+    {
+      "brandSlug": "volkswagen",
+      "modelSlug": "tiguan",
+      "spainUsedMarketRank": 49,
+      "voYearFrom": 2015,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2015,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2015,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "skoda",
+      "modelSlug": "fabia",
+      "spainUsedMarketRank": 50,
+      "voYearFrom": 2014,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2014,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "honda",
+      "modelSlug": "civic",
+      "spainUsedMarketRank": 51,
+      "voYearFrom": 2013,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2013,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2013,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "honda",
+      "modelSlug": "hr-v",
+      "spainUsedMarketRank": 52,
+      "voYearFrom": 2015,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2015,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2015,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "mazda",
+      "modelSlug": "cx-5",
+      "spainUsedMarketRank": 53,
+      "voYearFrom": 2015,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2015,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2015,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "mazda",
+      "modelSlug": "mazda3",
+      "spainUsedMarketRank": 54,
+      "voYearFrom": 2014,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2014,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2014,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "jeep",
+      "modelSlug": "renegade",
+      "spainUsedMarketRank": 55,
+      "voYearFrom": 2015,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2015,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2015,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "fiat",
+      "modelSlug": "500",
+      "spainUsedMarketRank": 56,
+      "voYearFrom": 2012,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2012,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "volvo",
+      "modelSlug": "xc40",
+      "spainUsedMarketRank": 57,
+      "voYearFrom": 2018,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2018,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2018,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "mini",
+      "modelSlug": "countryman",
+      "spainUsedMarketRank": 58,
+      "voYearFrom": 2014,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2014,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2014,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "suzuki",
+      "modelSlug": "vitara",
+      "spainUsedMarketRank": 59,
+      "voYearFrom": 2015,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2015,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2015,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "dacia",
+      "modelSlug": "logan",
+      "spainUsedMarketRank": 60,
+      "voYearFrom": 2013,
+      "voYearTo": 2022,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2013,
+          "yearTo": 2022,
+          "label": "Gasolina · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "seat",
+      "modelSlug": "ateca",
+      "spainUsedMarketRank": 61,
+      "voYearFrom": 2016,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2016,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2016,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "cupra",
+      "modelSlug": "formentor",
+      "spainUsedMarketRank": 62,
+      "voYearFrom": 2020,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2020,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2020,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2020,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "renault",
+      "modelSlug": "kadjar",
+      "spainUsedMarketRank": 63,
+      "voYearFrom": 2015,
+      "voYearTo": 2022,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2015,
+          "yearTo": 2022,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2015,
+          "yearTo": 2022,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2022,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "nissan",
+      "modelSlug": "leaf",
+      "spainUsedMarketRank": 64,
+      "voYearFrom": 2014,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "electric",
+          "name": "Electric",
+          "fuel": "electric",
+          "yearFrom": 2014,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Eléctrico · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "renault",
+      "modelSlug": "zoe",
+      "spainUsedMarketRank": 65,
+      "voYearFrom": 2014,
+      "voYearTo": 2024,
+      "trims": [
+        {
+          "slug": "electric",
+          "name": "Electric",
+          "fuel": "electric",
+          "yearFrom": 2014,
+          "yearTo": 2024,
+          "transmission": "automatic",
+          "label": "Eléctrico · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "volkswagen",
+      "modelSlug": "id3",
+      "spainUsedMarketRank": 66,
+      "voYearFrom": 2020,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "electric",
+          "name": "Electric",
+          "fuel": "electric",
+          "yearFrom": 2020,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Eléctrico · mercado VO"
         }
       ]
     },
@@ -749,29 +2102,864 @@
           "yearTo": 2026,
           "label": "Performance · Eléctrico"
         }
+      ],
+      "spainUsedMarketRank": 67,
+      "voYearFrom": 2019,
+      "voYearTo": 2025
+    },
+    {
+      "brandSlug": "volkswagen",
+      "modelSlug": "id4",
+      "spainUsedMarketRank": 68,
+      "voYearFrom": 2021,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "electric",
+          "name": "Electric",
+          "fuel": "electric",
+          "yearFrom": 2021,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Eléctrico · mercado VO"
+        }
       ]
     },
     {
-      "brandSlug": "mercedes-benz",
-      "modelSlug": "clase-a",
+      "brandSlug": "hyundai",
+      "modelSlug": "ioniq-5",
+      "spainUsedMarketRank": 69,
+      "voYearFrom": 2021,
+      "voYearTo": 2025,
       "trims": [
         {
-          "slug": "a180d",
-          "name": "A 180 d",
-          "fuel": "diesel",
-          "powerHp": 116,
-          "yearFrom": 2018,
-          "yearTo": 2026,
-          "label": "A 180 d · Diésel"
+          "slug": "electric",
+          "name": "Electric",
+          "fuel": "electric",
+          "yearFrom": 2021,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Eléctrico · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "kia",
+      "modelSlug": "niro",
+      "spainUsedMarketRank": 70,
+      "voYearFrom": 2016,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "hybrid",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2016,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
         },
         {
-          "slug": "a200",
-          "name": "A 200",
+          "slug": "petrol",
+          "name": "Petrol",
           "fuel": "petrol",
-          "powerHp": 163,
+          "yearFrom": 2016,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "kia",
+      "modelSlug": "ev6",
+      "spainUsedMarketRank": 71,
+      "voYearFrom": 2021,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "electric",
+          "name": "Electric",
+          "fuel": "electric",
+          "yearFrom": 2021,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Eléctrico · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "mg",
+      "modelSlug": "mg4",
+      "spainUsedMarketRank": 72,
+      "voYearFrom": 2022,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "electric",
+          "name": "Electric",
+          "fuel": "electric",
+          "yearFrom": 2022,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Eléctrico · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "tesla",
+      "modelSlug": "model-y",
+      "spainUsedMarketRank": 73,
+      "voYearFrom": 2022,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "electric",
+          "name": "Electric",
+          "fuel": "electric",
+          "yearFrom": 2022,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Eléctrico · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "peugeot",
+      "modelSlug": "5008",
+      "spainUsedMarketRank": 74,
+      "voYearFrom": 2017,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2017,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2017,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "citroen",
+      "modelSlug": "c5-aircross",
+      "spainUsedMarketRank": 75,
+      "voYearFrom": 2018,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
           "yearFrom": 2018,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2018,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "opel",
+      "modelSlug": "mokka",
+      "spainUsedMarketRank": 76,
+      "voYearFrom": 2016,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2016,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2016,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "renault",
+      "modelSlug": "talisman",
+      "spainUsedMarketRank": 77,
+      "voYearFrom": 2015,
+      "voYearTo": 2022,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2015,
+          "yearTo": 2022,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2015,
+          "yearTo": 2022,
+          "label": "Diésel · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "skoda",
+      "modelSlug": "kodiaq",
+      "spainUsedMarketRank": 78,
+      "voYearFrom": 2017,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2017,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2017,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "volkswagen",
+      "modelSlug": "touran",
+      "spainUsedMarketRank": 79,
+      "voYearFrom": 2015,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2015,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2015,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "audi",
+      "modelSlug": "a1",
+      "spainUsedMarketRank": 80,
+      "voYearFrom": 2015,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2015,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "bmw",
+      "modelSlug": "serie-1",
+      "spainUsedMarketRank": 81,
+      "voYearFrom": 2015,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2015,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2015,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "lexus",
+      "modelSlug": "nx",
+      "spainUsedMarketRank": 82,
+      "voYearFrom": 2015,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2015,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2015,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "toyota",
+      "modelSlug": "prius",
+      "trims": [
+        {
+          "slug": "hybrid",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "powerHp": 122,
+          "yearFrom": 2016,
           "yearTo": 2026,
-          "label": "A 200 · Gasolina"
+          "label": "Hybrid · 122 CV · Híbrido"
+        },
+        {
+          "slug": "plugin-hybrid",
+          "name": "Plug-in Hybrid",
+          "fuel": "plugin_hybrid",
+          "powerHp": 220,
+          "yearFrom": 2019,
+          "yearTo": 2026,
+          "label": "Plug-in Hybrid · 220 CV"
+        }
+      ],
+      "spainUsedMarketRank": 83,
+      "voYearFrom": 2014,
+      "voYearTo": 2025
+    },
+    {
+      "brandSlug": "toyota",
+      "modelSlug": "aygo",
+      "spainUsedMarketRank": 84,
+      "voYearFrom": 2014,
+      "voYearTo": 2022,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2014,
+          "yearTo": 2022,
+          "label": "Gasolina · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "nissan",
+      "modelSlug": "x-trail",
+      "spainUsedMarketRank": 85,
+      "voYearFrom": 2014,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2014,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2014,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "suzuki",
+      "modelSlug": "swift",
+      "spainUsedMarketRank": 86,
+      "voYearFrom": 2014,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2014,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "dacia",
+      "modelSlug": "spring",
+      "spainUsedMarketRank": 87,
+      "voYearFrom": 2021,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "electric",
+          "name": "Electric",
+          "fuel": "electric",
+          "yearFrom": 2021,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Eléctrico · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "jeep",
+      "modelSlug": "compass",
+      "spainUsedMarketRank": 88,
+      "voYearFrom": 2015,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2015,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2015,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "alfa-romeo",
+      "modelSlug": "giulietta",
+      "spainUsedMarketRank": 89,
+      "voYearFrom": 2013,
+      "voYearTo": 2020,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2013,
+          "yearTo": 2020,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2013,
+          "yearTo": 2020,
+          "label": "Diésel · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "volvo",
+      "modelSlug": "xc60",
+      "spainUsedMarketRank": 90,
+      "voYearFrom": 2015,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2015,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2015,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "ford",
+      "modelSlug": "mondeo",
+      "spainUsedMarketRank": 91,
+      "voYearFrom": 2012,
+      "voYearTo": 2022,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2012,
+          "yearTo": 2022,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2012,
+          "yearTo": 2022,
+          "label": "Diésel · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "citroen",
+      "modelSlug": "c4-cactus",
+      "spainUsedMarketRank": 92,
+      "voYearFrom": 2014,
+      "voYearTo": 2020,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2014,
+          "yearTo": 2020,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2014,
+          "yearTo": 2020,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2020,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "ds",
+      "modelSlug": "ds3-crossback",
+      "spainUsedMarketRank": 93,
+      "voYearFrom": 2019,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2019,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "hyundai",
+      "modelSlug": "bayon",
+      "spainUsedMarketRank": 94,
+      "voYearFrom": 2021,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2021,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2021,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2021,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "kia",
+      "modelSlug": "picanto",
+      "spainUsedMarketRank": 95,
+      "voYearFrom": 2014,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2014,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "hyundai",
+      "modelSlug": "i20",
+      "spainUsedMarketRank": 96,
+      "voYearFrom": 2015,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2015,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "mg",
+      "modelSlug": "hs",
+      "spainUsedMarketRank": 97,
+      "voYearFrom": 2019,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2019,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "cupra",
+      "modelSlug": "born",
+      "spainUsedMarketRank": 98,
+      "voYearFrom": 2021,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "electric",
+          "name": "Electric",
+          "fuel": "electric",
+          "yearFrom": 2021,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Eléctrico · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "audi",
+      "modelSlug": "q2",
+      "spainUsedMarketRank": 99,
+      "voYearFrom": 2017,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2017,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2017,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
+        },
+        {
+          "slug": "hybrid-vo",
+          "name": "Hybrid",
+          "fuel": "hybrid",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "transmission": "automatic",
+          "label": "Híbrido · mercado VO"
+        }
+      ]
+    },
+    {
+      "brandSlug": "skoda",
+      "modelSlug": "scala",
+      "spainUsedMarketRank": 100,
+      "voYearFrom": 2019,
+      "voYearTo": 2025,
+      "trims": [
+        {
+          "slug": "petrol-vo",
+          "name": "Gasolina",
+          "fuel": "petrol",
+          "yearFrom": 2019,
+          "yearTo": 2025,
+          "label": "Gasolina · mercado VO"
+        },
+        {
+          "slug": "diesel-vo",
+          "name": "Diésel",
+          "fuel": "diesel",
+          "yearFrom": 2019,
+          "yearTo": 2024,
+          "label": "Diésel · mercado VO"
         }
       ]
     },

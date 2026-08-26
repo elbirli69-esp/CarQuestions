@@ -1,6 +1,7 @@
 import type { KnowledgeChunk } from "@/types/knowledge";
 import trimsData from "@/data/vehicle-trims.json";
 import spainPriority from "@/data/spain-market-priority.json";
+import spainUsedPriority from "@/data/spain-used-market-priority.json";
 import { chunkAppliesToAllBrands, chunkIsModelSpecific, chunkMatchesBrand, chunkMatchesModel } from "@/lib/rag/knowledge/filters";
 import { loadKnowledgeChunks } from "@/lib/rag/knowledge/load";
 import type { VehicleTrimCatalog } from "@/lib/vehicles/trims-types";
@@ -15,7 +16,17 @@ const SPAIN_PRIORITY_RANK = new Map(
   ]),
 );
 
-const SPAIN_CORE_MAX_RANK = 20;
+const SPAIN_USED_PRIORITY_RANK = new Map(
+  (spainUsedPriority.models ?? []).map((m) => [
+    `${m.brandSlug}/${m.modelSlug}`,
+    { rank: m.rank, voYearFrom: m.voYearFrom, voYearTo: m.voYearTo },
+  ]),
+);
+
+/** Top matriculaciones nuevas (ANFAC). */
+const SPAIN_NEW_CORE_MAX_RANK = 20;
+/** Top 100 mercado VO España (curado). */
+const SPAIN_VO_CORE_MAX_RANK = 100;
 
 export interface ModelCoverageGap {
   brandSlug: string;
@@ -29,7 +40,12 @@ export interface ModelCoverageGap {
   /** Ventas España (rank menor = más vendido). undefined = fuera del top prioritario. */
   spainMarketRank?: number;
   spainRegistrations?: number;
+  /** Rank mercado VO España (top 100). */
+  spainUsedMarketRank?: number;
+  /** En top matriculaciones nuevas España. */
   spainCore: boolean;
+  /** En top 100 mercado VO España. */
+  voCore: boolean;
   suggestion: string;
 }
 
@@ -41,6 +57,8 @@ export interface BrandCoverageSummary {
   modelsWithoutIssues: number;
   spainCoreModels: number;
   spainCoreGaps: number;
+  voCoreModels: number;
+  voCoreGaps: number;
 }
 
 export interface ModelKmCoverage {
@@ -48,7 +66,9 @@ export interface ModelKmCoverage {
   modelSlug: string;
   displayName: string;
   spainMarketRank?: number;
+  spainUsedMarketRank?: number;
   spainCore: boolean;
+  voCore: boolean;
   issueChunkCount: number;
   issuesWithKmCount: number;
   kmCoveragePct: number;
@@ -61,6 +81,7 @@ export interface CoverageGapReport {
   corpusChunks: number;
   catalogModels: number;
   spainCoreModels: number;
+  voCoreModels: number;
   minIssuesThreshold: number;
   modelGaps: ModelCoverageGap[];
   brandSummaries: BrandCoverageSummary[];
@@ -97,22 +118,39 @@ function chunkMatchesBrandPlatform(chunk: KnowledgeChunk, brandSlug: string): bo
   return !chunkIsModelSpecific(chunk) && Boolean(chunk.motorCodes?.length);
 }
 
-function resolveSpainMeta(
-  entry: { brandSlug: string; modelSlug: string; spainMarketRank?: number; spainRegistrations?: number },
-): { spainMarketRank?: number; spainRegistrations?: number; spainCore: boolean } {
-  const fromEntry = entry.spainMarketRank;
-  const fromFile = SPAIN_PRIORITY_RANK.get(`${entry.brandSlug}/${entry.modelSlug}`);
-  const rank = fromEntry ?? fromFile?.rank;
-  const registrations = entry.spainRegistrations ?? fromFile?.registrations;
+function resolveMarketMeta(
+  entry: {
+    brandSlug: string;
+    modelSlug: string;
+    spainMarketRank?: number;
+    spainRegistrations?: number;
+    spainUsedMarketRank?: number;
+    voYearFrom?: number;
+    voYearTo?: number;
+  },
+): {
+  spainMarketRank?: number;
+  spainRegistrations?: number;
+  spainUsedMarketRank?: number;
+  spainCore: boolean;
+  voCore: boolean;
+} {
+  const fromNew = SPAIN_PRIORITY_RANK.get(`${entry.brandSlug}/${entry.modelSlug}`);
+  const fromUsed = SPAIN_USED_PRIORITY_RANK.get(`${entry.brandSlug}/${entry.modelSlug}`);
+  const newRank = entry.spainMarketRank ?? fromNew?.rank;
+  const usedRank = entry.spainUsedMarketRank ?? fromUsed?.rank;
+  const registrations = entry.spainRegistrations ?? fromNew?.registrations;
   return {
-    spainMarketRank: rank,
+    spainMarketRank: newRank,
     spainRegistrations: registrations,
-    spainCore: rank != null && rank <= SPAIN_CORE_MAX_RANK,
+    spainUsedMarketRank: usedRank,
+    spainCore: newRank != null && newRank <= SPAIN_NEW_CORE_MAX_RANK,
+    voCore: usedRank != null && usedRank <= SPAIN_VO_CORE_MAX_RANK,
   };
 }
 
 function gapSortKey(gap: ModelCoverageGap): number {
-  const rank = gap.spainMarketRank ?? 9999;
+  const rank = gap.spainUsedMarketRank ?? gap.spainMarketRank ?? 9999;
   const priorityRank = gap.priority === "high" ? 0 : gap.priority === "medium" ? 1 : 2;
   return rank * 10 + priorityRank;
 }
@@ -121,7 +159,7 @@ function buildKmCoverageForModel(
   chunks: KnowledgeChunk[],
   entry: { brandSlug: string; modelSlug: string; spainMarketRank?: number; spainRegistrations?: number },
 ): ModelKmCoverage {
-  const spain = resolveSpainMeta(entry);
+  const market = resolveMarketMeta(entry);
   const issues = chunks.filter(
     (c) => isIssueOrRecall(c) && chunkMatchesCatalogModel(c, entry.brandSlug, entry.modelSlug),
   );
@@ -134,8 +172,10 @@ function buildKmCoverageForModel(
     brandSlug: entry.brandSlug,
     modelSlug: entry.modelSlug,
     displayName: `${entry.brandSlug} ${entry.modelSlug}`,
-    spainMarketRank: spain.spainMarketRank,
-    spainCore: spain.spainCore,
+    spainMarketRank: market.spainMarketRank,
+    spainUsedMarketRank: market.spainUsedMarketRank,
+    spainCore: market.spainCore,
+    voCore: market.voCore,
     issueChunkCount: issues.length,
     issuesWithKmCount: withKm.length,
     kmCoveragePct: pct,
@@ -148,15 +188,18 @@ export function buildCoverageGapReport(options?: {
   minIssuesPerModel?: number;
   evalFailureNames?: string[];
   spainCoreOnly?: boolean;
+  voCoreOnly?: boolean;
 }): CoverageGapReport {
   const minIssues = options?.minIssuesPerModel ?? 1;
   const chunks = loadKnowledgeChunks();
   const modelGaps: ModelCoverageGap[] = [];
   let spainCoreModels = 0;
+  let voCoreModels = 0;
 
   for (const entry of trimCatalog.entries) {
-    const spain = resolveSpainMeta(entry);
-    if (spain.spainCore) spainCoreModels += 1;
+    const market = resolveMarketMeta(entry);
+    if (market.spainCore) spainCoreModels += 1;
+    if (market.voCore) voCoreModels += 1;
 
     const issueChunks = chunks.filter((c) =>
       isIssueOrRecall(c) && chunkMatchesCatalogModel(c, entry.brandSlug, entry.modelSlug),
@@ -165,11 +208,14 @@ export function buildCoverageGapReport(options?: {
     const platform = chunks.filter((c) => chunkMatchesBrandPlatform(c, entry.brandSlug));
 
     if (issueChunks.length >= minIssues) continue;
-    if (options?.spainCoreOnly && !spain.spainCore) continue;
+    if (options?.spainCoreOnly && !market.spainCore) continue;
+    if (options?.voCoreOnly && !market.voCore) continue;
 
     const displayName = `${entry.brandSlug} ${entry.modelSlug}`;
     const priority: ModelCoverageGap["priority"] =
-      spain.spainCore || entry.trims.length >= 3 || issueChunks.length === 0 ? "high" : "medium";
+      market.voCore || market.spainCore || entry.trims.length >= 3 || issueChunks.length === 0
+        ? "high"
+        : "medium";
 
     let suggestion = "Añadir 1–2 chunks issue/recall con models incluyendo este modelo.";
     if (issueChunks.length === 0 && platform.length > 0) {
@@ -178,8 +224,10 @@ export function buildCoverageGapReport(options?: {
     if (curated.length === 0 && issueChunks.length > 0) {
       suggestion += " Todos los issues son demo — revisar y quitar isDemo.";
     }
-    if (spain.spainCore) {
-      suggestion = `[Top ventas España #${spain.spainMarketRank}] ${suggestion}`;
+    if (market.voCore) {
+      suggestion = `[Top VO España #${market.spainUsedMarketRank}] ${suggestion}`;
+    } else if (market.spainCore) {
+      suggestion = `[Top matriculaciones #${market.spainMarketRank}] ${suggestion}`;
     }
 
     modelGaps.push({
@@ -191,9 +239,11 @@ export function buildCoverageGapReport(options?: {
       curatedIssueCount: curated.length,
       platformChunkCount: platform.length,
       priority,
-      spainMarketRank: spain.spainMarketRank,
-      spainRegistrations: spain.spainRegistrations,
-      spainCore: spain.spainCore,
+      spainMarketRank: market.spainMarketRank,
+      spainRegistrations: market.spainRegistrations,
+      spainUsedMarketRank: market.spainUsedMarketRank,
+      spainCore: market.spainCore,
+      voCore: market.voCore,
       suggestion,
     });
   }
@@ -212,32 +262,40 @@ export function buildCoverageGapReport(options?: {
         modelsWithoutIssues: 0,
         spainCoreModels: 0,
         spainCoreGaps: 0,
+        voCoreModels: 0,
+        voCoreGaps: 0,
       };
       acc.push(row);
     }
-    const spain = resolveSpainMeta(entry);
+    const market = resolveMarketMeta(entry);
     row.modelsInCatalog += 1;
-    if (spain.spainCore) row.spainCoreModels += 1;
+    if (market.spainCore) row.spainCoreModels += 1;
+    if (market.voCore) row.voCoreModels += 1;
     const modelIssues = chunks.filter((c) =>
       isIssueOrRecall(c) && chunkMatchesCatalogModel(c, entry.brandSlug, entry.modelSlug),
     );
     if (modelIssues.length < minIssues) {
       row.modelsWithoutIssues += 1;
-      if (spain.spainCore) row.spainCoreGaps += 1;
+      if (market.spainCore) row.spainCoreGaps += 1;
+      if (market.voCore) row.voCoreGaps += 1;
     }
     return acc;
   }, [] as BrandCoverageSummary[]);
 
   brandSummaries.sort(
-    (a, b) => b.spainCoreGaps - a.spainCoreGaps || b.modelsWithoutIssues - a.modelsWithoutIssues,
+    (a, b) =>
+      b.voCoreGaps - a.voCoreGaps ||
+      b.spainCoreGaps - a.spainCoreGaps ||
+      b.modelsWithoutIssues - a.modelsWithoutIssues,
   );
 
   const kmCoverage = trimCatalog.entries
     .map((entry) => buildKmCoverageForModel(chunks, entry))
-    .filter((row) => row.spainCore && row.issueChunkCount > 0)
+    .filter((row) => row.voCore && row.issueChunkCount > 0)
     .sort(
       (a, b) =>
-        (a.spainMarketRank ?? 9999) - (b.spainMarketRank ?? 9999) ||
+        (a.spainUsedMarketRank ?? a.spainMarketRank ?? 9999) -
+        (b.spainUsedMarketRank ?? b.spainMarketRank ?? 9999) ||
         a.kmCoveragePct - b.kmCoveragePct,
     );
 
@@ -246,6 +304,7 @@ export function buildCoverageGapReport(options?: {
     corpusChunks: chunks.length,
     catalogModels: trimCatalog.entries.length,
     spainCoreModels,
+    voCoreModels,
     minIssuesThreshold: minIssues,
     modelGaps,
     brandSummaries,
@@ -255,32 +314,34 @@ export function buildCoverageGapReport(options?: {
 }
 
 export function formatCoverageGapReport(report: CoverageGapReport): string {
-  const spainGaps = report.modelGaps.filter((g) => g.spainCore);
-  const otherGaps = report.modelGaps.filter((g) => !g.spainCore);
+  const voGaps = report.modelGaps.filter((g) => g.voCore);
+  const otherGaps = report.modelGaps.filter((g) => !g.voCore);
 
   const lines: string[] = [
-    `Corpus: ${report.corpusChunks} chunks · Catálogo trims: ${report.catalogModels} modelos (${report.spainCoreModels} top ventas España)`,
-    `Modelos con < ${report.minIssuesThreshold} issue/recall específicos: ${report.modelGaps.length} (${spainGaps.length} en top España)`,
+    `Corpus: ${report.corpusChunks} chunks · Catálogo trims: ${report.catalogModels} modelos (${report.voCoreModels} top VO España · ${report.spainCoreModels} top matriculaciones)`,
+    `Modelos con < ${report.minIssuesThreshold} issue/recall específicos: ${report.modelGaps.length} (${voGaps.length} en top 100 VO)`,
     "",
-    "=== Prioridad España — top ventas sin cobertura A ===",
+    "=== Prioridad VO — top 100 segunda mano sin cobertura A ===",
   ];
 
-  if (spainGaps.length === 0) {
-    lines.push("(ninguno — top España cubierto a nivel mínimo)");
+  if (voGaps.length === 0) {
+    lines.push("(ninguno — top 100 VO cubierto a nivel mínimo)");
   } else {
-    for (const gap of spainGaps.slice(0, 25)) {
-      const rankLabel = gap.spainMarketRank != null ? `#${gap.spainMarketRank}` : "?";
-      const sales =
-        gap.spainRegistrations != null ? ` · ~${gap.spainRegistrations.toLocaleString("es-ES")} mat.` : "";
+    for (const gap of voGaps.slice(0, 40)) {
+      const rankLabel =
+        gap.spainUsedMarketRank != null ? `#${gap.spainUsedMarketRank} VO` : "?";
       lines.push(
-        `[${gap.priority}] ${rankLabel} ${gap.displayName}${sales} · trims ${gap.trimCount} · issues ${gap.issueChunkCount} (curados ${gap.curatedIssueCount}) · plataforma ${gap.platformChunkCount}`,
+        `[${gap.priority}] ${rankLabel} ${gap.displayName} · trims ${gap.trimCount} · issues ${gap.issueChunkCount} (curados ${gap.curatedIssueCount}) · plataforma ${gap.platformChunkCount}`,
       );
       lines.push(`  → ${gap.suggestion}`);
+    }
+    if (voGaps.length > 40) {
+      lines.push(`  … y ${voGaps.length - 40} modelos más`);
     }
   }
 
   if (otherGaps.length > 0) {
-    lines.push("", "=== Otros modelos del catálogo (menor prioridad mercado) ===");
+    lines.push("", "=== Otros modelos del catálogo (fuera top 100 VO) ===");
     for (const gap of otherGaps.slice(0, 10)) {
       lines.push(
         `[${gap.priority}] ${gap.displayName} · trims ${gap.trimCount} · issues ${gap.issueChunkCount} (curados ${gap.curatedIssueCount})`,
@@ -289,10 +350,12 @@ export function formatCoverageGapReport(report: CoverageGapReport): string {
     }
   }
 
-  lines.push("", "=== Resumen por marca (gaps top España) ===");
-  for (const brand of report.brandSummaries.filter((b) => b.spainCoreGaps > 0 || b.spainCoreModels > 0).slice(0, 15)) {
+  lines.push("", "=== Resumen por marca (gaps top 100 VO) ===");
+  for (const brand of report.brandSummaries
+    .filter((b) => b.voCoreGaps > 0 || b.voCoreModels > 0)
+    .slice(0, 20)) {
     lines.push(
-      `${brand.brandSlug}: ${brand.issueChunks} issues (${brand.curatedIssues} curados) · top España gaps ${brand.spainCoreGaps}/${brand.spainCoreModels}`,
+      `${brand.brandSlug}: ${brand.issueChunks} issues (${brand.curatedIssues} curados) · VO gaps ${brand.voCoreGaps}/${brand.voCoreModels}`,
     );
   }
 
@@ -303,26 +366,36 @@ export function formatCoverageGapReport(report: CoverageGapReport): string {
     }
   }
 
-  const kmSpain = report.kmCoverage.filter((k) => k.spainCore);
-  lines.push("", "=== Cobertura km (typicalKm) — top ventas España ===");
-  if (kmSpain.length === 0) {
-    lines.push("(sin modelos top con issues)");
+  const kmVo = report.kmCoverage.filter((k) => k.voCore);
+  lines.push("", "=== Cobertura km (typicalKm) — top 100 VO España ===");
+  if (kmVo.length === 0) {
+    lines.push("(sin modelos top VO con issues)");
   } else {
-    const sinKm = kmSpain.filter((k) => k.status === "sin_km");
-    const bajo = kmSpain.filter((k) => k.status === "bajo");
-    const ok = kmSpain.filter((k) => k.status === "ok");
+    const sinKm = kmVo.filter((k) => k.status === "sin_km");
+    const bajo = kmVo.filter((k) => k.status === "bajo");
+    const ok = kmVo.filter((k) => k.status === "ok");
     lines.push(
-      `OK ≥50%: ${ok.length} · BAJO <50%: ${bajo.length} · SIN_KM: ${sinKm.length} (de ${kmSpain.length} modelos con issues)`,
+      `OK ≥50%: ${ok.length} · BAJO <50%: ${bajo.length} · SIN_KM: ${sinKm.length} (de ${kmVo.length} modelos con issues)`,
     );
-    for (const row of kmSpain) {
-      const rank = row.spainMarketRank != null ? `#${row.spainMarketRank}` : "?";
+    for (const row of kmVo.slice(0, 30)) {
+      const rank =
+        row.spainUsedMarketRank != null
+          ? `#${row.spainUsedMarketRank}`
+          : row.spainMarketRank != null
+            ? `#${row.spainMarketRank}`
+            : "?";
       const label = row.status === "sin_km" ? "SIN_KM" : row.status === "bajo" ? "BAJO" : "OK";
       lines.push(
         `[${label}] ${rank} ${row.displayName}: ${row.issuesWithKmCount}/${row.issueChunkCount} issues con km (${row.kmCoveragePct}%)`,
       );
       if (row.issueIdsWithoutKm.length > 0 && row.status !== "ok") {
-        lines.push(`  sin km: ${row.issueIdsWithoutKm.slice(0, 4).join(", ")}${row.issueIdsWithoutKm.length > 4 ? "…" : ""}`);
+        lines.push(
+          `  sin km: ${row.issueIdsWithoutKm.slice(0, 4).join(", ")}${row.issueIdsWithoutKm.length > 4 ? "…" : ""}`,
+        );
       }
+    }
+    if (kmVo.length > 30) {
+      lines.push(`  … y ${kmVo.length - 30} modelos más en el informe JSON`);
     }
   }
 

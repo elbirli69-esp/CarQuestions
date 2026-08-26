@@ -25,14 +25,14 @@ describe("RAG eval CI gate", () => {
     const report = buildCoverageGapReport({ minIssuesPerModel: 1 });
     assert.ok(report.corpusChunks > 100);
     assert.ok(report.catalogModels >= 15);
-    assert.ok(report.spainCoreModels >= 15);
+    assert.ok(report.voCoreModels >= 100);
     assert.ok(Array.isArray(report.modelGaps));
     assert.ok(report.brandSummaries.length > 0);
 
-    const spainGaps = report.modelGaps.filter((g) => g.spainCore);
-    if (spainGaps.length >= 2) {
-      const ranks = spainGaps.map((g) => g.spainMarketRank ?? 9999);
-      assert.ok(ranks[0] <= ranks[1], "Spain gaps should sort by market rank");
+    const voGaps = report.modelGaps.filter((g) => g.voCore);
+    if (voGaps.length >= 2) {
+      const ranks = voGaps.map((g) => g.spainUsedMarketRank ?? g.spainMarketRank ?? 9999);
+      assert.ok(ranks[0] <= ranks[1], "VO gaps should sort by used market rank");
     }
   });
 });

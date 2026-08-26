@@ -23,6 +23,12 @@ export interface TrimCatalogEntry {
   spainMarketRank?: number;
   /** Matriculaciones orientativas en España (año ref, ver data/spain-market-priority.json). */
   spainRegistrations?: number;
+  /** Posición en top 100 mercado VO España (data/spain-used-market-priority.json). */
+  spainUsedMarketRank?: number;
+  /** Año típico mínimo de unidades en stock VO para este modelo. */
+  voYearFrom?: number;
+  /** Año típico máximo de unidades en stock VO. */
+  voYearTo?: number;
 }
 
 export interface VehicleTrimCatalog {
