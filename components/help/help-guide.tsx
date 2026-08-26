@@ -11,7 +11,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { HELP_STEPS, readHelpSeen, writeHelpSeen } from "@/lib/help/guide";
+import { HELP_STEPS, readWelcomeHelpSeen, writeWelcomeHelpSeen } from "@/lib/help/guide";
 import { cn } from "@/lib/utils";
 
 export type HelpGuideHandle = {
@@ -34,7 +34,7 @@ export const HelpGuide = forwardRef<HelpGuideHandle, { showTrigger?: boolean }>(
   }));
 
   useEffect(() => {
-    const seen = readHelpSeen();
+    const seen = readWelcomeHelpSeen();
     setReady(true);
     if (!seen) {
       setStepIndex(0);
@@ -43,14 +43,14 @@ export const HelpGuide = forwardRef<HelpGuideHandle, { showTrigger?: boolean }>(
   }, []);
 
   function markSeenAndClose() {
-    writeHelpSeen();
+    writeWelcomeHelpSeen();
     setOpen(false);
   }
 
   function handleOpenChange(next: boolean) {
     setOpen(next);
     if (!next) {
-      writeHelpSeen();
+      writeWelcomeHelpSeen();
       setStepIndex(0);
     }
   }
