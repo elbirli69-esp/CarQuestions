@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 export interface CatalogSelectOption {
   value: string;
   label: string;
+  /** Optional secondary line (e.g. year range, engine code). */
+  description?: string;
 }
 
 export function CatalogSelect({
@@ -35,7 +37,9 @@ export function CatalogSelect({
     if (!q) return options;
     return options.filter(
       (option) =>
-        option.label.toLowerCase().includes(q) || option.value.toLowerCase().includes(q),
+        option.label.toLowerCase().includes(q) ||
+        option.value.toLowerCase().includes(q) ||
+        (option.description?.toLowerCase().includes(q) ?? false),
     );
   }, [filter, options]);
 
@@ -80,7 +84,12 @@ export function CatalogSelect({
                     setOpen(false);
                   }}
                 >
-                  {option.label}
+                  <span className="block font-medium leading-snug">{option.label}</span>
+                  {option.description ? (
+                    <span className="mt-0.5 block text-xs text-muted-foreground">
+                      {option.description}
+                    </span>
+                  ) : null}
                 </button>
               </li>
             ))

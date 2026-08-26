@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { jsonError } from "@/lib/api/errors";
-import { getTrimsForModel, trimLabel } from "@/lib/vehicles/trims";
+import { getTrimsForModel, trimDescription, trimLabel } from "@/lib/vehicles/trims";
 
 const querySchema = z.object({
   brandSlug: z.string().trim().min(1),
@@ -22,6 +22,7 @@ export async function GET(request: Request) {
     slug: trim.slug,
     name: trim.name,
     label: trimLabel(trim),
+    description: trimDescription(trim),
     fuel: trim.fuel,
     powerHp: trim.powerHp,
     yearFrom: trim.yearFrom,

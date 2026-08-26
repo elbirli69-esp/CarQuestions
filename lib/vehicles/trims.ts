@@ -1,5 +1,6 @@
 import trimsData from "@/data/vehicle-trims.json";
 import { normalizeCatalogKey } from "@/lib/vehicles/catalog-types";
+import { FUEL_LABELS, TRANSMISSION_LABELS } from "@/lib/vehicles/labels";
 import type { CatalogTrim, TrimCatalogEntry, VehicleTrimCatalog } from "@/lib/vehicles/trims-types";
 import type { FuelType, TransmissionType } from "@/types/vehicle";
 
@@ -114,8 +115,63 @@ export function resolveTrimSelection(options: {
   };
 }
 
+function formatTrimYearRange(trim: CatalogTrim): string | undefined {
+  if (trim.yearFrom == null) return undefined;
+  if (trim.yearTo != null && trim.yearTo !== trim.yearFrom) {
+    return `${trim.yearFrom}–${trim.yearTo}`;
+  }
+  return `${trim.yearFrom}+`;
+}
+
+function labelImpliesTransmission(label: string, transmission: TransmissionType): boolean {
+  const lower = label.toLowerCase();
+  if (transmission === "automatic") {
+    return (
+      lower.includes("automático") ||
+      lower.includes("automatic") ||
+      lower.includes("dsg") ||
+      lower.includes("cvt") ||
+      lower.includes("tiptronic") ||
+      lower.includes("e-cvt")
+    );
+  }
+  if (transmission === "manual") {
+    return lower.includes("manual");
+  }
+  if (transmission === "semi_automatic") {
+    return lower.includes("semiautomático") || lower.includes("semi-automatic");
+  }
+  return false;
+}
+
+/** Primary line for version dropdown (commercial name + key specs). */
 export function trimLabel(trim: CatalogTrim): string {
-  return trim.label ?? trim.name;
+  if (trim.label) return trim.label;
+
+  const parts: string[] = [trim.name];
+  if (trim.powerHp != null) parts.push(`${trim.powerHp} CV`);
+  if (trim.fuel) parts.push(FUEL_LABELS[trim.fuel]);
+  if (trim.transmission) parts.push(TRANSMISSION_LABELS[trim.transmission]);
+  return parts.join(" · ");
+}
+
+/** Secondary line: years, engine and gearbox codes when known. */
+export function trimDescription(trim: CatalogTrim): string | undefined {
+  const parts: string[] = [];
+  const years = formatTrimYearRange(trim);
+  if (years) parts.push(years);
+  if (trim.engineCode) parts.push(trim.engineCode);
+  if (trim.gearboxCode) parts.push(trim.gearboxCode);
+
+  const labelLower = trim.label?.toLowerCase() ?? "";
+  if (
+    trim.transmission &&
+    !labelImpliesTransmission(labelLower, trim.transmission)
+  ) {
+    parts.push(TRANSMISSION_LABELS[trim.transmission]);
+  }
+
+  return parts.length > 0 ? parts.join(" · ") : undefined;
 }
 
 export { CUSTOM_TRIM_SLUG };

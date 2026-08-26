@@ -26,10 +26,14 @@ import type { Vehicle } from "@/types/vehicle";
 type TrimOptionsPayload = {
   slug: string;
   label: string;
+  description?: string;
   name: string;
   fuel?: string;
   powerHp?: number;
   transmission?: string;
+  yearFrom?: number;
+  yearTo?: number;
+  engineCode?: string;
 };
 
 const emptyForm = {
@@ -186,12 +190,24 @@ export function VehicleForm({
 
   const trimSelectOptions = useMemo(
     () => [
-      ...trimOptions.map((trim) => ({ value: trim.slug, label: trim.label })),
+      ...trimOptions.map((trim) => ({
+        value: trim.slug,
+        label: trim.label,
+        description: trim.description,
+      })),
       ...(trimOptions.length > 0
         ? [{ value: CUSTOM_TRIM_SLUG, label: "Otra versión (escribir)" }]
         : []),
     ],
     [trimOptions],
+  );
+
+  const selectedTrim = useMemo(
+    () =>
+      form.trimSlug && form.trimSlug !== CUSTOM_TRIM_SLUG
+        ? trimOptions.find((trim) => trim.slug === form.trimSlug)
+        : undefined,
+    [form.trimSlug, trimOptions],
   );
 
   function applyTrimFields(trimSlug: string) {
@@ -568,7 +584,7 @@ export function VehicleForm({
             htmlFor="version"
             hint={
               trimOptions.length > 0
-                ? "Elige la motorización del catálogo o escribe otra si no aparece."
+                ? `${trimOptions.length} motorizaciones en catálogo para este modelo. Elige una o escribe otra si no aparece.`
                 : "Recomendado. Ej. versión comercial o código de motor. Debe encajar con la marca."
             }
           >
@@ -592,6 +608,14 @@ export function VehicleForm({
                     applyTrimFields(slug);
                   }}
                 />
+                {selectedTrim ? (
+                  <p className="rounded-md border border-border/60 bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
+                    <span className="font-medium text-foreground">{selectedTrim.label}</span>
+                    {selectedTrim.description ? (
+                      <span className="mt-0.5 block">{selectedTrim.description}</span>
+                    ) : null}
+                  </p>
+                ) : null}
                 {form.trimSlug === CUSTOM_TRIM_SLUG ? (
                   <Input
                     id="versionCustom"
