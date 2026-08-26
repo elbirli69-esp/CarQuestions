@@ -21,7 +21,12 @@ describe("RAG eval CI gate", () => {
     assert.equal(result.failures.length, 0, result.failures.map((f) => f.name).join(", "));
   });
 
-    it("coverage gap report lists catalog models", () => {
+  it("top 100 VO models have curated primary issue sources", async () => {
+    const { execSync } = await import("node:child_process");
+    execSync("npm run rag:vo-curation-report", { stdio: "pipe" });
+  });
+
+  it("coverage gap report lists catalog models", () => {
     const report = buildCoverageGapReport({ minIssuesPerModel: 1 });
     assert.ok(report.corpusChunks > 100);
     assert.ok(report.catalogModels >= 15);

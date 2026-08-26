@@ -12,6 +12,8 @@
     "rag:eval": "tsx scripts/rag-eval.ts",
     "rag:gaps": "tsx scripts/rag-coverage-gaps.ts",
     "rag:expand-used-catalog": "tsx scripts/expand-used-market-catalog.ts",
+    "rag:vo-curation-report": "tsx scripts/rag-vo-curation-report.ts",
+    "rag:generate-vo-curation": "tsx scripts/generate-vo-model-curation.ts",
     "rag:curate-report": "tsx scripts/rag-curate-report.ts",
     "rag:validate-curation": "tsx scripts/rag-validate-curation.ts",
     "rag:coverage": "tsx scripts/rag-coverage.ts",

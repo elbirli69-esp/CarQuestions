@@ -369,7 +369,7 @@
       "brands": ["nissan"],
       "yearFrom": 2014,
       "yearTo": 2021,
-      "models": ["qashqai", "x-trail"],
+      "models": ["qashqai", "x-trail", "juke"],
       "title": "Qashqai J11 CVT: sobrecalentamiento y fluido",
       "content": "CVT Jatco en Qashqai: servicio de fluido crítico, radiador CVT y evitar remolques. Overheat warning o patinaje = inspección inmediata. Preferir unidades con facturas de CVT.",
       "severity": "high",
